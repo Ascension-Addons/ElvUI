@@ -30,7 +30,7 @@ P.general = {
 	backdropcolor = {r = 0.1, g = 0.1, b = 0.1},
 	backdropfadecolor = {r = 0.06, g = 0.06, b = 0.06, a = 0.8},
 	valuecolor = {r = 0.99, g = 0.48, b = 0.17},
-	herocolor = {r = 0.0, g = 1.0, b = 0.0},
+	herocolor = RAID_CLASS_COLORS[E.myclass],
 	cropIcon = 2,
 	minimap = {
 		size = 176,
