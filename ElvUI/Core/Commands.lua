@@ -267,7 +267,7 @@ function E:LoadCommands()
 	self:RegisterChatCommand("farmmode", "FarmMode")
 	self:RegisterChatCommand("cleanguild", "MassGuildKick")
 	self:RegisterChatCommand("estatus", "ShowStatusReport")
-	self:RegisterChatCommand("/elvrole", "ChangeRole")
+	self:RegisterChatCommand("elvrole", "ChangeRole")
 
 	if E.private.actionbar.enable then
 		self:RegisterChatCommand("kb", AB.ActivateBindMode)
