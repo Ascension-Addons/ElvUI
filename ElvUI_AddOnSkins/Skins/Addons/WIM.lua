@@ -300,7 +300,11 @@ S:AddCallbackForAddon("WIM", "WIM", function()
 		WIM.constants.classes.GetMyColoredName = function()
 			local name = UnitName("player")
 			local color = E.media.herocolor
-			return string.format("\124cff%.2x%.2x%.2x", color.r*255, color.g*255, color.b*255)..name.."\124r"
+			if color then
+				return string.format("\124cff%.2x%.2x%.2x", color.r*255, color.g*255, color.b*255)..name.."\124r"
+			end
+
+			return name
 		end
 
 		WIM.constants.classes.GetColoredNameByChatEvent = function(event, ...)
@@ -308,7 +312,7 @@ S:AddCallbackForAddon("WIM", "WIM", function()
 			local _, class = GetPlayerInfoByGUID(guid)
 			local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
 			if color then
-				return string.format("\124cff%.2x%.2x%.2x", color.r*255, color.g*255, color.b*255)..player.."\124r"
+				return color:WrapText(player)
 			end
 
 			return player
