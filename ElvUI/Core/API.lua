@@ -13,7 +13,7 @@ local UnitGroupRolesAssigned = UnitGroupRolesAssigned
 local UnitHasVehicleUI = UnitHasVehicleUI
 local IsInInstance = IsInInstance
 
-E.Role = "Melee" -- TODO: Load locally, or save per specialization.
+E.Role = "Melee" -- TODO: Save per specialization?
 
 do -- other non-english locales require this
 	E.UnlocalizedClasses = {}
