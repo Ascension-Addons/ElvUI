@@ -43,6 +43,7 @@ function S:StatusBarColorGradient(bar, value, max, backdrop)
 end
 
 function S:HandleButton(button, strip, isDeclineButton, useCreateBackdrop, noSetTemplate)
+	if button == nil then return end
 	if button.isSkinned then return end
 
 	local buttonName = button.GetName and button:GetName()
@@ -80,13 +81,13 @@ function S:HandleButton(button, strip, isDeclineButton, useCreateBackdrop, noSet
 end
 
 function S:HandleButtonHighlight(frame, r, g, b, a)
+	if frame == nil then return end
 	if not r then r = 0.9 end
 	if not g then g = 0.9 end
 	if not b then b = 0.9 end
 	if not a then a = 0.35 end
 
 	local highlightTexture
-
 	if frame.SetHighlightTexture then
 		highlightTexture = frame:GetHighlightTexture()
 		highlightTexture:SetAllPoints(frame)
@@ -106,6 +107,7 @@ function S:HandleButtonHighlight(frame, r, g, b, a)
 end
 
 function S:HandleScrollBar(frame, horizontal)
+	if frame == nil then return end
 	if frame.backdrop then return end
 
 	local parent = frame:GetParent()
@@ -212,6 +214,7 @@ function S:HandleTab(tab, noBackdrop)
 end
 
 function S:HandleRotateButton(btn)
+	if btn == nil then return end
 	if btn.isSkinned then return end
 
 	btn:SetTemplate()
@@ -234,6 +237,7 @@ function S:HandleRotateButton(btn)
 end
 
 function S:HandleEditBox(frame)
+	if frame == nil then return end
 	if frame.backdrop then return end
 
 	frame:CreateBackdrop()
@@ -253,6 +257,7 @@ function S:HandleEditBox(frame)
 end
 
 function S:HandleDropDownBox(frame, width, direction)
+	if frame == nil then return end
 	if frame.backdrop then return end
 
 	local FrameName = frame.GetName and frame:GetName()
@@ -283,6 +288,7 @@ function S:HandleDropDownBox(frame, width, direction)
 end
 
 function S:HandleStatusBar(frame, color)
+	if frame == nil then return end
 	frame:SetFrameLevel(frame:GetFrameLevel() + 1)
 	frame:StripTextures()
 	frame:CreateBackdrop("Transparent")
@@ -292,6 +298,7 @@ function S:HandleStatusBar(frame, color)
 end
 
 function S:HandleCheckBox(frame, noBackdrop, noReplaceTextures, forceSaturation)
+	if frame == nil then return end
 	if frame.isSkinned then return end
 
 	frame:StripTextures()
@@ -391,6 +398,7 @@ function S:HandleCheckBox(frame, noBackdrop, noReplaceTextures, forceSaturation)
 end
 
 function S:HandleColorSwatch(frame, size)
+	if frame == nil then return end
 	if frame.isSkinned then return end
 
 	frame:StripTextures()
@@ -419,6 +427,7 @@ function S:HandleIcon(icon, parent)
 end
 
 function S:HandleItemButton(b, shrinkIcon)
+	if b == nil then return end
 	if b.isSkinned then return end
 
 	local icon = b.icon or b.IconTexture or b.iconTexture
@@ -484,6 +493,7 @@ local sliderOnDisable = function(self) self:GetThumbTexture():SetVertexColor(0.6
 local sliderOnEnable = function(self) self:GetThumbTexture():SetVertexColor(1, 0.82, 0, 0.8) end
 
 function S:HandleSliderFrame(frame)
+	if frame == nil then return end
 	local orientation = frame:GetOrientation()
 
 	frame:StripTextures()
@@ -646,6 +656,7 @@ local function collapseSetNormalTexture_Texture(self, texture)
 	self:GetDisabledTexture():SetTexture(0, 0, 0, 0)
 end
 function S:HandleCollapseExpandButton(button, defaultState, useFontString, xOffset, yOffset)
+	if button == nil then return end
 	if button.isSkinned then return end
 
 	if defaultState == "auto" then
