@@ -2305,8 +2305,6 @@ function module:Initialize()
 
 	if self.skinEnabled then
 		AscensionCharacterFrame:Hide()
-		CharacterNameFrame:ClearAllPoints()
-		CharacterNameFrame:Point("CENTER", CharacterFrame.backdrop, 6, 200)
 		CharacterFrameCloseButton:Point("CENTER", CharacterFrame.backdrop, "TOPRIGHT", -12, -13)
 
 		CharacterFrame.backdrop:ClearAllPoints()
