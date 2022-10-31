@@ -703,13 +703,7 @@ do
 			local ver = tonumber(E.version)
 			message = tonumber(message)
 
-			if ver ~= G.general.version then
-				if not E.shownUpdatedWhileRunningPopup and not InCombatLockdown() then
-					E:StaticPopup_Show("ELVUI_UPDATED_WHILE_RUNNING")
-
-					E.shownUpdatedWhileRunningPopup = true
-				end
-			elseif message and (message > ver) then
+			if message and (message > ver) then
 				if not E.recievedOutOfDateMessage then
 					E:Print(L["ElvUI is out of date. You can download the newest version from the Ascension Launcher, or https://github.com/Ascension-Addons/ElvUI"])
 
