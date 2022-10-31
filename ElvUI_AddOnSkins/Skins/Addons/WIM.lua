@@ -299,6 +299,7 @@ S:AddCallbackForAddon("WIM", "WIM", function()
 
 		WIM.constants.classes.GetMyColoredName = function()
 			local name = UnitName("player")
+			local color = E.media.herocolor
 			if color then
 				return color:WrapText(name)
 			end
