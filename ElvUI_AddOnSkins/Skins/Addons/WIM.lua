@@ -301,7 +301,7 @@ S:AddCallbackForAddon("WIM", "WIM", function()
 			local name = UnitName("player")
 			local color = E.media.herocolor
 			if color then
-				return color:WrapText(name)
+				return string.format("\124cff%.2x%.2x%.2x", color.r*255, color.g*255, color.b*255)..name.."\124r"
 			end
 
 			return name
