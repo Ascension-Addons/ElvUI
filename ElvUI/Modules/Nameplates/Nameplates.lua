@@ -227,7 +227,10 @@ function NP:GetUnitByName(frame, unitType)
 end
 
 function NP:GetUnitClassByGUID(frame, guid)
-	if not guid then guid = self.GUIDByName[frame.UnitName] end
+	if not guid then
+		guid = self:GetGUIDByName(frame.UnitName, frame.UnitType)
+	end
+
 	if guid then
 		local _, _, class = pcall(GetPlayerInfoByGUID, guid)
 		return class
