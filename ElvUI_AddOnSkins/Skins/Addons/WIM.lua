@@ -309,6 +309,7 @@ S:AddCallbackForAddon("WIM", "WIM", function()
 
 		WIM.constants.classes.GetColoredNameByChatEvent = function(event, ...)
 			local player, guid = select(2, ...), select(12, ...)
+			if not guid then return player end
 			local _, class = GetPlayerInfoByGUID(guid)
 			local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
 			if color then
