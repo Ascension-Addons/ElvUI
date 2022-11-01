@@ -237,7 +237,7 @@ function E:ChangeRole(role)
 		["tank"]="Tank",
 	}
 	E.Role = roles[lower(role)] or "Melee"
-	print("Role was changed to:", E.Role)
+	E:Print("Role was changed to "..E.Role)
 end
 
 function E:LoadCommands()
@@ -267,12 +267,7 @@ function E:LoadCommands()
 	self:RegisterChatCommand("farmmode", "FarmMode")
 	self:RegisterChatCommand("cleanguild", "MassGuildKick")
 	self:RegisterChatCommand("estatus", "ShowStatusReport")
-
-	self:RegisterChatCommand("role", "ChangeRole")
-	-- This command is added for Ascension. Role checks will be unreliable, but
-	-- this will allow one to set Role manually.
-	-- /role expects one of "melee", "caster", "ranged", "tank"
-	-- and defaults to "melee" if no role is provided.
+	self:RegisterChatCommand("elvrole", "ChangeRole")
 
 	if E.private.actionbar.enable then
 		self:RegisterChatCommand("kb", AB.ActivateBindMode)

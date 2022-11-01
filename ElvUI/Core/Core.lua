@@ -1197,6 +1197,7 @@ function E:Initialize()
 		local msg = format(L["LOGIN_MSG"], self.media.hexvaluecolor, self.media.hexvaluecolor, self.version)
 		if Chat.Initialized then msg = select(2, Chat:FindURL("CHAT_MSG_DUMMY", msg)) end
 		print(msg)
+		E:Print("Use /elvrole [melee, caster, ranged, tank] to optimize the UI for your role. Your current role is "..E.Role)
 	end
 
 	if GetCVar("scriptProfile") ~= "1" then

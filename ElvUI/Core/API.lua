@@ -13,7 +13,7 @@ local UnitGroupRolesAssigned = UnitGroupRolesAssigned
 local UnitHasVehicleUI = UnitHasVehicleUI
 local IsInInstance = IsInInstance
 
-E.Role = "Melee" -- TODO: Load locally, or save per specialization.
+E.Role = "Melee" -- TODO: Save per specialization?
 
 do -- other non-english locales require this
 	E.UnlocalizedClasses = {}
@@ -45,13 +45,8 @@ function E:ScanTooltipTextures(clean, grabTextures)
 end
 
 function E:GetPlayerRole()
-	local isTank, isHealer, isDamage = UnitGroupRolesAssigned("player")
-
-	if isTank or isHealer or isDamage then
-		return isTank and "TANK" or isHealer and "HEALER" or isDamage and "DAMAGER"
-	else
-		return "DAMAGER"  -- Assume dps role; Nothing better for ascension.
-	end
+	local isTank, isHealer, _ = UnitGroupRolesAssigned("player")
+	return isTank and "TANK" or isHealer and "HEALER" or "DAMAGER"
 end
 
 do
