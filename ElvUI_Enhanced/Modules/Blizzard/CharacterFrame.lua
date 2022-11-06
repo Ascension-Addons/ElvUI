@@ -908,7 +908,7 @@ function module:PvEPower(statFrame, unit)
 	text = text .. format("\nIncreases healing done and absorption in |cffFFFFFFinstances|r by: |cffFFFFFF%s%%|r", PVE_POWER * PVE_POWER_HEALING_MULTIPLIER)
 	
 	if UnitLevel("player") < GetMaxLevel() then
-		text = text .. "\n" .. format(DOES_NOT_APPLY_BELOW_LEVEL_FORMAT, GetMaxLevel())
+		text = text .. "\n" .. format("|cffFF0000Does not apply below level: %d|r", GetMaxLevel())
 	end
 	
 	statFrame.tooltip2 = text
@@ -925,7 +925,7 @@ function module:PvPPower(statFrame, unit)
 	text = text .. format("\nWhile your Primary Stat is |cffFFFFFFSpirit|r your healing and absorption in |cffFFFFFFArenas and Battlegrounds|r is increased by: |cffFFFFFF%s%%|r", PVP_POWER * PVP_POWER_DAMAGE_MULTIPLIER)
 	
 	if UnitLevel("player") < GetMaxLevel() then
-		text = text .. "\n" .. format(DOES_NOT_APPLY_BELOW_LEVEL_FORMAT, GetMaxLevel())
+		text = text .. "\n" .. format("|cffFF0000Does not apply below level: %d|r", GetMaxLevel())
 	end
 	
 	statFrame.tooltip2 = text
