@@ -628,7 +628,8 @@ local function sortItemLevel(a, b)
 	return a > b
 end
 
-local function GetAverageItemLevel()
+local function 
+Level()
 	local _, itemLink, itemLevel, itemEquipLoc, slotID
 	local totalItemLevel, totalEquippedItemLevel = 0, 0
 	local items = 16
@@ -787,19 +788,26 @@ end
 ]]
 
 local function GetAverageItemLevel()
-	local items = 16
-	local ilvl = 0
-	local colorCount, sumR, sumG, sumB = 0, 0, 0, 0
+    local items = 0
+    local ilvl = 0
+    counter = 0
+    local colorCount, sumR, sumG, sumB = 0, 0, 0, 0
 
-	for slotID = 1, 18 do
-		if slotID ~= INVSLOT_BODY then
-			local itemLink = GetInventoryItemLink("player", slotID)
+    for slotID = 1, 16 do
+        counter = counter + 1
+        if slotID ~= INVSLOT_BODY then
+            local itemLink = GetInventoryItemLink("player", slotID)
 
-			if itemLink then
-				local _, _, quality, itemLevel, _, _, _, _, itemEquipLoc = GetItemInfo(itemLink)
-
-				if itemLevel then
-					ilvl = ilvl + itemLevel
+            if itemLink then
+                local _, _, quality, itemLevel, _, _, _, _, itemEquipLoc = GetItemInfo(itemLink)
+                if itemLevel then
+                    if counter == 16 then -- counter 16 is MAINHAND slot
+                        items = items + 2
+                        ilvl = ilvl + (itemLevel * 2)
+                    else 
+                        items = items + 1
+                        ilvl = ilvl + itemLevel
+                    end
 
 					colorCount = colorCount + 1
 					sumR = sumR + qualityColors[quality][1]
