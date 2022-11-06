@@ -108,6 +108,7 @@ local GREEN_FONT_COLOR_CODE = GREEN_FONT_COLOR_CODE
 local HEALTH_PER_STAMINA = HEALTH_PER_STAMINA
 local HIGHLIGHT_FONT_COLOR_CODE = HIGHLIGHT_FONT_COLOR_CODE
 local INVSLOT_BODY = INVSLOT_BODY
+local INVSLOT_RANGED = INVSLOT_RANGED
 local INVSLOT_MAINHAND = INVSLOT_MAINHAND
 local MANA_PER_INTELLECT = MANA_PER_INTELLECT
 local MANA_REGEN_FROM_SPIRIT = MANA_REGEN_FROM_SPIRIT
@@ -809,12 +810,13 @@ end
 ]]
 
 local function GetAverageItemLevel()
-	local items = 16
+	local items = 15
 	local ilvl = 0
 	local colorCount, sumR, sumG, sumB = 0, 0, 0, 0
 
-	for slotID = 1, 18 do
-		if slotID ~= INVSLOT_BODY then
+	-- same ilvl calculation as C_Player:GetAverageItemLevel()
+	for slot = INVSLOT_FIRST_EQUIPPED, INVSLOT_LAST_EQUIPPED do
+		if slot ~= INVSLOT_BODY and slot ~= INVSLOT_TABARD and slot ~= INVSLOT_RANGED and slot ~= INVSLOT_OFFHAND then
 			local itemLink = GetInventoryItemLink("player", slotID)
 
 			if itemLink then
@@ -827,10 +829,6 @@ local function GetAverageItemLevel()
 					sumR = sumR + qualityColors[quality][1]
 					sumG = sumG + qualityColors[quality][2]
 					sumB = sumB + qualityColors[quality][3]
-
-					if slotID == INVSLOT_MAINHAND and (itemEquipLoc ~= "INVTYPE_2HWEAPON" or titanGrip) then
-						items = 17
-					end
 				end
 			end
 		end
