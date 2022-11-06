@@ -301,7 +301,10 @@ ElvUF.Tags.Methods["namecolor"] = function(unit)
 		else
 			local _, class = UnitClass(unit)
 			local color = RAID_CLASS_COLORS[class]
-			return Hex(color.r, color.g, color.b)
+			if not color then
+				return Hex(1, 1, 1)
+			end
+			return color.hex
 		end
 	elseif unitReaction then
 		local reaction = ElvUF.colors.reaction[unitReaction]
