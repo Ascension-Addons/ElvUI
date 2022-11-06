@@ -194,6 +194,14 @@ local PAPERDOLL_STATINFO = {
 		updateFunc = function(statFrame, unit) module:PrimaryStat(statFrame, unit) end
 	},
 
+	["PVE_POWER"] = {
+		updateFunc = function(statFrame, unit) module:PvEPower(statFrame, unit) end
+	},
+
+	["PVP_POWER"] = {
+		updateFunc = function(statFrame, unit) module:PvPPower(statFrame, unit) end
+	},
+
 	["FEL_COMM"] = {
 		updateFunc = function(statFrame, unit) module:FelComm(statFrame, unit) end
 	},
@@ -324,14 +332,26 @@ local PAPERDOLL_STATCATEGORIES = {
 			"PRIMARY_STAT"
 		}
 	},
-	["FEL_COMM"] = {
+	["PVE_POWER"] = {
 		id = 3,
+		stats = {
+			"PVE_POWER"
+		}
+	},
+	["PVP_POWER"] = {
+		id = 4,
+		stats = {
+			"PVP_POWER"
+		}
+	},
+	["FEL_COMM"] = {
+		id = 5,
 		stats = {
 			"FEL_COMM"
 		}
 	},
 	["BASE_STATS"] = {
-		id = 4,
+		id = 6,
 		stats = {
 			"STRENGTH",
 			"AGILITY",
@@ -341,7 +361,7 @@ local PAPERDOLL_STATCATEGORIES = {
 		}
 	},
 	["MELEE_COMBAT"] = {
-		id = 5,
+		id = 7,
 		stats = {
 			"MELEE_DAMAGE",
 			"MELEE_DPS",
@@ -353,7 +373,7 @@ local PAPERDOLL_STATCATEGORIES = {
 		}
 	},
 	["RANGED_COMBAT"] = {
-		id = 6,
+		id = 8,
 		stats = {
 			"RANGED_COMBAT1",
 			"RANGED_COMBAT2",
@@ -363,7 +383,7 @@ local PAPERDOLL_STATCATEGORIES = {
 		}
 	},
 	["SPELL_COMBAT"] = {
-		id = 7,
+		id = 9,
 		stats = {
 			"SPELL_COMBAT1",
 			"SPELL_COMBAT2",
@@ -374,7 +394,7 @@ local PAPERDOLL_STATCATEGORIES = {
 		}
 	},
 	["DEFENSES"] = {
-		id = 8,
+		id = 10,
 		stats = {
 			"DEFENSES1",
 			"DEFENSES2",
@@ -385,7 +405,7 @@ local PAPERDOLL_STATCATEGORIES = {
 		}
 	},
 	["RESISTANCE"] = {
-		id = 9,
+		id = 11,
 		stats = {
 			"ARCANE",
 			"FIRE",
@@ -399,6 +419,8 @@ local PAPERDOLL_STATCATEGORIES = {
 local PAPERDOLL_STATCATEGORY_DEFAULTORDER = {
 	"ITEM_LEVEL",
 	"PRIMARY_STAT",
+	"PVE_POWER",
+	"PVP_POWER",
 	"FEL_COMM",
 	"BASE_STATS",
 	"MELEE_COMBAT",
@@ -876,6 +898,41 @@ function module:ItemLevel(statFrame, unit)
 	statFrame.Label:SetTextColor(r, g, b)
 end
 
+function module:PvEPower(statFrame, unit)
+	if not self.Initialized then return end
+
+	statFrame.Label:SetText(PVE_POWER)
+	statFrame.Label:SetTextColor(ColorUtil:Lerp(ITEM_QUALITY_COLORS[1], ITEM_QUALITY_COLORS[4], PVE_POWER/PVE_POWER_CAP):GetRGB())
+	statFrame.tooltip = "PvE Power"
+
+	local text = format("Increases damage against creatures by: |cffFFFFFF%s%%|r", PVE_POWER * PVE_POWER_DAMAGE_MULTIPLIER)
+	text = text .. format("\nReduces damage taken from creatures by: |cffFFFFFF%s%%|r", PVE_POWER * PVE_POWER_DAMAGE_TAKEN_MULTIPLIER)
+	text = text .. format("\nIncreases healing done and absorption in |cffFFFFFFinstances|r by: |cffFFFFFF%s%%|r", PVE_POWER * PVE_POWER_HEALING_MULTIPLIER)
+	
+	if UnitLevel("player") < GetMaxLevel() then
+		text = text .. "\n" .. format(DOES_NOT_APPLY_BELOW_LEVEL_FORMAT, GetMaxLevel())
+	end
+	
+	statFrame.tooltip2 = text
+end
+
+function module:PvPPower(statFrame, unit)
+	if not self.Initialized then return end
+
+	statFrame.Label:SetText(PVP_POWER)
+	statFrame.Label:SetTextColor(ColorUtil:Lerp(ITEM_QUALITY_COLORS[1], ITEM_QUALITY_COLORS[5], PVP_POWER/PVP_POWER_CAP):GetRGB())
+	statFrame.tooltip = "PvE Power"
+
+	local text = format("Increases damage against players by: |cffFFFFFF%s%%|r", PVP_POWER * PVP_POWER_DAMAGE_MULTIPLIER)
+	text = text .. format("\nWhile your Primary Stat is |cffFFFFFFSpirit|r your healing and absorption in |cffFFFFFFArenas and Battlegrounds|r is increased by: |cffFFFFFF%s%%|r", PVP_POWER * PVP_POWER_DAMAGE_MULTIPLIER)
+	
+	if UnitLevel("player") < GetMaxLevel() then
+		text = text .. "\n" .. format(DOES_NOT_APPLY_BELOW_LEVEL_FORMAT, GetMaxLevel())
+	end
+	
+	statFrame.tooltip2 = text
+end
+
 local felCommText = AscensionUI.CharacterFrame.Extension.StatPanel.FelCommutation.Content.CostText
 function module:FelComm(statFrame, unit)
 	if not self.Initialized then return end
@@ -1274,6 +1331,10 @@ function module:PaperDollFrame_UpdateStatCategory(categoryFrame)
 		categoryFrame.NameText:SetText("Primary Stat")
 	elseif category == "FEL_COMM" then
 		categoryFrame.NameText:SetText("Fel Comm Cost")
+	elseif category == "PVE_POWER" then
+		categoryFrame.NameText:SetText("PvE Power")
+	elseif category == "PVP_POWER" then
+		categoryFrame.NameText:SetText("PvP Power")
 	elseif category == "RESISTANCE" then
 		categoryFrame.NameText:SetText(L["Resistance"])
 	elseif category == "DEFENSES" then
@@ -1302,7 +1363,7 @@ function module:PaperDollFrame_UpdateStatCategory(categoryFrame)
 				end
 				statFrame:Show()
 
-				if stat == "ITEM_LEVEL" then
+				if stat == "ITEM_LEVEL" or stat == "PVP_POWER" or stat == "PVE_POWER" then
 					statFrame:Height(30)
 					local label = statFrame.Label
 					label:Width(187)
@@ -1374,7 +1435,8 @@ function module:PaperDollFrame_UpdateStatCategory(categoryFrame)
 
 	for index = 1, numVisible do
 		local isSpecial = categoryInfo == PAPERDOLL_STATCATEGORIES["ITEM_LEVEL"] or
-						  categoryInfo == PAPERDOLL_STATCATEGORIES["PRIMARY_STAT"]
+						  categoryInfo == PAPERDOLL_STATCATEGORIES["PVE_POWER"] or
+						  categoryInfo == PAPERDOLL_STATCATEGORIES["FEL_COMM"]
 		if index % 2 == 0 or isSpecial then
 			local statFrame = categoryFrame.Stats[index]
 			if not statFrame.leftGrad then
@@ -2497,7 +2559,7 @@ do -- CharacterFrame
 	statsPaneScrollChild:Size(169, 0)
 	statsPaneScrollChild:Point("TOPLEFT")
 
-	for i = 1, 10 do
+	for i = 1, 12 do
 		local button = CreateFrame("Frame", "CharacterStatsPaneCategory"..i, statsPaneScrollChild)
 		button:Size(169, 0)
 
