@@ -817,7 +817,7 @@ local function GetAverageItemLevel()
 	-- same ilvl calculation as C_Player:GetAverageItemLevel()
 	for slot = INVSLOT_FIRST_EQUIPPED, INVSLOT_LAST_EQUIPPED do
 		if slot ~= INVSLOT_BODY and slot ~= INVSLOT_TABARD and slot ~= INVSLOT_RANGED and slot ~= INVSLOT_OFFHAND then
-			local itemLink = GetInventoryItemLink("player", slotID)
+			local itemLink = GetInventoryItemLink("player", slot)
 
 			if itemLink then
 				local _, _, quality, itemLevel, _, _, _, _, itemEquipLoc = GetItemInfo(itemLink)
