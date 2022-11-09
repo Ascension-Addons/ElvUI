@@ -119,6 +119,12 @@ local function OnClick(_, btn)
 			LoadAddOn("Blizzard_TimeManager")
 		end
 		TimeManagerClockButton_OnClick(TimeManagerClockButton)
+	elseif btn == "MiddleButton" then
+		if not RaidInfoFrame:IsVisible() then
+			FriendsFrame:Show()
+			FriendsFrameTab5:Click()
+			RaidInfoFrame:Show()
+		end
 	else
 		GameTimeFrame:Click()
 	end
