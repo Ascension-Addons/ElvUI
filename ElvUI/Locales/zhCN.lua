@@ -317,6 +317,10 @@ L["silverabbrev"] = "|cffc7c7cf银|r"
 L["whispers"] = "密语"
 L["yells"] = "大喊"
 L["|cFFE30000Lua error recieved. You can view the error message when you exit combat."] = "|cFFE30000LUA错误已接收, 你可以在脱离战斗后检查.|r"
+L["PLAYER_DIFFICULTY1"] = "普通"
+L["PLAYER_DIFFICULTY2"] = "英雄"
+L["PLAYER_DIFFICULTY3"] = "神话"
+L["PLAYER_DIFFICULTY4"] = "扬升"
 
 ----------------------------------
 L["RED_ENABLE"] = "|cFFff3333启用|r"
