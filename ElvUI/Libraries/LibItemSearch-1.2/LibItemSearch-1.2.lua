@@ -41,7 +41,7 @@ if IsAddOnLoaded("ItemRack") then
 
 	function Lib:BelongsToSet(id, search)
 		for name, set in pairs(ItemRackUser.Sets) do
-			if name:sub(1,1) ~= "" and Search:Find(search, name) then
+			if search == "any" or name:sub(1,1) ~= "" and Search:Find(search, name) then
 				for _, item in pairs(set.equip) do
 					if sameID(id, item) then
 						return true
@@ -55,7 +55,7 @@ elseif IsAddOnLoaded("Wardrobe") then
 	function Lib:BelongsToSet(id, search)
 		for _, outfit in ipairs(Wardrobe.CurrentConfig.Outfit) do
 			local name = outfit.OutfitName
-			if Search:Find(search, name) then
+			if search == "any" or Search:Find(search, name) then
 				for _, item in pairs(outfit.Item) do
 					if item.IsSlotUsed == 1 and item.ItemID == id then
 						return true
@@ -69,7 +69,7 @@ else
 	function Lib:BelongsToSet(id, search)
 		for i = 1, GetNumEquipmentSets() do
 			local name = GetEquipmentSetInfo(i)
-			if Search:Find(search, name) then
+			if search == "any" or Search:Find(search, name) then
 				local items = GetEquipmentSetItemIDs(name)
 				for _, item in pairs(items) do
 					if id == item then
