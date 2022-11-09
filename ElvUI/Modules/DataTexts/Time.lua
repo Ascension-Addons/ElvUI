@@ -137,17 +137,19 @@ local function OnEnter(self, skipRequest)
 		GetInstanceImages(CalendarEventGetTextures(2))
 	end
 
-	local wgtime = GetWintergraspWaitTime()
-	local _, instanceType = IsInInstance()
-	if instanceType ~= "none" then
-		wgtime = QUEUE_TIME_UNAVAILABLE
-	elseif wgtime == nil then
-		wgtime = WINTERGRASP_IN_PROGRESS
-	else
-		wgtime = SecondsToTime(wgtime, false, nil, 3)
-	end
+	if GetExpansionLevel() >= 2 then -- Check for WOTLK active
+		local wgtime = GetWintergraspWaitTime()
+		local _, instanceType = IsInInstance()
+		if instanceType ~= "none" then
+			wgtime = QUEUE_TIME_UNAVAILABLE
+		elseif wgtime == nil then
+			wgtime = WINTERGRASP_IN_PROGRESS
+		else
+			wgtime = SecondsToTime(wgtime, false, nil, 3)
+		end
 
-	DT.tooltip:AddDoubleLine(L["Wintergrasp"], wgtime, 1, 1, 1, lockoutColorNormal.r, lockoutColorNormal.g, lockoutColorNormal.b)
+		DT.tooltip:AddDoubleLine(L["Wintergrasp"], wgtime, 1, 1, 1, lockoutColorNormal.r, lockoutColorNormal.g, lockoutColorNormal.b)
+	end
 
 	if numSavedInstances > 0 then
 		wipe(lockedInstances.raids)
