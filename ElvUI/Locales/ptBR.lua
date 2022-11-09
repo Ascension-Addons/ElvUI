@@ -318,6 +318,10 @@ L["silverabbrev"] = "|cffc7c7cfs|r"
 L["whispers"] = "sussurra"
 L["yells"] = "grita"
 L["|cFFE30000Lua error recieved. You can view the error message when you exit combat."] = "|cFFE30000Erro Lua recebido. Pode ver a mensagem de erro quando sair de combate"
+L["PLAYER_DIFFICULTY1"] = "Normal"
+L["PLAYER_DIFFICULTY2"] = "Heroico"
+L["PLAYER_DIFFICULTY3"] = "Mítico"
+L["PLAYER_DIFFICULTY4"] = "Ascensionado"
 
 ----------------------------------
 L["RED_ENABLE"] = "|cFFff3333Ativar|r"
