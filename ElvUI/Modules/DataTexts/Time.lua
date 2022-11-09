@@ -39,10 +39,10 @@ local numSavedInstances = 0
 local locale = GetLocale()
 local krcntw = locale == "koKR" or locale == "zhCN" or locale == "zhTW"
 local difficultyTag = { -- Normal, Normal, Heroic, Heroic
-	(krcntw and PLAYER_DIFFICULTY1) or utf8sub(PLAYER_DIFFICULTY1, 1, 1), -- N
-	(krcntw and PLAYER_DIFFICULTY1) or utf8sub(PLAYER_DIFFICULTY1, 1, 1), -- N
-	(krcntw and PLAYER_DIFFICULTY2) or utf8sub(PLAYER_DIFFICULTY2, 1, 1), -- H
-	(krcntw and PLAYER_DIFFICULTY2) or utf8sub(PLAYER_DIFFICULTY2, 1, 1), -- H
+	(krcntw and L["PLAYER_DIFFICULTY1"]) or utf8sub(L["PLAYER_DIFFICULTY1"], 1, 1), -- N
+	(krcntw and L["PLAYER_DIFFICULTY2"]) or utf8sub(L["PLAYER_DIFFICULTY2"], 1, 1), -- H
+	(krcntw and L["PLAYER_DIFFICULTY3"]) or utf8sub(L["PLAYER_DIFFICULTY3"], 1, 1), -- M
+	(krcntw and L["PLAYER_DIFFICULTY4"]) or utf8sub(L["PLAYER_DIFFICULTY4"], 1, 1), -- A
 }
 
 local function getRealmTimeDiff()
@@ -159,7 +159,7 @@ local function OnEnter(self, skipRequest)
 			name, _, reset, difficulty, locked, extended, _, isRaid, maxPlayers = GetSavedInstanceInfo(i)
 
 			if name and (locked or extended) then
-				difficultyLetter = difficultyTag[not isRaid and (difficulty == 2 and 3 or 1) or difficulty]
+				difficultyLetter = difficultyTag[difficulty and difficulty or 1]
 				buttonImg = format("|T%s%s:22:22:0:0:96:96:0:64:0:64|t ", "Interface\\LFGFrame\\LFGIcon-", instanceIconByName[name] or "Raid")
 
 				if isRaid then
