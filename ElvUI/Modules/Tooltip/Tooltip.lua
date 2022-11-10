@@ -173,13 +173,17 @@ end
 function TT:GetItemLvL(unit)
 	local total, items = 0, 0
 	for i = 1, #inventorySlots do
-		local itemLink = GetInventoryItemLink(unit, GetInventorySlotInfo(inventorySlots[i]))
+		if inventorySlots[i]~="SecondaryHandSlot" and inventorySlots[i]~= "RangedSlot" then -- does not calculate offhand and ranged 
+			local itemLink = GetInventoryItemLink(unit, GetInventorySlotInfo(inventorySlots[i]))
 
-		if itemLink then
-			local iLvl = select(4, GetItemInfo(itemLink))
-			if iLvl and iLvl > 0 then
+			if itemLink then
+				local iLvl = select(4, GetItemInfo(itemLink))
+				if iLvl then
+					items = items + 1
+					total = total + iLvl
+				end
+			else --if no item equipped in slot still calculate +1 item
 				items = items + 1
-				total = total + iLvl
 			end
 		end
 	end
