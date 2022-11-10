@@ -317,6 +317,10 @@ L["silverabbrev"] = "|TInterface\\MoneyFrame\\UI-MoneyIcons:0:0:1:0:64:16:17:32:
 L["whispers"] = "귓"
 L["yells"] = "외침"
 L["|cFFE30000Lua error recieved. You can view the error message when you exit combat."] = "Lua 에러가 발생하였습니다. 전투가 끝난 후에 내역을 표시하겠습니다."
+L["PLAYER_DIFFICULTY1"] = "일반"
+L["PLAYER_DIFFICULTY2"] = "영웅"
+L["PLAYER_DIFFICULTY3"] = "신화"
+L["PLAYER_DIFFICULTY4"] = "승천"
 
 ----------------------------------
 L["RED_ENABLE"] = "|cFFff3333사용|r"

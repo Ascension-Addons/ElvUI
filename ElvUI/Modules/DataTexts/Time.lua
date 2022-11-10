@@ -39,10 +39,10 @@ local numSavedInstances = 0
 local locale = GetLocale()
 local krcntw = locale == "koKR" or locale == "zhCN" or locale == "zhTW"
 local difficultyTag = { -- Normal, Normal, Heroic, Heroic
-	(krcntw and PLAYER_DIFFICULTY1) or utf8sub(PLAYER_DIFFICULTY1, 1, 1), -- N
-	(krcntw and PLAYER_DIFFICULTY1) or utf8sub(PLAYER_DIFFICULTY1, 1, 1), -- N
-	(krcntw and PLAYER_DIFFICULTY2) or utf8sub(PLAYER_DIFFICULTY2, 1, 1), -- H
-	(krcntw and PLAYER_DIFFICULTY2) or utf8sub(PLAYER_DIFFICULTY2, 1, 1), -- H
+	(krcntw and L["PLAYER_DIFFICULTY1"]) or utf8sub(L["PLAYER_DIFFICULTY1"], 1, 1), -- N
+	(krcntw and L["PLAYER_DIFFICULTY2"]) or utf8sub(L["PLAYER_DIFFICULTY2"], 1, 1), -- H
+	(krcntw and L["PLAYER_DIFFICULTY3"]) or utf8sub(L["PLAYER_DIFFICULTY3"], 1, 1), -- M
+	(krcntw and L["PLAYER_DIFFICULTY4"]) or utf8sub(L["PLAYER_DIFFICULTY4"], 1, 1), -- A
 }
 
 local function getRealmTimeDiff()
@@ -119,6 +119,12 @@ local function OnClick(_, btn)
 			LoadAddOn("Blizzard_TimeManager")
 		end
 		TimeManagerClockButton_OnClick(TimeManagerClockButton)
+	elseif btn == "MiddleButton" then
+		if not RaidInfoFrame:IsVisible() then
+			FriendsFrame:Show()
+			FriendsFrameTab5:Click()
+			RaidInfoFrame:Show()
+		end
 	else
 		GameTimeFrame:Click()
 	end
@@ -137,17 +143,19 @@ local function OnEnter(self, skipRequest)
 		GetInstanceImages(CalendarEventGetTextures(2))
 	end
 
-	local wgtime = GetWintergraspWaitTime()
-	local _, instanceType = IsInInstance()
-	if instanceType ~= "none" then
-		wgtime = QUEUE_TIME_UNAVAILABLE
-	elseif wgtime == nil then
-		wgtime = WINTERGRASP_IN_PROGRESS
-	else
-		wgtime = SecondsToTime(wgtime, false, nil, 3)
-	end
+	if GetExpansionLevel() >= 2 then -- Check for WOTLK active
+		local wgtime = GetWintergraspWaitTime()
+		local _, instanceType = IsInInstance()
+		if instanceType ~= "none" then
+			wgtime = QUEUE_TIME_UNAVAILABLE
+		elseif wgtime == nil then
+			wgtime = WINTERGRASP_IN_PROGRESS
+		else
+			wgtime = SecondsToTime(wgtime, false, nil, 3)
+		end
 
-	DT.tooltip:AddDoubleLine(L["Wintergrasp"], wgtime, 1, 1, 1, lockoutColorNormal.r, lockoutColorNormal.g, lockoutColorNormal.b)
+		DT.tooltip:AddDoubleLine(L["Wintergrasp"], wgtime, 1, 1, 1, lockoutColorNormal.r, lockoutColorNormal.g, lockoutColorNormal.b)
+	end
 
 	if numSavedInstances > 0 then
 		wipe(lockedInstances.raids)
@@ -159,7 +167,7 @@ local function OnEnter(self, skipRequest)
 			name, _, reset, difficulty, locked, extended, _, isRaid, maxPlayers = GetSavedInstanceInfo(i)
 
 			if name and (locked or extended) then
-				difficultyLetter = difficultyTag[not isRaid and (difficulty == 2 and 3 or 1) or difficulty]
+				difficultyLetter = difficultyTag[difficulty and difficulty or 1]
 				buttonImg = format("|T%s%s:22:22:0:0:96:96:0:64:0:64|t ", "Interface\\LFGFrame\\LFGIcon-", instanceIconByName[name] or "Raid")
 
 				if isRaid then
