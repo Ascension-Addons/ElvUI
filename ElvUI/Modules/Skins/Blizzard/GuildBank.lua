@@ -1,5 +1,6 @@
 local E, L, V, P, G = unpack(select(2, ...)) --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local S = E:GetModule("Skins")
+local B = E:GetModule("Bags")
 
 --Lua functions
 local _G = _G
@@ -131,7 +132,34 @@ S:AddCallbackForAddon("Blizzard_GuildBankUI", "Skin_Blizzard_GuildBankUI", funct
 	GuildBankLimitLabel:ClearAllPoints()
 	GuildBankLimitLabel:Point("BOTTOMLEFT", GuildBankMoneyLimitLabel, "TOPLEFT", -1, 11)
 
-	GuildBankFrameDepositButton:Point("BOTTOMRIGHT", -8, 36)
+	-- Add Guild Bank sort button - Works for Guild, Personal, Realm bank
+	local sortButton
+	sortButton = CreateFrame("Button", "GuildBankFrameSortButton", GuildBankFrame)
+	sortButton:Size(21)
+	sortButton:SetTemplate()
+	sortButton:Point("BOTTOMRIGHT", -8, 37)
+	sortButton:SetNormalTexture(E.Media.Textures.Broom)
+	sortButton:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
+	sortButton:GetNormalTexture():SetInside()
+	sortButton:SetPushedTexture(E.Media.Textures.Broom)
+	sortButton:GetPushedTexture():SetTexCoord(unpack(E.TexCoords))
+	sortButton:GetPushedTexture():SetInside()
+	sortButton:SetDisabledTexture(E.Media.Textures.Broom)
+	sortButton:GetDisabledTexture():SetTexCoord(unpack(E.TexCoords))
+	sortButton:GetDisabledTexture():SetInside()
+	sortButton:GetDisabledTexture():SetDesaturated(true)
+	sortButton:StyleButton(nil, true)
+	sortButton.ttText = L["Sort Bags"]
+	sortButton:SetScript("OnEnter", B.Tooltip_Show)
+	sortButton:SetScript("OnLeave", GameTooltip_Hide)
+	sortButton:SetScript("OnClick", function()
+		B:CommandDecorator(B.SortBags, "guild")()
+	end)
+	if E.db.bags.disableGuildSort then
+		sortButton:Disable()
+	end
+
+	GuildBankFrameDepositButton:Point("RIGHT", GuildBankFrameSortButton, "LEFT", -3, -4)
 	GuildBankFrameWithdrawButton:Point("RIGHT", GuildBankFrameDepositButton, "LEFT", -3, 0)
 
 	GuildBankFrameTab1:Point("BOTTOMLEFT", 11, -22)
