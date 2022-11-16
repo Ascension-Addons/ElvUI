@@ -125,6 +125,10 @@ S:AddCallback("Skin_BlizzardOptions", function()
 		"InterfaceOptionsControlsPanelBlockTrades",
 		"InterfaceOptionsControlsPanelLootAtMouse",
 		"InterfaceOptionsControlsPanelAutoLootCorpse",
+		"InterfaceOptionsControlsPanelTabTargetFacing",
+		"InterfaceOptionsControlsPanelTabTargetCombat",
+		"InterfaceOptionsControlsPanelTabTargetPlayers",
+		"InterfaceOptionsControlsPanelHoldToCast",
 		"InterfaceOptionsCombatPanelAttackOnAssist",
 		"InterfaceOptionsCombatPanelAutoRange",
 		"InterfaceOptionsCombatPanelStopAutoAttack",
@@ -145,12 +149,14 @@ S:AddCallback("Skin_BlizzardOptions", function()
 		"InterfaceOptionsDisplayPanelShowClock",
 		"InterfaceOptionsDisplayPanelColorblindMode",
 		"InterfaceOptionsDisplayPanelShowItemLevel",
+		"InterfaceOptionsDisplayPanelHighlightNewItems",
 		"InterfaceOptionsObjectivesPanelInstantQuestText",
 		"InterfaceOptionsObjectivesPanelAutoQuestTracking",
 		"InterfaceOptionsObjectivesPanelAutoQuestProgress",
 		"InterfaceOptionsObjectivesPanelMapQuestDifficulty",
 		"InterfaceOptionsObjectivesPanelAdvancedWorldMap",
 		"InterfaceOptionsObjectivesPanelWatchFrameWidth",
+		"InterfaceOptionsObjectivesPanelPTAQuests",
 		"InterfaceOptionsSocialPanelProfanityFilter",
 		"InterfaceOptionsSocialPanelSpamFilter",
 		"InterfaceOptionsSocialPanelChatBubbles",
@@ -241,6 +247,17 @@ S:AddCallback("Skin_BlizzardOptions", function()
 		"InterfaceOptionsUnitFramePanelFullSizeFocusFrame",
 		"InterfaceOptionsFeaturesPanelPreviewTalentChanges",
 		"InterfaceOptionsFeaturesPanelEquipmentManager",
+		"InterfaceOptionsAscensionNotificationPanelLootToast",
+		"InterfaceOptionsAscensionLoseControlPanelEnabled",
+		"InterfaceOptionsAscensionLoseControlPanelEnableRoots",
+		"InterfaceOptionsAscensionLoseControlPanelEnableSilence",
+		"InterfaceOptionsAscensionLoseControlPanelEnableIncap",
+		"InterfaceOptionsAscensionLoseControlPanelEnableDisarm",
+		"InterfaceOptionsAscensionLoseControlPanelEnableDisorient",
+		"InterfaceOptionsAscensionLoseControlPanelEnableSlow",
+		"InterfaceOptionsAscensionLoseControlPanelEnableStun",
+		"InterfaceOptionsAscensionLoseControlPanelEnablePacify",
+
 
 		"AudioOptionsSoundPanelEnableSound",
 		"AudioOptionsSoundPanelSoundEffects",
@@ -269,6 +286,9 @@ S:AddCallback("Skin_BlizzardOptions", function()
 		"VideoOptionsEffectsPanelFullScreenGlow",
 		"VideoOptionsEffectsPanelDeathEffect",
 		"VideoOptionsEffectsPanelProjectedTextures",
+
+		"InterfaceOptionsAscensionHelpPanelNewPlayerExperience",
+		"InterfaceOptionsAscensionHelpPanelHelpTips"
 	}
 	for _, checkbox in ipairs(checkboxes) do
 		checkbox = _G[checkbox]
@@ -280,6 +300,10 @@ S:AddCallback("Skin_BlizzardOptions", function()
 	local sliders = {
 		"InterfaceOptionsCameraPanelMaxDistanceSlider",
 		"InterfaceOptionsCameraPanelFollowSpeedSlider",
+		"InterfaceOptionsCameraPanelFoV",
+		"InterfaceOptionsControlsPanelTabTargetRange",
+		"InterfaceOptionsControlsPanelTabTargetAngle",
+		"InterfaceOptionsCombatPanelSpellActivationOverlayAlpha",
 		"InterfaceOptionsMousePanelMouseLookSpeedSlider",
 		"InterfaceOptionsMousePanelMouseSensitivitySlider",
 
@@ -303,6 +327,8 @@ S:AddCallback("Skin_BlizzardOptions", function()
 		"VideoOptionsEffectsPanelClutterRadius",
 		"VideoOptionsEffectsPanelWeatherIntensity",
 		"VideoOptionsEffectsPanelPlayerTexture",
+		"VideoOptionsExtendedForegroundFPS",
+		"VideoOptionsExtendedBackgroundFPS",
 		"VideoOptionsResolutionPanelGammaSlider",
 	}
 	for _, slider in ipairs(sliders) do
@@ -323,6 +349,12 @@ S:AddCallback("Skin_BlizzardOptions", function()
 		"VideoOptionsFrameOkay",
 		"VideoOptionsFrameCancel",
 		"VideoOptionsFrameApply",
+
+		"InterfaceOptionsAscensionLoseControlPanelMoveWindow",
+		"InterfaceOptionsAscensionLoseControlPanelResetWindow",
+		"InterfaceOptionsAscensionHelpPanelResetTutorials",
+		"InterfaceOptionsAscensionHelpPanelResetHelpTips"
+
 	}
 	for _, button in ipairs(buttons) do
 		S:HandleButton(_G[button])
@@ -335,6 +367,7 @@ S:AddCallback("Skin_BlizzardOptions", function()
 		"InterfaceOptionsCombatPanelSelfCastKeyDropDown",
 		"InterfaceOptionsDisplayPanelAggroWarningDisplay",
 		"InterfaceOptionsDisplayPanelWorldPVPObjectiveDisplay",
+		"InterfaceOptionsDisplayPanelLocalization",
 		"InterfaceOptionsSocialPanelChatStyle",
 		"InterfaceOptionsSocialPanelTimestamps",
 		"InterfaceOptionsCombatTextPanelFCTDropDown",

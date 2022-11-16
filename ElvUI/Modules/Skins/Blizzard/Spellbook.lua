@@ -19,6 +19,7 @@ S:AddCallback("Skin_Spellbook", function()
 	--AscensionSpellbookFrame:Size  											-- for later on, the spells will need to be moved as well
 	AscensionSpellbookFrameNineSlice:StripTextures(true)
 	--AscensionSpellbookFrameNineSlice:CreateBackdrop("Transparent")
+	AscensionSpellbookFrameInsetNineSlice:StripTextures(true)
 	AscensionSpellbookFrameInset:StripTextures(true)
 	AscensionSpellbookFrameInset:CreateBackdrop("Transparent")
 
@@ -46,6 +47,8 @@ S:AddCallback("Skin_Spellbook", function()
 	S:HandleCloseButton(AscensionSpellbookFrameCloseButton)
 
 	S:HandleCheckBox(AscensionSpellbookFrameContentSpellsShowAllSpellRanks)
+	
+	S:HandleEditBox(AscensionSpellbookFrameContentSpellsSearch)
 
 	for i = 1, SPELLS_PER_PAGE do
 		local button = _G["AscensionSpellbookFrameContentSpellsSpellButton"..i]
