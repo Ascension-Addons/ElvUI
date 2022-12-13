@@ -49,7 +49,7 @@ S:AddCallbackForAddon("Clique", "Clique", function()
 		SkinFrame(CliqueFrame)
 
 		CliqueFrame:Height(424)
-		CliqueFrame:Point("LEFT", SpellBookFrame, "RIGHT", 6, 32)
+		CliqueFrame:Point("LEFT", AscensionSpellbookFrame, "RIGHT", 6, 32)
 
 		S:HandleCloseButton(CliqueButtonClose)
 		CliqueButtonClose:Size(32)
@@ -91,7 +91,11 @@ S:AddCallbackForAddon("Clique", "Clique", function()
 
 		-- OptionsFrame
 		SkinFrame(CliqueOptionsFrame)
-		CliqueOptionsFrame:Height(125)
+		if CliqueSpec1DropDown ~= nil then
+			CliqueOptionsFrame:Height(375)
+		else
+			CliqueOptionsFrame:Height(125)
+		end
 		CliqueOptionsFrame:Point("TOPLEFT", CliqueFrame, "TOPRIGHT", -1, 0)
 
 		S:HandleCloseButton(CliqueOptionsButtonClose)
@@ -110,11 +114,37 @@ S:AddCallbackForAddon("Clique", "Clique", function()
 		CliqueOptionsSpecSwitch.backdrop:Point("BOTTOMRIGHT", -4, 3)
 		CliqueOptionsSpecSwitch.backdrop:Point("TOPRIGHT", CliqueOptionsSpecSwitch.name, "TOPLEFT", -4, 0)
 
-		S:HandleDropDownBox(CliquePriSpecDropDown, 225)
-		S:HandleDropDownBox(CliqueSecSpecDropDown, 225)
+		if CliquePriSpecDropDown ~= nil then
+			S:HandleDropDownBox(CliquePriSpecDropDown, 225)
+			S:HandleDropDownBox(CliqueSecSpecDropDown, 225)
 
-		CliqueSecSpecDropDown:Point("TOPLEFT", CliquePriSpecDropDown, "BOTTOMLEFT", 0, 7)
+			CliqueSecSpecDropDown:Point("TOPLEFT", CliquePriSpecDropDown, "BOTTOMLEFT", 0, 7)
+		elseif CliqueSpec1DropDown ~= nil then
+			S:HandleDropDownBox(CliqueSpec1DropDown, 225)
+			S:HandleDropDownBox(CliqueSpec2DropDown, 225)
+			S:HandleDropDownBox(CliqueSpec3DropDown, 225)
+			S:HandleDropDownBox(CliqueSpec4DropDown, 225)
+			S:HandleDropDownBox(CliqueSpec5DropDown, 225)
+			S:HandleDropDownBox(CliqueSpec6DropDown, 225)
+			S:HandleDropDownBox(CliqueSpec7DropDown, 225)
+			S:HandleDropDownBox(CliqueSpec8DropDown, 225)
+			S:HandleDropDownBox(CliqueSpec9DropDown, 225)
+			S:HandleDropDownBox(CliqueSpec10DropDown, 225)
+			S:HandleDropDownBox(CliqueSpec11DropDown, 225)
+			S:HandleDropDownBox(CliqueSpec12DropDown, 225)
 
+			CliqueSpec2DropDown:Point("TOPLEFT", CliqueSpec1DropDown, "BOTTOMLEFT", 0, 7)
+			CliqueSpec3DropDown:Point("TOPLEFT", CliqueSpec2DropDown, "BOTTOMLEFT", 0, 7)
+			CliqueSpec4DropDown:Point("TOPLEFT", CliqueSpec3DropDown, "BOTTOMLEFT", 0, 7)
+			CliqueSpec5DropDown:Point("TOPLEFT", CliqueSpec4DropDown, "BOTTOMLEFT", 0, 7)
+			CliqueSpec6DropDown:Point("TOPLEFT", CliqueSpec5DropDown, "BOTTOMLEFT", 0, 7)
+			CliqueSpec7DropDown:Point("TOPLEFT", CliqueSpec6DropDown, "BOTTOMLEFT", 0, 7)
+			CliqueSpec8DropDown:Point("TOPLEFT", CliqueSpec7DropDown, "BOTTOMLEFT", 0, 7)
+			CliqueSpec9DropDown:Point("TOPLEFT", CliqueSpec8DropDown, "BOTTOMLEFT", 0, 7)
+			CliqueSpec10DropDown:Point("TOPLEFT", CliqueSpec9DropDown, "BOTTOMLEFT", 0, 7)
+			CliqueSpec11DropDown:Point("TOPLEFT", CliqueSpec10DropDown, "BOTTOMLEFT", 0, 7)
+			CliqueSpec12DropDown:Point("TOPLEFT", CliqueSpec11DropDown, "BOTTOMLEFT", 0, 7)
+		end
 		-- TextListFrame
 		SkinFrame(CliqueTextListFrame)
 
