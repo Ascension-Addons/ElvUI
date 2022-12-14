@@ -1918,30 +1918,58 @@ function module:MysticEnchantPane_Update()
 	local buttons = PaperDollMysticEnchantPane.buttons
 	local name, texture, button
 
+	local enchantCount = {}
+	local equippedEnchants = {}
+
+	for index, slotInfo in ipairs(EnchantSlots) do
+		local enchant = GetInventoryItemMysticEnchant("player", slotInfo[1])
+		local RE
+		if enchant then
+			RE = GetREData(enchant)
+			if not enchantCount[RE.spellID] then
+				enchantCount[RE.spellID] = 1
+			else
+				enchantCount[RE.spellID] = enchantCount[RE.spellID] + 1
+			end
+		end
+
+		equippedEnchants[index] = {
+			slotID = slotInfo[1],
+			slotName = slotInfo[2],
+			spellID = RE and RE.spellID,
+			quality = RE and RE.quality,
+			limit = RE and RE.stackable,
+		}
+	end
+
 	for i = 1, #buttons do
 		button = buttons[i]
 		if (i + scrollOffset) <= 17 then
 			button:Show()
 			button:Enable()
-			local slot, slotStr = unpack(EnchantSlots[i + scrollOffset])
-			local enchant = GetInventoryItemMysticEnchant("player", slot)
+			local slotInfo = equippedEnchants[i + scrollOffset]
 
-			if enchant then
-				local RE = GetREData(enchant)
-				name, _, texture = GetSpellInfo(RE.spellID)
+			if slotInfo.spellID then
+				name, _, texture = GetSpellInfo(slotInfo.spellID)
 
 				if not name then
-					name = "|cffFF0000Unknown Enchant: " .. RE.spellID .. "|r"
+					name = "|cffFF0000Unknown Enchant: " .. slotInfo.spellID .. "|r"
 					texture = nil
 				else
-					name = ITEM_QUALITY_COLORS[RE.quality]:WrapText(name)
+					name = ITEM_QUALITY_COLORS[slotInfo.quality]:WrapText(name)
+				end
+
+				if enchantCount[slotInfo.spellID] > slotInfo.limit then
+					name = name .. " |cffFF0000" .. enchantCount[slotInfo.spellID] .. "/" .. slotInfo.limit .. "|r"
+				else
+					name = name .. " " .. enchantCount[slotInfo.spellID] .. "/" .. slotInfo.limit
 				end
 			else
 				name = nil
-				texture = select(2, GetInventorySlotInfo(slotStr))
+				texture = select(2, GetInventorySlotInfo(slotInfo.slotName))
 			end
 
-			local slotName = _G[slotStr]
+			local slotName = _G[slotInfo.slotName]
 			if name then
 				button.name = slotName .. "\n" .. name
 			else
