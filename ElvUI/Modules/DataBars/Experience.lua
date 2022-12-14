@@ -180,7 +180,7 @@ function mod:ExperienceBar_UpdateDimensions()
 	self.expBar.questBar:SetOrientation(self.db.experience.orientation)
 	self.expBar.questBar:SetRotatesTexture(self.db.experience.orientation ~= "HORIZONTAL")
 
-	local color = self.db.experience.questXP.color or {r=0,g=1,b=0,a=0.4}
+	local color = self.db.experience.questXP.color
 	self.expBar.questBar:SetStatusBarColor(color.r, color.g, color.b, color.a)
 
 	if self.expBar.bubbles then

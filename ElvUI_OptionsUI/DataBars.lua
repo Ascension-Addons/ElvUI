@@ -151,7 +151,7 @@ E.Options.args.databars = {
 							name = L["Quest XP Color"],
 							hasAlpha = true,
 							get = function(info)
-								local t = mod.db.experience.questXP.color or {r=0,g=1,b=0,a=0.4}
+								local t = mod.db.experience.questXP.color
 								return t.r, t.g, t.b, t.a, 0, 1, 0, 0.4
 							end,
 							set = function(info, r, g, b, a)
