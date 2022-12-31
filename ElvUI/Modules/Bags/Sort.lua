@@ -688,7 +688,7 @@ function B:RegisterUpdateDelayed()
 		if bagFrame.registerUpdate then
 			B:UpdateAllSlots(bagFrame)
 
-			bagFrame:RegisterEvent("BAG_UPDATE")
+			bagFrame:RegisterBucketEvent("BAG_UPDATE", 0.2, "BagUpdate")
 			bagFrame:RegisterEvent("BAG_UPDATE_COOLDOWN")
 
 			for _, event in pairs(bagFrame.events) do

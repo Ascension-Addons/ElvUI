@@ -3,6 +3,7 @@
 	<Script file="Ace3\CallbackHandler-1.0\CallbackHandler-1.0.lua"/>
 	<Include file="Ace3\AceAddon-3.0\AceAddon-3.0.xml"/>
 	<Include file="Ace3\AceEvent-3.0\AceEvent-3.0.xml"/>
+	<Include file="Ace3\AceBucket-3.0\AceBucket-3.0.xml"/>
 	<Include file="Ace3\AceTimer-3.0\AceTimer-3.0.xml"/>
 	<Include file="Ace3\AceHook-3.0\AceHook-3.0.xml"/>
 	<Include file="Ace3\AceDB-3.0\AceDB-3.0.xml"/>

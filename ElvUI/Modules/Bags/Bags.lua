@@ -1105,13 +1105,21 @@ function B:VendorGrayCheck()
 	end
 end
 
+local function BagUpdate(self, bagIDs)
+	for bagID in pairs(bagIDs) do
+		B.OnEvent(self, "BAG_UPDATE", bagID) 
+	end
+end
+
 function B:ContructContainerFrame(name, isBank)
 	local strata = E.db.bags.strata or "DIALOG"
 
 	local f = CreateFrame("Button", name, E.UIParent)
+	LibStub("AceBucket-3.0"):Embed(f)
 	f:SetTemplate("Transparent")
 	f:SetFrameStrata(strata)
-	f:RegisterEvent("BAG_UPDATE") -- Has to be on both frames
+	f.BagUpdate = BagUpdate
+	f:RegisterBucketEvent("BAG_UPDATE", 0.2, "BagUpdate") -- Has to be on both frames
 	f:RegisterEvent("BAG_UPDATE_COOLDOWN") -- Has to be on both frames
 	f.events = isBank and {"PLAYERBANKSLOTS_CHANGED"} or {"ITEM_LOCK_CHANGED", "ITEM_UNLOCKED", "QUEST_ACCEPTED", "QUEST_REMOVED", "QUEST_LOG_UPDATE"}
 
@@ -1192,6 +1200,7 @@ function B:ContructContainerFrame(name, isBank)
 		f.sortButton:SetScript("OnEnter", self.Tooltip_Show)
 		f.sortButton:SetScript("OnLeave", GameTooltip_Hide)
 		f.sortButton:SetScript("OnClick", function()
+			f:UnregisterAllBuckets()
 			f:UnregisterAllEvents() --Unregister to prevent unnecessary updates
 			if not f.registerUpdate then
 				B:SortingFadeBags(f, true)

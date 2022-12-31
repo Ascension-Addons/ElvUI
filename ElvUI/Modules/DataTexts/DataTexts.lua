@@ -197,8 +197,21 @@ function DT:AssignPanelToDataText(panel, data)
 	end
 
 	if data.events then
-		for _, event in pairs(data.events) do
+		for _, event in ipairs(data.events) do
 			panel:RegisterEvent(event)
+		end
+
+		if data.events.buckets then
+			for _, bucket in ipairs(data.events.buckets) do
+				local event, period, callback = unpack(bucket)
+				if not period then 
+					period = 0.1 
+				end
+				if not callback then
+					callback = function(arg) data.eventFunc(panel, arg) end
+				end
+				panel:RegisterBucketEvent(event, period, callback)
+			end
 		end
 	end
 
