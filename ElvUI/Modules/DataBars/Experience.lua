@@ -47,7 +47,7 @@ function mod:ExperienceBar_QuestXPUpdate(event)
 
 	self.questTotalXP = getQuestXP(self.db.experience.questXP.questCompletedOnly, self.db.experience.questXP.questCurrentZoneOnly)
 
-	if self.questTotalXP > 0 then
+	if self.questTotalXP > 0 and self.expBar.maxExp and self.expBar.curExp then
 		self.expBar.questBar:SetMinMaxValues(0, self.expBar.maxExp)
 		self.expBar.questBar:SetValue(min(self.expBar.curExp + self.questTotalXP, self.expBar.maxExp))
 		self.expBar.questBar:Show()
