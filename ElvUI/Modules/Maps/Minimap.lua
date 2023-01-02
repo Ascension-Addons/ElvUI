@@ -32,7 +32,7 @@ local menuList = {
 		text = SPELLBOOK_ABILITIES_BUTTON,
 		notCheckable = 1,
 		func = function()
-			ToggleFrame(SpellBookFrame)
+			ToggleFrame(AscensionSpellbookFrame)
 		end
 	},
 	{
