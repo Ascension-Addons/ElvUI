@@ -120,6 +120,37 @@ E.Options.args.maps = {
 							min = -200, max = 200, step = 1
 						}
 					}
+				},
+				spacer2 = {
+					order = 6,
+					type = "description",
+					name = "\n"
+				},
+				mapMarkersGroup = {
+					order = 7,
+					type = "group",
+					name = L["Map Markers"],
+					guiInline = true,
+					disabled = function() return not WM.Initialized end,
+					args = {
+						enable = {
+							order = 1,
+							type = "toggle",
+							name = L["Enable"],
+							desc = L["Map Markers on map"],
+							get = function(info) return E.db.general.mapMarkers[info[#info]] end,
+							set = function(info, value) E.db.general.mapMarkers[info[#info]] = value E:StaticPopup_Show("PRIVATE_RL") end
+						},
+						showRaidMarkers = {
+							order = 2,
+							type = "toggle",
+							name = L["Reseive Raid Markers from raid"],
+							desc = L["Reseive Raid Markers from raid"],
+							get = function(info) return E.db.general.mapMarkers[info[#info]] end,
+							set = function(info, value) E.db.general.mapMarkers[info[#info]] = value E:StaticPopup_Show("PRIVATE_RL") end,
+							disabled = function() return not E.db.general.mapMarkers.enable end,
+						},
+					}
 				}
 			}
 		},

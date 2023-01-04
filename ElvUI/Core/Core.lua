@@ -58,6 +58,7 @@ E.myLocalizedClass, E.myclass = UnitClass("player")  -- On Ascension, this is al
 E.myLocalizedRace, E.myrace = UnitRace("player")
 E.myname = UnitName("player")
 E.myrealm = GetRealmName()
+E.mynameRealm = format('%s - %s', E.myname, E.myrealm) -- contains spaces/dashes in realm (for profile keys)
 E.version = GetAddOnMetadata("ElvUI", "Version")
 E.wowpatch, E.wowbuild = GetBuildInfo()
 E.wowbuild = tonumber(E.wowbuild)
@@ -802,8 +803,8 @@ function E:UpdateAll(ignoreInstall)
 		Chat:UpdateAnchors()
 	end
 
-	DataBars:EnableDisable_ExperienceBar()
-	DataBars:EnableDisable_ReputationBar()
+	DataBars:ExperienceBar_Toggle()
+	DataBars:ReputationBar_Toggle()
 	DataBars:UpdateDataBarDimensions()
 
 	DataTexts:LoadDataTexts()

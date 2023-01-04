@@ -61,6 +61,7 @@ do
 	AddOn:AddLib("EP", "LibElvUIPlugin-1.0")
 	AddOn:AddLib("LSM", "LibSharedMedia-3.0")
 	AddOn:AddLib("ACL", "AceLocale-3.0-ElvUI")
+	AddOn:AddLib('ACH', 'LibAceConfigHelper')
 	AddOn:AddLib("LAB", "LibActionButton-1.0-ElvUI")
 	AddOn:AddLib("LAI", "LibAuraInfo-1.0-ElvUI", true)
 	AddOn:AddLib("LBF", "LibButtonFacade", true)
@@ -70,6 +71,7 @@ do
 	AddOn:AddLib("SpellRange", "SpellRange-1.0")
 	AddOn:AddLib("ItemSearch", "LibItemSearch-1.2-ElvUI")
 	AddOn:AddLib("Compress", "LibCompress")
+	AddOn:AddLib('Deflate', 'LibDeflate')
 	AddOn:AddLib("Base64", "LibBase64-1.0-ElvUI")
 	AddOn:AddLib("Translit", "LibTranslit-1.0")
 	-- added on ElvUI_OptionsUI load: AceGUI, AceConfig, AceConfigDialog, AceConfigRegistry, AceDBOptions
@@ -104,11 +106,16 @@ AddOn.Tooltip = AddOn:NewModule("Tooltip","AceTimer-3.0","AceHook-3.0","AceEvent
 AddOn.TotemBar = AddOn:NewModule("Totems","AceEvent-3.0")
 AddOn.UnitFrames = AddOn:NewModule("UnitFrames","AceTimer-3.0","AceEvent-3.0","AceHook-3.0")
 AddOn.WorldMap = AddOn:NewModule("WorldMap","AceHook-3.0","AceEvent-3.0","AceTimer-3.0")
+AddOn.MapMarkers = AddOn:NewModule("MapMarkers","AceHook-3.0","AceComm-3.0","AceSerializer-3.0")
 
 do
-	local arg2, arg3 = "([%(%)%.%%%+%-%*%?%[%^%$])", "%%%1"
-	function AddOn:EscapeString(str)
-		return gsub(str, arg2, arg3)
+	local a,b,c = '','([%(%)%.%%%+%-%*%?%[%^%$])','%%%1'
+	function AddOn:EscapeString(s) return gsub(s,b,c) end
+
+	local d = {'|[TA].-|[ta]','|c[fF][fF]%x%x%x%x%x%x','|r','^%s+','%s+$'}
+	function AddOn:StripString(s, ignoreTextures)
+		for i = ignoreTextures and 2 or 1, #d do s = gsub(s,d[i],a) end
+		return s
 	end
 end
 
