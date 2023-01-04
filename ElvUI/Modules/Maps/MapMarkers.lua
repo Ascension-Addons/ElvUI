@@ -19,9 +19,8 @@ local prefix = "ElvUI_Marker";
 local texturePath = "Interface\\AddOns\\ElvUI\\Media\\Textures\\RaidIcons";
 
 
-local SYNC_INFO      = "|Hplayer:%1$s|h[%1$s]|h ставит метку на карту " ..
-	": \n|Helvm:show:%2$s:%3$s:%4$s:nil|h|cff3588ff[Показать место]|r|h  |Helvm:ignore:%1$s|h|cff3588ff[Игнорировать метки от %1$s]|r|h"
-
+local SYNC_INFO      = "|Hplayer:%1$s|h[%1$s]|h Places a marker on the map " ..
+	": \n|Helvm:show:%2$s:%3$s:%4$s:nil|h|cff3588ff[Show Location]|r|h  |Helvm:ignore:%1$s|h|cff3588ff[Ignore markers from: %1$s]|r|h"
 
 function MM:SendMark(text, distribution)
 	MM:SendCommMessage(prefix, text, distribution or "RAID");
@@ -29,7 +28,7 @@ end
 local pname = UnitName("player");
 
 function MM:ReseiveMark(text, distribution, target)
-	dprint(text, distribution);
+
 	local success,mapid, x, y, who = MM:Deserialize(text);
 	mapid = tonumber(mapid)
 	if success and mapid and x and y and who ~= pname and not IgnoreList[who] then
@@ -44,7 +43,6 @@ function MM:HideAll()
 		ElvUI_ShowedMarkers[i]:Hide();
 	end
 	table.wipe(ElvUI_ShowedMarkers);
-	dprint("All Hided");
 end
 
 function MM:ShowMark(i,mapid)
@@ -53,10 +51,8 @@ function MM:ShowMark(i,mapid)
 	if marker.showed then
 		marker:Show()
 		table.insert(ElvUI_ShowedMarkers, marker);
-		dprint("update(s) Marker"..mapid..i);
 	elseif not marker.showed then
 		marker:Hide()
-		dprint("update(h) Marker"..mapid..i);
 	end
 
 end
@@ -107,14 +103,12 @@ function MM:CreateMark(mapid,IsSendedMark,x,y)
 		if IsShiftKeyDown() and click == "MiddleButton" then
 			self:Hide();
 			self.showed = false;
-			dprint(self.name," Hided");
 			MM:RefreshAll();
 		end
 	end)
 	marker.showed = true;
 	table.insert(ElvUI_ShowedMarkers, marker);
 	marker:Show();
-	dprint('added ' .. "Marker"..mapid..(lastIndex+1).. " IsSendedMark " .. (IsSendedMark and "true" or "false"));
 	if IsSendedMark then
 		print("Метка с координатами MapID "..mapid .." x ".. x .." y ".. y .." была добавлена на карту");
 	else
@@ -144,14 +138,13 @@ local function AddToIgnore(self,link)
 	local _,_, name = strsplit(":", link);
 	-- MM:CreateMark(mapid,true,x,y)
 	IgnoreList[name] = true;
-	print(name.." был добавлен в игнор лист меток");
+	print(name.." was added to ignored markers list.");
 end
 function MM:Initialize()
 	if not E.db.general.mapMarkers.enable then return end
 
 	local _SetItemRef = SetItemRef
 	function SetItemRef(link, textref, button, chatFrame)
-		dprint(link, textref, button, chatFrame);
 		if link:match("elvm:show") then
 			createMark(chatFrame,link);
 		elseif link:match("elvm:ignore") then
@@ -161,13 +154,10 @@ function MM:Initialize()
 		end
 	end
 
-
 	WorldMapButton:RegisterForClicks("LeftButtonDownm", "RightButtonDown","MiddleButtonDown");
 	WorldMapButton:HookScript("OnClick",function(self,click)
-		dprint(click);
 		if click == "MiddleButton" and not IsShiftKeyDown() and not IsControlKeyDown() and not IsAltKeyDown() then
 			MM:CreateMark(nil,false);
-			dprint(self,click);
 		end
 	end)
 

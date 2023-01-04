@@ -63,13 +63,13 @@ E.Options.args.searchEditBox.order = 2
 local Header = {
 	order = 1,
 	type = "header",
-	name = "Пишем что хочем найти слево сверху в ту штуку где написанно поиск и кликаем Enter\n Результаты будут отображены в развертке вкладки поиск слево",
+	name = "Enter configuration options to search for in the top left of the options window.\nResults will be shown on the left under the \"Search\" category",
 	width = "full"
 }
 local Header2 = {
 	order = 2,
 	type = "header",
-	name = "Результаты будут отображены в развертке вкладки поиск слево",
+	name = "The results will be shown under the search category on the left",
 	width = "full"
 }
 Search.header = Header
