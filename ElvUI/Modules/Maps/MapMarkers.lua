@@ -110,7 +110,7 @@ function MM:CreateMark(mapid,IsSendedMark,x,y)
 	table.insert(ElvUI_ShowedMarkers, marker);
 	marker:Show();
 	if IsSendedMark then
-		print("Метка с координатами MapID "..mapid .." x ".. x .." y ".. y .." была добавлена на карту");
+		print("Marker whit MapID "..mapid .." x ".. x .." y ".. y .." was added on map");
 	else
 		MM:SendMark(MM:Serialize(mapid, x, y, pname));
 	end
