@@ -95,13 +95,6 @@ local menuList = {
 			ToggleFrame(AscensionLFGFrame)
 		end
 	},
-	-- {
-	-- 	text = LOOKING_FOR_RAID,
-	-- 	notCheckable = 1,
-	-- 	func = function()
-	-- 		ToggleFrame(LFRParentFrame)
-	-- 	end
-	-- },
 	{
 		text = MAINMENU_BUTTON,
 		notCheckable = 1,

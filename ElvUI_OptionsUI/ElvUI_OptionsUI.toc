@@ -25,3 +25,4 @@ DataBars.lua
 Maps.lua
 ModuleControl.lua
 Tags.lua
+Search.lua
