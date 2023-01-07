@@ -35,51 +35,69 @@ function Lib:InSet(link, search)
 end
 
 --[[ Internal API ]]--
-
-if IsAddOnLoaded("ItemRack") then
-	local sameID = ItemRack.SameID
-
-	function Lib:BelongsToSet(id, search)
-		for name, set in pairs(ItemRackUser.Sets) do
-			if search == "any" or name:sub(1,1) ~= "" and Search:Find(search, name) then
-				for _, item in pairs(set.equip) do
-					if sameID(id, item) then
-						return true
-					end
-				end
-			end
-		end
-	end
-
-elseif IsAddOnLoaded("Wardrobe") then
-	function Lib:BelongsToSet(id, search)
-		for _, outfit in ipairs(Wardrobe.CurrentConfig.Outfit) do
-			local name = outfit.OutfitName
-			if search == "any" or Search:Find(search, name) then
-				for _, item in pairs(outfit.Item) do
-					if item.IsSlotUsed == 1 and item.ItemID == id then
-						return true
-					end
-				end
-			end
-		end
-	end
-
-else
-	function Lib:BelongsToSet(id, search)
-		for i = 1, GetNumEquipmentSets() do
-			local name = GetEquipmentSetInfo(i)
-			if search == "any" or Search:Find(search, name) then
-				local items = GetEquipmentSetItemIDs(name)
-				for _, item in pairs(items) do
-					if id == item then
-						return true
-					end
+local function LibItemRack(id, search)
+	for name, set in pairs(ItemRackUser.Sets) do
+		if search == "any" or name:sub(1,1) ~= "" and Search:Find(search, name) then
+			for _, item in pairs(set.equip) do
+				if sameID(id, item) then
+					return true
 				end
 			end
 		end
 	end
 end
+
+local function LibWardrobe(id, search)
+	for _, outfit in ipairs(Wardrobe.CurrentConfig.Outfit) do
+		local name = outfit.OutfitName
+		if search == "any" or Search:Find(search, name) then
+			for _, item in pairs(outfit.Item) do
+				if item.IsSlotUsed == 1 and item.ItemID == id then
+					return true
+				end
+			end
+		end
+	end
+end
+
+local function LibOutfitter(id, search)
+	for _, group in pairs(Outfitter.Settings.Outfits) do
+		for _, set in ipairs(group) do
+			if search == "any" or Search:Find(search, set["Name"]) then
+				for _, base in pairs(set["Items"]) do
+					if base["Code"] == id then
+						return true
+					end 
+				end
+			end
+		end
+	end
+end
+
+local function LibDefault(id, search)
+	for i = 1, GetNumEquipmentSets() do
+		local name = GetEquipmentSetInfo(i)
+		if search == "any" or Search:Find(search, name) then
+			local items = GetEquipmentSetItemIDs(name)
+			for _, item in pairs(items) do
+				if id == item then
+					return true
+				end
+			end
+		end
+	end
+end
+
+local outfit_addons = {LibDefault}
+function Lib:BelongsToSet(id, search)
+	for g, funct in ipairs(outfit_addons) do
+		if funct(id, search) then
+			return true
+		end
+	end
+end
+
+
 
 --[[ General ]]--
 
@@ -285,3 +303,34 @@ Lib.Filters.tipPhrases = {
 		["boa"] = ITEM_BIND_TO_ACCOUNT,
 	}
 }
+
+-- keep track of which function handles which addon
+local equipmentAddons = {
+	["ItemRack"] = LibItemRack,
+	["Wardrobe"] = LibWardrobe,
+	["Outfitter"] = LibOutfitter,
+}
+local loadedOutfitAddons = {}  -- keep track of which set management addons are loaded
+
+-- check if any addons are already loaded
+for addon, funct in pairs(equipmentAddons) do
+	if IsAddOnLoaded(addon) then
+		loadedOutfitAddons[addon] = true
+		outfit_addons[#outfit_addons + 1] = funct
+	end	
+end
+
+local frame, events = CreateFrame("Frame"), {}
+-- watch loading addons for ones we care about
+function events:ADDON_LOADED(name)
+	if equipmentAddons[name] and not loadedOutfitAddons[name] then
+		outfit_addons[#outfit_addons + 1] = equipmentAddons[name]
+		loadedOutfitAddons[name] = true
+	end
+end
+frame:SetScript("OnEvent", function(self, event, ...)
+	events[event](self, ...)
+end)
+for k, v in pairs(events) do
+	frame:RegisterEvent(k) -- Register all events for which handlers have been defined
+end
