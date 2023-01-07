@@ -1,6 +1,7 @@
 local E, L, V, P, G = unpack(select(2, ...)); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local DT = E:GetModule("DataTexts")
 local TT = E:GetModule("Tooltip")
+local AceBucket = LibStub("AceBucket-3.0")
 local LDB = E.Libs.LDB
 local LSM = E.Libs.LSM
 
@@ -175,6 +176,7 @@ function DT:RegisterPanel(panel, numPoints, anchor, xOff, yOff)
 		local pointIndex = DT.PointLocation[i]
 		if not panel.dataPanels[pointIndex] then
 			panel.dataPanels[pointIndex] = CreateFrame("Button", "DataText"..i, panel)
+			AceBucket:Embed(panel.dataPanels[pointIndex])
 			panel.dataPanels[pointIndex]:RegisterForClicks("AnyUp")
 			panel.dataPanels[pointIndex].text = panel.dataPanels[pointIndex]:CreateFontString(nil, "OVERLAY")
 			panel.dataPanels[pointIndex].text:SetAllPoints()
