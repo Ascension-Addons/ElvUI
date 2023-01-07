@@ -27,7 +27,7 @@ function MM:SendMark(text, distribution)
 end
 local pname = UnitName("player");
 
-function MM:ReseiveMark(text, distribution, target)
+function MM:RecieveMark(text, distribution, target)
 
 	local success,mapid, x, y, who = MM:Deserialize(text);
 	mapid = tonumber(mapid)
@@ -93,7 +93,7 @@ function MM:CreateMark(mapid,IsSendedMark,x,y)
 	marker:EnableMouse(true);
 	marker:HookScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-		GameTooltip:SetText("SHIFT + ПКМ убрать метку", 1, 1, 1)
+		GameTooltip:SetText("SHIFT + Middle click to remove.", 1, 1, 1)
 		GameTooltip:Show()
 	end)
 	marker:SetScript("OnLeave", function()
@@ -153,7 +153,7 @@ function MM:Initialize()
 		else
 			_SetItemRef(link, textref, button, chatFrame);
 		end
-	end
+	end 
 
 	WorldMapButton:RegisterForClicks("LeftButtonDownm", "RightButtonDown","MiddleButtonDown");
 	WorldMapButton:HookScript("OnClick",function(self,click)
@@ -174,7 +174,7 @@ function MM:Initialize()
 	MM.imFrame:SetScript("OnEvent", EventHandler);
 
 	if E.db.general.mapMarkers.showRaidMarkers then
-		MM:RegisterComm(prefix, MM.ReseiveMark);
+		MM:RegisterComm(prefix, MM.RecieveMark);
 	end
 
 end

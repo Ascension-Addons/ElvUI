@@ -137,15 +137,15 @@ E.Options.args.maps = {
 							order = 1,
 							type = "toggle",
 							name = L["Enable"],
-							desc = L["Map Markers on map"],
+							desc = L["Allows Map Markers to be created by middle clicking (Mouse3) on the world map.\nMarkers are automatically shared with raid members."],
 							get = function(info) return E.db.general.mapMarkers[info[#info]] end,
 							set = function(info, value) E.db.general.mapMarkers[info[#info]] = value E:StaticPopup_Show("PRIVATE_RL") end
 						},
 						showRaidMarkers = {
 							order = 2,
 							type = "toggle",
-							name = L["Reseive Raid Markers from raid"],
-							desc = L["Reseive Raid Markers from raid"],
+							name = L["Allow Map Markers from Raid Members"],
+							desc = L["Allows Raid Members to send you Map Markers"],
 							get = function(info) return E.db.general.mapMarkers[info[#info]] end,
 							set = function(info, value) E.db.general.mapMarkers[info[#info]] = value E:StaticPopup_Show("PRIVATE_RL") end,
 							disabled = function() return not E.db.general.mapMarkers.enable end,
