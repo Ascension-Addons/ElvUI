@@ -110,7 +110,7 @@ function MM:CreateMark(mapid,IsSendedMark,x,y)
 	table.insert(ElvUI_ShowedMarkers, marker);
 	marker:Show();
 	if IsSendedMark then
-		print(format("Map marker added in %s at (%.1f, %.1f)", GetMapName(mapID), x, y))
+		print(format("Map marker added in %s at (%.1f, %.1f)", GetMapName(mapid), x, y))
 	else
 		MM:SendMark(MM:Serialize(mapid, x, y, pname));
 	end
