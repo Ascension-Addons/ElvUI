@@ -4185,7 +4185,7 @@ P.actionbar = {
 	},
 
 	microbar = {
-		enabled = false,
+		enabled = true,
 		mouseover = false,
 		buttonsPerRow = 10,
 		buttonSize = 20,
