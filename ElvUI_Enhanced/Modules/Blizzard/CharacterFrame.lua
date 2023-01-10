@@ -2656,7 +2656,7 @@ do -- CharacterFrame
 
 	equipmentManagerPane.EquipSet = CreateFrame("Button", "$parentEquipSet", equipmentManagerPane, "UIPanelButtonTemplate")
 	equipmentManagerPane.EquipSet:SetText(EQUIPSET_EQUIP)
-	equipmentManagerPane.EquipSet:Size(93, 22)
+	equipmentManagerPane.EquipSet:Size(78, 22)
 	equipmentManagerPane.EquipSet:Point("TOPLEFT")
 	S:HandleButton(equipmentManagerPane.EquipSet)
 
@@ -2670,11 +2670,36 @@ do -- CharacterFrame
 
 	equipmentManagerPane.SaveSet = CreateFrame("Button", "$parentSaveSet", equipmentManagerPane, "UIPanelButtonTemplate")
 	equipmentManagerPane.SaveSet:SetText(SAVE)
-	equipmentManagerPane.SaveSet:Size(94, 22)
+	equipmentManagerPane.SaveSet:Size(78, 22)
 	equipmentManagerPane.SaveSet:Point("LEFT", "$parentEquipSet", "RIGHT", 3, 0)
 	S:HandleButton(equipmentManagerPane.SaveSet)
 
 	equipmentManagerPane.SaveSet:SetScript("OnClick", GearManagerDialogSaveSet_OnClick)
+
+	equipmentManagerPane.SendToBank = CreateFrame("CheckButton", "$parentSendToBank", equipmentManagerPane, "OptionsCheckButtonTemplate")
+	equipmentManagerPane.SendToBank:Size(28, 28)
+	equipmentManagerPane.SendToBank:Point("LEFT", "$parentSaveSet", "RIGHT", 12, 0)
+	S:HandleCheckBox(equipmentManagerPane.SendToBank)
+
+	equipmentManagerPane.SendToBank.Icon = equipmentManagerPane.SendToBank:CreateTexture(nil, "OVERLAY")
+	equipmentManagerPane.SendToBank.Icon:SetPoint("RIGHT", equipmentManagerPane.SendToBank, "LEFT", 2, 0)
+	equipmentManagerPane.SendToBank.Icon:SetSize(14, 14)
+	equipmentManagerPane.SendToBank.Icon:SetTexture("Interface\\GossipFrame\\BankerGossipIcon")
+
+	local cvar = C_CVar:GetBool("C_CVAR_EQUIPMENT_MANAGER_STORE_ITEMS_IN_BANK")
+	equipmentManagerPane.SendToBank:SetChecked(cvar)
+	C_EquipmentSet.SetDstBank(cvar)
+
+	equipmentManagerPane.SendToBank:SetScript("OnClick", GearManagerDialogSendItemsToBank_OnClick)
+
+	equipmentManagerPane.SendToBank:SetScript("OnEnter", function(self)
+		GameTooltip:SetOwner(self, "ANCHOR_BOTTOMLEFT")
+		GameTooltip:SetText(EQUIPMENT_MANAGER_STORE_SETS_IN_BANK, 1, 1, 1, 1)
+		GameTooltip:AddLine(EQUIPMENT_MANAGER_STORE_SETS_IN_BANK_TOOLTIP, 1, 0.82, 0, true)
+		GameTooltip:Show()
+	end)
+
+	equipmentManagerPane.SendToBank:SetScript("OnLeave", GameTooltip_Hide)
 
 	equipmentManagerPane.scrollBar = CreateFrame("Slider", "$parentScrollBar", equipmentManagerPane, "HybridScrollBarTemplate")
 	equipmentManagerPane.scrollBar:Point("TOPLEFT", equipmentManagerPane, "TOPRIGHT", 2, -16)
@@ -2685,8 +2710,8 @@ do -- CharacterFrame
 	CreateSmoothScrollAnimation(equipmentManagerPane.scrollBar, true)
 
 	equipmentManagerPane.scrollBar.Show = function(self)
-		equipmentManagerPane.EquipSet:Width(83)
-		equipmentManagerPane.SaveSet:Width(83)
+		equipmentManagerPane.EquipSet:Width(64)
+		equipmentManagerPane.SaveSet:Width(64)
 
 		equipmentManagerPane:Width(169)
 		equipmentManagerPane:Point("TOPRIGHT", CharacterFrame.backdrop, -29, -64)
@@ -2697,8 +2722,8 @@ do -- CharacterFrame
 	end
 
 	equipmentManagerPane.scrollBar.Hide = function(self)
-		equipmentManagerPane.EquipSet:Width(93)
-		equipmentManagerPane.SaveSet:Width(94)
+		equipmentManagerPane.EquipSet:Width(76)
+		equipmentManagerPane.SaveSet:Width(76)
 
 		equipmentManagerPane:Width(190)
 		equipmentManagerPane:Point("TOPRIGHT", CharacterFrame.backdrop, -8, -64)
