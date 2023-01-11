@@ -87,6 +87,7 @@ P.general = {
 	mapMarkers = {
 		enable = true,
 		showRaidMarkers = true,
+		iconSize = 31,
 	},
 	threat = {
 		enable = true,
