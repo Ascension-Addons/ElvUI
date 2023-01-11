@@ -150,6 +150,21 @@ E.Options.args.maps = {
 							set = function(info, value) E.db.general.mapMarkers[info[#info]] = value E:StaticPopup_Show("PRIVATE_RL") end,
 							disabled = function() return not E.db.general.mapMarkers.enable end,
 						},
+						spacer = {
+							order = 3,
+							type = "description",
+							name = " "
+						},
+						iconSize = {
+							order = 4,
+							type = "range",
+							name = L["Icon Size"],
+							desc = L["Set the size of the map markers"],
+							min = 15, max = 50, step = 1,
+							get = function(info) return E.db.general.mapMarkers[info[#info]] end,
+							set = function(info, value) E.db.general.mapMarkers[info[#info]] = value E:StaticPopup_Show("PRIVATE_RL") end,
+							disabled = function() return not E.db.general.mapMarkers.enable end,
+						},
 					}
 				}
 			}
