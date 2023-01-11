@@ -3,6 +3,7 @@ local C, L = unpack(select(2, ...))
 local WM = E:GetModule("WorldMap")
 local MM = E:GetModule("Minimap")
 local AB = E:GetModule("ActionBars")
+local MMk = E:GetModule("MapMarkers")
 
 E.Options.args.maps = {
 	type = "group",
@@ -157,7 +158,7 @@ E.Options.args.maps = {
 							desc = L["Set the size of the map markers"],
 							min = 15, max = 50, step = 1,
 							get = function(info) return E.db.general.mapMarkers[info[#info]] end,
-							set = function(info, value) E.db.general.mapMarkers[info[#info]] = value E:StaticPopup_Show("PRIVATE_RL") end,
+							set = function(info, value) E.db.general.mapMarkers[info[#info]] = value MMk:ResizeAll() end,
 							disabled = function() return not E.db.general.mapMarkers.enable end,
 						},
 					}
