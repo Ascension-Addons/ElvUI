@@ -117,6 +117,13 @@ function MM:CreateMark(mapid,IsSendedMark,x,y)
 	end
 end
 
+function MM:ResizeAll()
+	for k, _ in pairs(ElvUI_ShowedMarkers) do
+		ElvUI_ShowedMarkers[k]:SetWidth(E.db.general.mapMarkers.iconSize)
+		ElvUI_ShowedMarkers[k]:SetHeight(E.db.general.mapMarkers.iconSize)
+	end
+end
+
 function MM:RefreshAll()
 	MM:HideAll();
 	local mapid = GetCurrentMapAreaID();
