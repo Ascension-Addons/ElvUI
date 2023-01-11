@@ -87,8 +87,8 @@ function MM:CreateMark(mapid,IsSendedMark,x,y)
 	marker.Texture:SetAllPoints();
 	marker.Texture:SetTexCoord(unpack(coords))
 	marker:SetPoint("CENTER", WorldMapDetailFrame, "TOPLEFT", (x / 100) * WorldMapDetailFrame:GetWidth(), (-y / 100) * WorldMapDetailFrame:GetHeight());
-	marker:SetWidth(31);
-	marker:SetHeight(31);
+	marker:SetWidth(E.db.general.mapMarkers.iconSize);
+	marker:SetHeight(E.db.general.mapMarkers.iconSize);
 	marker:SetFrameStrata("DIALOG");
 	marker:EnableMouse(true);
 	marker:HookScript("OnEnter", function(self)
