@@ -144,7 +144,7 @@ E.Options.args.maps = {
 						showRaidMarkers = {
 							order = 2,
 							type = "toggle",
-							name = L["Allow Map Markers from Raid Members"],
+							name = L["Receive from Raid Members"],
 							desc = L["Allows Raid Members to send you Map Markers"],
 							get = function(info) return E.db.general.mapMarkers[info[#info]] end,
 							set = function(info, value) E.db.general.mapMarkers[info[#info]] = value E:StaticPopup_Show("PRIVATE_RL") end,
