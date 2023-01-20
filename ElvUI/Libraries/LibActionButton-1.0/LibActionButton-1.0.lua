@@ -674,6 +674,7 @@ function InitializeEventHandler()
 	lib.eventFrame:RegisterEvent("LEARNED_SPELL_IN_TAB")
 	lib.eventFrame:RegisterEvent("PET_STABLE_UPDATE")
 	lib.eventFrame:RegisterEvent("PET_STABLE_SHOW")
+	lib.eventFrame:RegisterEvent("SPELL_UPDATE_CHARGES")
 
 	-- With those two, do we still need the ACTIONBAR equivalents of them?
 	lib.eventFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN")
@@ -767,6 +768,11 @@ function OnEvent(frame, event, arg1, ...)
 			if button._state_type == "item" then
 				Update(button)
 			end
+		end
+	elseif event == "SPELL_UPDATE_CHARGES" then
+		for button in next, ActionButtons do
+			UpdateCount(button)
+			UpdateCooldown(button)
 		end
 	end
 end
@@ -1082,15 +1088,29 @@ function UpdateCount(self)
 			self.count:SetText(count)
 		end
 	else
-		self.count:SetText("")
+		local charges, maxCharges = self:GetCharges()
+		if charges and maxCharges and maxCharges > 1 then
+			self.count:SetText(charges)
+		else
+			self.count:SetText("")
+		end
 	end
 end
 
 function UpdateCooldown(self)
 	local start, duration, enable = self:GetCooldown()
+	local charges, maxCharges, chargeStart, chargeDuration = self:GetCharges()
+	local hasCharges = false
+	if charges and maxCharges and maxCharges > 1 and charges < maxCharges then
+		hasCharges = charges > 0
+		start, duration, enable = chargeStart, chargeDuration, 1
+	end
+
 	CooldownFrame_SetTimer(self.cooldown, start, duration, enable)
 
-	lib.callbacks:Fire("OnCooldownUpdate", self, start, duration, enable)
+	if not hasCharges then
+		lib.callbacks:Fire("OnCooldownUpdate", self, start, duration, enable)
+	end
 end
 
 function StartFlash(self)
@@ -1162,6 +1182,7 @@ end
 Generic.HasAction               = function(self) return nil end
 Generic.GetActionText           = function(self) return "" end
 Generic.GetTexture              = function(self) return nil end
+Generic.GetCharges              = function(self) return nil end
 Generic.GetCount                = function(self) return 0 end
 Generic.GetCooldown             = function(self) return 0, 0, 0 end
 Generic.IsAttack                = function(self) return nil end
@@ -1189,6 +1210,7 @@ Generic.GetSpellId              = function(self) return nil end
 Action.HasAction               = function(self) return HasAction(self._state_action) end
 Action.GetActionText           = function(self) return GetActionText(self._state_action) end
 Action.GetTexture              = function(self) return GetActionTexture(self._state_action) end
+Action.GetCharges              = function(self) return GetActionCharges(self._state_action) end
 Action.GetCount                = function(self) return GetActionCount(self._state_action) end
 Action.GetCooldown             = function(self) return GetActionCooldown(self._state_action) end
 Action.IsAttack                = function(self) return IsAttackAction(self._state_action) end
@@ -1213,6 +1235,7 @@ end
 Spell.HasAction               = function(self) return true end
 Spell.GetActionText           = function(self) return "" end
 Spell.GetTexture              = function(self) return GetSpellTexture(self._state_action) end
+Spell.GetCharges              = function(self) return GetSpellCharges(self._state_action) end
 Spell.GetCount                = function(self) return GetSpellCount(self._state_action) end
 Spell.GetCooldown             = function(self) return GetSpellCooldown(self._state_action) end
 Spell.IsAttack                = function(self) return IsAttackSpell(FindSpellBookSlotBySpellID(self._state_action), "spell") end -- needs spell book id as of 4.0.1.13066
@@ -1234,6 +1257,7 @@ end
 Item.HasAction               = function(self) return true end
 Item.GetActionText           = function(self) return "" end
 Item.GetTexture              = function(self) return GetItemIcon(self._state_action) end
+Item.GetCharges              = function(self) return nil end
 Item.GetCount                = function(self) return GetItemCount(self._state_action, nil, true) end
 Item.GetCooldown             = function(self) return GetItemCooldown(getItemId(self._state_action)) end
 Item.IsAttack                = function(self) return nil end
@@ -1252,6 +1276,7 @@ Item.GetSpellId              = function(self) return nil end
 Macro.HasAction               = function(self) return true end
 Macro.GetActionText           = function(self) return (GetMacroInfo(self._state_action)) end
 Macro.GetTexture              = function(self) return (select(2, GetMacroInfo(self._state_action))) end
+Macro.GetCharges              = function(self) return nil end
 Macro.GetCount                = function(self) return 0 end
 Macro.GetCooldown             = function(self) return 0, 0, 0 end
 Macro.IsAttack                = function(self) return nil end
@@ -1269,6 +1294,7 @@ Macro.GetSpellId              = function(self) return nil end
 Custom.HasAction               = function(self) return true end
 Custom.GetActionText           = function(self) return "" end
 Custom.GetTexture              = function(self) return self._state_action.texture end
+Custom.GetCharges              = function(self) return nil end
 Custom.GetCount                = function(self) return 0 end
 Custom.GetCooldown             = function(self) return 0, 0, 0 end
 Custom.IsAttack                = function(self) return nil end
