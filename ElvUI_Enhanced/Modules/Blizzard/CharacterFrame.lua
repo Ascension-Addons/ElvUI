@@ -1022,12 +1022,14 @@ function module:SetStat(statFrame, unit, statIndex)
 			else
 				statFrame.tooltip2 = format(statFrame.tooltip2, GetCritChanceFromAgility("player"), effectiveStat * ARMOR_PER_AGILITY)
 			end
+			statFrame.tooltip2 = statFrame.tooltip2 .. "\n" .. format(_G["DEFAULT_STAT"..statIndex.."_EXTRA"], effectiveStat*AGI_TO_SPELL_CRIT_PCT)
 		elseif statIndex == 4 then
 			local baseInt = min(20, effectiveStat)
 			local moreInt = effectiveStat - baseInt
 
 			if UnitHasMana("player") then
-				statFrame.tooltip2 = format(statFrame.tooltip2, baseInt + moreInt * MANA_PER_INTELLECT, GetSpellCritChanceFromIntellect("player"))
+				statFrame.tooltip2 = format(statFrame.tooltip2, baseInt + moreInt * MANA_PER_INTELLECT, GetSpellCritChanceFromIntellect("player"), (baseInt + moreInt) * INT_TO_MELEE_CRIT_PCT)
+				statFrame.tooltip2 = statFrame.tooltip2 .. "\n" .. format(_G["DEFAULT_STAT"..statIndex.."_EXTRA"], effectiveStat * INT_TO_MELEE_CRIT_PCT)
 			else
 				statFrame.tooltip2 = nil
 			end
