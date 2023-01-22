@@ -1016,20 +1016,22 @@ function module:SetStat(statFrame, unit, statIndex)
 			end
 		elseif statIndex == 2 then
 			local attackPower = GetAttackPowerForStat(statIndex, effectiveStat)
+			local meleeCrit = GetCritChanceFromAgility("player")
 
 			if attackPower > 0 then
-				statFrame.tooltip2 = format(STAT_ATTACK_POWER, attackPower)..format(statFrame.tooltip2, GetCritChanceFromAgility("player"), effectiveStat * ARMOR_PER_AGILITY)
+				statFrame.tooltip2 = format(STAT_ATTACK_POWER, attackPower)..format(statFrame.tooltip2, meleeCrit, effectiveStat * ARMOR_PER_AGILITY)
 			else
-				statFrame.tooltip2 = format(statFrame.tooltip2, GetCritChanceFromAgility("player"), effectiveStat * ARMOR_PER_AGILITY)
+				statFrame.tooltip2 = format(statFrame.tooltip2, meleeCrit, effectiveStat * ARMOR_PER_AGILITY)
 			end
-			statFrame.tooltip2 = statFrame.tooltip2 .. "\n" .. format(_G["DEFAULT_STAT"..statIndex.."_EXTRA"], effectiveStat*AGI_TO_SPELL_CRIT_PCT)
+			statFrame.tooltip2 = statFrame.tooltip2 .. "\n" .. format(_G["DEFAULT_STAT"..statIndex.."_EXTRA"], meleeCrit*AGI_TO_SPELL_CRIT_PCT)
 		elseif statIndex == 4 then
 			local baseInt = min(20, effectiveStat)
 			local moreInt = effectiveStat - baseInt
+			local spellCrit = GetSpellCritChanceFromIntellect("player")
 
 			if UnitHasMana("player") then
-				statFrame.tooltip2 = format(statFrame.tooltip2, baseInt + moreInt * MANA_PER_INTELLECT, GetSpellCritChanceFromIntellect("player"), (baseInt + moreInt) * INT_TO_MELEE_CRIT_PCT)
-				statFrame.tooltip2 = statFrame.tooltip2 .. "\n" .. format(_G["DEFAULT_STAT"..statIndex.."_EXTRA"], effectiveStat * INT_TO_MELEE_CRIT_PCT)
+				statFrame.tooltip2 = format(statFrame.tooltip2, baseInt + moreInt * MANA_PER_INTELLECT, spellCrit, (baseInt + moreInt) * INT_TO_MELEE_CRIT_PCT)
+				statFrame.tooltip2 = statFrame.tooltip2 .. "\n" .. format(_G["DEFAULT_STAT"..statIndex.."_EXTRA"], spellCrit * INT_TO_MELEE_CRIT_PCT)
 			else
 				statFrame.tooltip2 = nil
 			end
