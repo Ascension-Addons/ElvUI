@@ -16,7 +16,11 @@ local InCombatLockdown = InCombatLockdown
 local DoReadyCheck = DoReadyCheck
 local ToggleFriendsFrame = ToggleFriendsFrame
 
-local PANEL_HEIGHT = 100
+if IsAddOnLoaded("DBM-Core") then
+	PANEL_HEIGHT = 120
+else
+	PANEL_HEIGHT = 100
+end
 
 local function CheckRaidStatus()
 	local inInstance, instanceType = IsInInstance()
@@ -167,30 +171,13 @@ function RU:Initialize()
 	MainAssistButton:SetAttribute("unit", "target")
 	MainAssistButton:SetAttribute("action", "toggle")
 
-	self:CreateUtilButton("ReadyCheckButton", RaidUtilityPanel, nil, RaidUtilityPanel:GetWidth() * 0.8, 18, "TOPLEFT", MainTankButton, "BOTTOMLEFT", 0, -5, READY_CHECK, nil)
-	ReadyCheckButton:SetScript("OnMouseUp", function()
-		if CheckRaidStatus() then
-			DoReadyCheck()
-		end
-	end)
-	ReadyCheckButton:SetScript("OnEvent", function(btn)
-		if not (IsRaidLeader("player") or IsRaidOfficer("player")) then
-			btn:Disable()
-		else
-			btn:Enable()
-		end
-	end)
-	ReadyCheckButton:RegisterEvent("RAID_ROSTER_UPDATE")
-	ReadyCheckButton:RegisterEvent("PARTY_MEMBERS_CHANGED")
-	ReadyCheckButton:RegisterEvent("PLAYER_ENTERING_WORLD")
-
-	self:CreateUtilButton("RaidControlButton", RaidUtilityPanel, nil, MainTankButton:GetWidth(), 18, "TOPLEFT", ReadyCheckButton, "BOTTOMLEFT", 0, -5, L["Raid Menu"], nil)
+	self:CreateUtilButton("RaidControlButton", RaidUtilityPanel, nil, MainTankButton:GetWidth(), 18, "TOPLEFT", MainTankButton, "BOTTOMLEFT", 0, -5, L["Raid Menu"], nil)
 	RaidControlButton:SetScript("OnMouseUp", function()
 		if InCombatLockdown() then E:Print(ERR_NOT_IN_COMBAT) return end
 		ToggleFriendsFrame(5)
 	end)
 
-	self:CreateUtilButton("ConvertRaidButton", RaidUtilityPanel, nil, MainAssistButton:GetWidth(), 18, "TOPRIGHT", ReadyCheckButton, "BOTTOMRIGHT", 0, -5, CONVERT_TO_RAID, nil)
+	self:CreateUtilButton("ConvertRaidButton", RaidUtilityPanel, nil, MainAssistButton:GetWidth(), 18, "TOPRIGHT", MainAssistButton, "BOTTOMRIGHT", 0, -5, CONVERT_TO_RAID, nil)
 	ConvertRaidButton:SetScript("OnMouseUp", function()
 		if CheckRaidStatus() then
 			ConvertToRaid()
@@ -211,6 +198,47 @@ function RU:Initialize()
 	ConvertRaidButton:RegisterEvent("RAID_ROSTER_UPDATE")
 	ConvertRaidButton:RegisterEvent("PARTY_MEMBERS_CHANGED")
 	ConvertRaidButton:RegisterEvent("PLAYER_ENTERING_WORLD")
+
+
+	self:CreateUtilButton("ReadyCheckButton", RaidUtilityPanel, nil, RaidUtilityPanel:GetWidth() * 0.8, 18, "TOPLEFT", RaidControlButton, "BOTTOMLEFT", 0, -5, READY_CHECK, nil)
+	ReadyCheckButton:SetScript("OnMouseUp", function()
+		if CheckRaidStatus() then
+			DoReadyCheck()
+		end
+	end)
+	ReadyCheckButton:SetScript("OnEvent", function(btn)
+		if not (IsRaidLeader("player") or IsRaidOfficer("player")) then
+			btn:Disable()
+		else
+			btn:Enable()
+		end
+	end)
+	ReadyCheckButton:RegisterEvent("RAID_ROSTER_UPDATE")
+	ReadyCheckButton:RegisterEvent("PARTY_MEMBERS_CHANGED")
+	ReadyCheckButton:RegisterEvent("PLAYER_ENTERING_WORLD")
+
+	if IsAddOnLoaded("DBM-Core") then
+		self:CreateUtilButton("DBMPullButton10", RaidUtilityPanel, nil, MainTankButton:GetWidth(), 18, "TOPLEFT", ReadyCheckButton, "BOTTOMLEFT", 0, -5, L["Pull 10"], nil)
+		DBMPullButton10:SetScript("OnMouseUp", function()
+			if InCombatLockdown() then E:Print(ERR_NOT_IN_COMBAT) return end
+				-- Hacked way to make the dbm call, will update if I find the apis for it 
+				local editbox=ChatEdit_ChooseBoxForSend(DEFAULT_CHAT_FRAME)
+				ChatEdit_ActivateChat(editbox)
+				editbox:SetText("/dbm pull 10")
+				ChatEdit_OnEnterPressed(editbox)
+		end)
+	 
+		self:CreateUtilButton("DBMPullButton5", RaidUtilityPanel, nil, MainTankButton:GetWidth(), 18, "TOPRIGHT", ReadyCheckButton, "BOTTOMRIGHT", 0, -5, L["Pull 5"], nil)
+		DBMPullButton5:SetScript("OnMouseUp", function()
+			if InCombatLockdown() then E:Print(ERR_NOT_IN_COMBAT) return end
+				-- Hacked way to make the dbm call, will update if I find the apis for it 
+				local editbox=ChatEdit_ChooseBoxForSend(DEFAULT_CHAT_FRAME)
+				ChatEdit_ActivateChat(editbox)
+				editbox:SetText("/dbm pull 5")
+				ChatEdit_OnEnterPressed(editbox)
+		end)
+	end
+
 
 	--Automatically show/hide the frame if we have RaidLeader or RaidOfficer
 	self:RegisterEvent("RAID_ROSTER_UPDATE", "ToggleRaidUtil")
