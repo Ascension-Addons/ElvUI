@@ -2690,7 +2690,7 @@ do -- CharacterFrame
 	equipmentManagerPane.SendToBank.Icon:SetSize(14, 14)
 	equipmentManagerPane.SendToBank.Icon:SetTexture("Interface\\GossipFrame\\BankerGossipIcon")
 
-	local cvar = C_CVar:GetBool("C_CVAR_EQUIPMENT_MANAGER_STORE_ITEMS_IN_BANK")
+	local cvar = C_CVar.GetBool("bankEquipmentManager")
 	equipmentManagerPane.SendToBank:SetChecked(cvar)
 	C_EquipmentSet.SetDstBank(cvar)
 
