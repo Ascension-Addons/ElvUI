@@ -688,25 +688,14 @@ E.Options.args.general = {
 						Misc:ToggleInterruptAnnounce()
 					end
 				},
-				autoRepair = {
-					order = 3,
-					type = "select",
-					name = L["Auto Repair"],
-					desc = L["Automatically repair using the following method when visiting a merchant."],
-					values = {
-						["NONE"] = L["NONE"],
-						["GUILD"] = L["GUILD"],
-						["PLAYER"] = L["PLAYER"]
-					}
-				},
 				autoAcceptInvite = {
-					order = 4,
+					order = 3,
 					type = "toggle",
 					name = L["Accept Invites"],
 					desc = L["Automatically accept invites from guild/friends."]
 				},
 				autoRoll = {
-					order = 5,
+					order = 4,
 					type = "toggle",
 					name = L["Auto Greed/DE"],
 					desc = L["Automatically select greed or disenchant (when available) on green quality items. This will only work if you are the max level."],

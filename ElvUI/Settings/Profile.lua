@@ -12,7 +12,6 @@ P.general = {
 	stickyFrames = true,
 	loginmessage = true,
 	interruptAnnounce = "NONE",
-	autoRepair = "NONE",
 	autoRoll = false,
 	autoAcceptInvite = false,
 	bottomPanel = true,
@@ -205,12 +204,6 @@ P.bags = {
 			questStarter = {r = 1, g = 1, b = 0},
 			questItem = {r = 1, g = 0.30, b = 0.30}
 		}
-	},
-	vendorGrays = {
-		enable = false,
-		interval = 0.2,
-		details = false,
-		progressBar = true
 	},
 	split = {
 		bagSpacing = 5,
