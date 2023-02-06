@@ -1100,9 +1100,9 @@ function E:DBConversions()
 		E.db.general.cropIcon = (cropIcon and 2) or 0
 	end
 
-	--Vendor Greys option is now in bags table
-	if E.db.general.vendorGrays then
-		E.db.bags.vendorGrays.enable = E.db.general.vendorGrays
+	--Vendor Greys option removed
+	if E.db.bags.vendorGrays.enable then
+		E.db.bags.vendorGrays.enable = nil
 		E.db.general.vendorGrays = nil
 		E.db.general.vendorGraysDetails = nil
 	end

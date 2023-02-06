@@ -100,6 +100,8 @@ S:AddCallback("Skin_Merchant", function()
 	S:HandleNextPrevButton(MerchantNextPageButton, nil, nil, true)
 	S:HandleNextPrevButton(MerchantPrevPageButton, nil, nil, true)
 
+	S:HandleCheckBox(MerchantFrameSellJunkFrameAutoSellCheck)
+
 	S:HandleButton(MerchantRepairItemButton)
 	MerchantRepairItemButton:StyleButton(false)
 	-- texWidth, texHeight, cropWidth, cropHeight, offsetX, offsetY = 128, 64, 26, 26, 5, 6
@@ -128,6 +130,9 @@ S:AddCallback("Skin_Merchant", function()
 	MerchantPrevPageButton:Point("CENTER", MerchantFrame, "BOTTOMLEFT", 37, 172)
 	MerchantNextPageButton:Point("CENTER", MerchantFrame, "BOTTOMLEFT", 324, 172)
 
+	MerchantFrameSellJunkFrameAutoSellCheck:Point("BOTTOMLEFT", MerchantFrame, "BOTTOMLEFT", 18, 80)
+	MerchantRepairSettingsButton:Point("BOTTOM", MerchantFrame, "BOTTOM", -38, 112)
+
 	MerchantPageText:Point("BOTTOM", -14, 166)
 
 	MerchantBuyBackItem:Point("TOPLEFT", MerchantItem10, "BOTTOMLEFT", 0, -39)
@@ -144,11 +149,11 @@ S:AddCallback("Skin_Merchant", function()
 	hooksecurefunc(MerchantRepairAllButton, "Show", function(self)
 		-- CanMerchantRepair && CanGuildBankRepair
 		if self:GetWidth() == 32 then
-			MerchantRepairText:SetPoint("CENTER", MerchantFrame, "BOTTOMLEFT", 94, 151)
-			MerchantRepairAllButton:Point("BOTTOMRIGHT", MerchantFrame, "BOTTOMLEFT", 111, 105)
+			MerchantRepairText:SetPoint("CENTER", MerchantFrame, "BOTTOMLEFT", 82, 151)
+			MerchantRepairAllButton:Point("BOTTOMRIGHT", MerchantFrame, "BOTTOMLEFT", 100, 105)
 		else
-			MerchantRepairText:SetPoint("BOTTOMLEFT", MerchantFrame, "BOTTOMLEFT", 26, 125)
-			MerchantRepairAllButton:Point("BOTTOMRIGHT", MerchantFrame, "BOTTOMLEFT", 172, 113)
+			MerchantRepairText:SetPoint("BOTTOMLEFT", MerchantFrame, "BOTTOMLEFT", 11, 125)
+			MerchantRepairAllButton:Point("BOTTOMRIGHT", MerchantFrame, "BOTTOMLEFT", 157, 113)
 		end
 	end)
 

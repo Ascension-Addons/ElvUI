@@ -676,47 +676,6 @@ E.Options.args.bags = {
 				}
 			}
 		},
-		vendorGrays = {
-			order = 8,
-			type = "group",
-			name = L["Vendor Grays"],
-			get = function(info) return E.db.bags.vendorGrays[info[#info]] end,
-			set = function(info, value) E.db.bags.vendorGrays[info[#info]] = value B:UpdateSellFrameSettings() end,
-			args = {
-				header = {
-					order = 1,
-					type = "header",
-					name = L["Vendor Grays"]
-				},
-				enable = {
-					order = 2,
-					type = "toggle",
-					name = L["Enable"],
-					desc = L["Automatically vendor gray items when visiting a vendor."]
-				},
-				interval = {
-					order = 3,
-					type = "range",
-					name = L["Sell Interval"],
-					desc = L["Will attempt to sell another item in set interval after previous one was sold."],
-					min = 0.1, max = 1, step = 0.1,
-					disabled = function() return not E.db.bags.vendorGrays.enable end
-				},
-				details = {
-					order = 4,
-					type = "toggle",
-					name = L["Vendor Gray Detailed Report"],
-					desc = L["Displays a detailed report of every item sold when enabled."],
-					disabled = function() return not E.db.bags.vendorGrays.enable end
-				},
-				progressBar = {
-					order = 5,
-					type = "toggle",
-					name = L["Progress Bar"],
-					disabled = function() return not E.db.bags.vendorGrays.enable end
-				}
-			}
-		},
 		bagSortingGroup = {
 			order = 9,
 			type = "group",
