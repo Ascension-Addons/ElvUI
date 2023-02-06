@@ -1101,8 +1101,7 @@ function E:DBConversions()
 	end
 
 	--Vendor Greys option removed
-	if E.db.bags.vendorGrays.enable then
-		E.db.bags.vendorGrays.enable = nil
+	if E.db.bags.vendorGrays then
 		E.db.general.vendorGrays = nil
 		E.db.general.vendorGraysDetails = nil
 	end
