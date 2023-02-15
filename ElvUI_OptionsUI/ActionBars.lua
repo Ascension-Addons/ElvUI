@@ -907,7 +907,8 @@ local function BuildABConfig()
 					type = "range",
 					name = L["Button Size"],
 					desc = L["The size of the action buttons."],
-					min = 15, max = 60, step = 1,
+					min = 15, softMax = 90, max = 150, step = 1,
+					
 					disabled = function() return not E.db.actionbar["bar"..i].enabled end
 				},
 				buttonspacing = {
