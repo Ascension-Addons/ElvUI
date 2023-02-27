@@ -234,11 +234,16 @@ for class, color in pairs(RAID_CLASS_COLORS) do
 end
 
 function NP:UnitClass(frame, unitType)
-	if frame._class then
-		return frame._class
+	if frame:GetParent()._class then
+		return frame:GetParent()._class
 	end
 	if unitType == "FRIENDLY_PLAYER" then
 		if frame.unit then
+			local _, class = UnitClass(frame.unit)
+			if class then
+				return class
+			end
+		elseif frame:GetParent()._unit then
 			local _, class = UnitClass(frame.unit)
 			if class then
 				return class
