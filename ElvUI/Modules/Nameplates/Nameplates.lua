@@ -244,7 +244,7 @@ function NP:UnitClass(frame, unitType)
 				return class
 			end
 		elseif frame:GetParent()._unit then
-			local _, class = UnitClass(frame.unit)
+			local _, class = UnitClass(frame:GetParent()._unit)
 			if class then
 				return class
 			end
