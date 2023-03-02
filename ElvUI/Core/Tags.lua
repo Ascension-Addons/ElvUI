@@ -70,6 +70,42 @@ local function abbrev(name)
 	return name
 end
 
+local unitStatus = {}
+local function getUnitStatus(unit)
+	if not UnitIsPlayer(unit) then return end
+	local guid = UnitGUID(unit)
+	if UnitIsAFK(unit) then
+		if not unitStatus[guid] or unitStatus[guid] and unitStatus[guid][1] ~= "AFK" then
+			unitStatus[guid] = {"AFK", GetTime()}
+		end
+	elseif UnitIsDND(unit) then
+		if not unitStatus[guid] or unitStatus[guid] and unitStatus[guid][1] ~= "DND" then
+			unitStatus[guid] = {"DND", GetTime()}
+		end
+	elseif UnitIsDead(unit) or UnitIsGhost(unit) then
+		if not unitStatus[guid] or unitStatus[guid] and unitStatus[guid][1] ~= "Dead" then
+			unitStatus[guid] = {"Dead", GetTime()}
+		end
+	elseif not UnitIsConnected(unit) then
+		if not unitStatus[guid] or unitStatus[guid] and unitStatus[guid][1] ~= "Offline" then
+			unitStatus[guid] = {"Offline", GetTime()}
+		end
+	else
+		unitStatus[guid] = nil
+	end
+
+	if unitStatus[guid] ~= nil then
+		local status = unitStatus[guid][1]
+		local timer = GetTime() - unitStatus[guid][2]
+		local mins = floor(timer / 60)
+		local secs = floor(timer - (mins * 60))
+		return format("%s (%01.f:%02.f)", status, mins, secs)
+	else
+		return nil
+	end
+end
+
+
 ElvUF.Tags.Events["afk"] = "PLAYER_FLAGS_CHANGED"
 ElvUF.Tags.Methods["afk"] = function(unit)
 	local isAFK = UnitIsAFK(unit)
@@ -205,6 +241,14 @@ for textFormat, length in pairs({veryshort = 5, short = 10, medium = 15, long = 
 		end
 	end
 
+	ElvUF.Tags.OnUpdateThrottle[format("name:%s:statustimer", textFormat)] = 1
+	ElvUF.Tags.Methods[format("name:%s:statustimer", textFormat)] = function(unit)
+		local status = getUnitStatus(unit)
+		if status then return status end
+		local name = UnitName(unit)
+		return name ~= nil and E:ShortenString(name, length) or nil
+	end
+	
 	ElvUF.Tags.Events[format("name:%s:translit", textFormat)] = "UNIT_NAME_UPDATE"
 	ElvUF.Tags.Methods[format("name:%s:translit", textFormat)] = function(unit)
 		local name = Translit:Transliterate(UnitName(unit), translitMark)
@@ -222,6 +266,13 @@ for textFormat, length in pairs({veryshort = 5, short = 10, medium = 15, long = 
 		local targetName = Translit:Transliterate(UnitName(unit.."target"), translitMark)
 		return targetName ~= nil and E:ShortenString(targetName, length) or nil
 	end
+end
+
+ElvUF.Tags.OnUpdateThrottle["name:statustimer"] = 1
+ElvUF.Tags.Methods["name:statustimer"] = function(unit)
+	local status = getUnitStatus(unit)
+	if status then return status end
+	return UnitName(unit)
 end
 
 ElvUF.Tags.Events["health:max"] = "UNIT_MAXHEALTH"
@@ -404,41 +455,8 @@ ElvUF.Tags.Methods["threatcolor"] = function(unit)
 	end
 end
 
-local unitStatus = {}
 ElvUF.Tags.OnUpdateThrottle["statustimer"] = 1
-ElvUF.Tags.Methods["statustimer"] = function(unit)
-	if not UnitIsPlayer(unit) then return end
-	local guid = UnitGUID(unit)
-	if UnitIsAFK(unit) then
-		if not unitStatus[guid] or unitStatus[guid] and unitStatus[guid][1] ~= "AFK" then
-			unitStatus[guid] = {"AFK", GetTime()}
-		end
-	elseif UnitIsDND(unit) then
-		if not unitStatus[guid] or unitStatus[guid] and unitStatus[guid][1] ~= "DND" then
-			unitStatus[guid] = {"DND", GetTime()}
-		end
-	elseif UnitIsDead(unit) or UnitIsGhost(unit) then
-		if not unitStatus[guid] or unitStatus[guid] and unitStatus[guid][1] ~= "Dead" then
-			unitStatus[guid] = {"Dead", GetTime()}
-		end
-	elseif not UnitIsConnected(unit) then
-		if not unitStatus[guid] or unitStatus[guid] and unitStatus[guid][1] ~= "Offline" then
-			unitStatus[guid] = {"Offline", GetTime()}
-		end
-	else
-		unitStatus[guid] = nil
-	end
-
-	if unitStatus[guid] ~= nil then
-		local status = unitStatus[guid][1]
-		local timer = GetTime() - unitStatus[guid][2]
-		local mins = floor(timer / 60)
-		local secs = floor(timer - (mins * 60))
-		return format("%s (%01.f:%02.f)", status, mins, secs)
-	else
-		return nil
-	end
-end
+ElvUF.Tags.Methods["statustimer"] = getUnitStatus
 
 ElvUF.Tags.OnUpdateThrottle["pvptimer"] = 1
 ElvUF.Tags.Methods["pvptimer"] = function(unit)
@@ -685,6 +703,11 @@ E.TagInfo = {
 	["name:short:status"] = {category = "Names", description = "Replace the name of the unit with 'DEAD' or 'OFFLINE' if applicable (limited to 10 letters)"},
 	["name:medium:status"] = {category = "Names", description = "Replace the name of the unit with 'DEAD' or 'OFFLINE' if applicable (limited to 15 letters)"},
 	["name:long:status"] = {category = "Names", description = "Replace the name of the unit with 'DEAD' or 'OFFLINE' if applicable (limited to 20 letters)"},
+	["name:statustimer"] = {category = "Names", description = "Displays a timer for how long a unit has had the status (e.g 'DEAD - 0:34') Otherwise the unit's Name"},
+	["name:veryshort:statustimer"] = {category = "Names", description = "Displays a timer for how long a unit has had the status (e.g 'DEAD - 0:34') Otherwise the unit's Name (limited to 5 letters)"},
+	["name:short:statustimer"] = {category = "Names", description = "Displays a timer for how long a unit has had the status (e.g 'DEAD - 0:34') Otherwise the unit's Name (limited to 10 letters)"},
+	["name:medium:statustimer"] = {category = "Names", description = "Displays a timer for how long a unit has had the status (e.g 'DEAD - 0:34') Otherwise the unit's Name (limited to 15 letters)"},
+	["name:long:statustimer"] = {category = "Names", description = "Displays a timer for how long a unit has had the status (e.g 'DEAD - 0:34') Otherwise the unit's Name (limited to 20 letters)"},
 	["name:title"] = {category = "Names", description = "Displays player name and title"},
 	--Party and Raid
 	["group"] = {category = "Party and Raid", description = "Displays the group number the unit is in ('1' - '8')"},
