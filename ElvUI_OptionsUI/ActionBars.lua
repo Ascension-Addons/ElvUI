@@ -244,8 +244,15 @@ local function BuildABConfig()
 						desc = L["Set the font outline."],
 						values = C.Values.FontFlags
 					},
-					fontColor = {
+					fontWidth = {
 						order = 4,
+						type = "range",
+						name = "Font Width",
+						min = 5, max = 150, step = 1,
+						softMax = 60, softMin = 15
+					},
+					fontColor = {
+						order = 5,
 						type = "color",
 						name = L["COLOR"],
 						width = "full",
@@ -261,7 +268,7 @@ local function BuildABConfig()
 						end
 					},
 					textPosition = {
-						order = 5,
+						order = 6,
 						type = "group",
 						name = L["Text Position"],
 						guiInline = true,
