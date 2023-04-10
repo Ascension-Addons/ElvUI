@@ -17,6 +17,7 @@ local MICRO_BUTTONS = {
 	"SocialsMicroButton",
 	"PVPMicroButton",
 	"LFDMicroButton",
+	"ChallengesMicroButton",
 	"MainMenuMicroButton",
 	"HelpMicroButton"
 }

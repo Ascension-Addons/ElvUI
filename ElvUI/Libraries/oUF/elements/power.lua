@@ -100,6 +100,12 @@ local UnitPowerType = UnitPowerType
 local UnitReaction = UnitReaction
 
 local function UpdateColor(self, event, unit)
+	if unit and self.isNamePlate and unit:sub(1, 9) ~= "nameplate" then
+		local isUnit = self.unit and UnitIsUnit(self.unit, unit)
+		if isUnit then
+			unit = self.unit
+		end
+	end
 	if(self.unit ~= unit) then return end
 	local element = self.Power
 
@@ -170,6 +176,12 @@ local function ColorPath(self, ...)
 end
 
 local function Update(self, event, unit)
+	if unit and self.isNamePlate and unit:sub(1, 9) ~= "nameplate" then
+		local isUnit = self.unit and UnitIsUnit(self.unit, unit)
+		if isUnit then
+			unit = self.unit
+		end
+	end
 	if(self.unit ~= unit) then return end
 	local element = self.Power
 

@@ -356,6 +356,13 @@ local function filterIcons(element, unit, filter, limit, isDebuff, offset, dontH
 end
 
 local function UpdateAuras(self, event, unit)
+	if unit and self.isNamePlate and unit:sub(1, 9) ~= "nameplate" then
+		local isUnit = self.unit and UnitIsUnit(self.unit, unit)
+		if isUnit then
+			unit = self.unit
+		end
+	end
+
 	if(self.unit ~= unit) then return end
 
 	local auras = self.Auras
@@ -502,6 +509,12 @@ local function UpdateAuras(self, event, unit)
 end
 
 local function Update(self, event, unit)
+	if unit and self.isNamePlate and unit:sub(1, 9) ~= "nameplate" then
+		local isUnit = self.unit and UnitIsUnit(self.unit, unit)
+		if isUnit then
+			unit = self.unit
+		end
+	end
 	if(self.unit ~= unit) then return end
 
 	UpdateAuras(self, event, unit)

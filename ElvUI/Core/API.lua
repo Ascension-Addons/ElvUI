@@ -1,5 +1,5 @@
 local E, L, V, P, G = unpack(select(2, ...)); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
-
+local ElvUF = E.oUF
 --Lua functions
 local _G = _G
 local wipe, date = wipe, date
@@ -209,6 +209,20 @@ function E:ExitVehicleShowFrames(_, unit)
 		object:SetParent(originalParent)
 	end
 end
+
+function E:GetThreatStatusColor(status, nothreat)
+	local color = ElvUF.colors.threat[status]
+	if color then
+		return color.r, color.g, color.b, color.a or 1
+	elseif nothreat then
+		if status == -1 then -- how or why?
+			return 1, 1, 1, 1
+		else
+			return .7, .7, .7, 1
+		end
+	end
+end
+
 
 function E:RequestBGInfo()
 	RequestBattlefieldScoreData()

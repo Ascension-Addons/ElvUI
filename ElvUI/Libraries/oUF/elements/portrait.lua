@@ -43,6 +43,12 @@ local UnitIsUnit = UnitIsUnit
 local UnitIsVisible = UnitIsVisible
 
 local function Update(self, event, unit)
+	if self.isNamePlate then
+		local isUnit = self.unit and UnitIsUnit(self.unit, unit)
+		if isUnit then
+			unit = self.unit
+		end
+	end
 	if(not unit or not UnitIsUnit(self.unit, unit)) then return end
 
 	local element = self.Portrait

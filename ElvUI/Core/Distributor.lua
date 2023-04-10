@@ -8,8 +8,8 @@ local tonumber, type, gsub, pairs, pcall, loadstring = tonumber, type, gsub, pai
 local len, format, split, strmatch = strlen, format, strsplit, strmatch
 
 local CreateFrame = CreateFrame
-local IsInRaid, UnitInRaid = IsInRaid, UnitInRaid
-local IsInGroup, UnitInParty = IsInGroup, UnitInParty
+local IsInRaid, UnitInRaid = GenerateClosure(C_Player, C_Player.IsInRaid, C_Player), UnitInRaid
+local IsInGroup, UnitInParty = GenerateClosure(C_Player, C_Player.IsInGroup, C_Player), UnitInParty
 -- local LE_PARTY_CATEGORY_HOME = LE_PARTY_CATEGORY_HOME
 -- local LE_PARTY_CATEGORY_INSTANCE = LE_PARTY_CATEGORY_INSTANCE
 local ACCEPT, CANCEL, YES, NO = ACCEPT, CANCEL, YES, NO

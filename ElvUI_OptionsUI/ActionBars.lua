@@ -244,15 +244,8 @@ local function BuildABConfig()
 						desc = L["Set the font outline."],
 						values = C.Values.FontFlags
 					},
-					fontWidth = {
-						order = 4,
-						type = "range",
-						name = "Font Width",
-						min = 5, max = 150, step = 1,
-						softMax = 60, softMin = 15
-					},
 					fontColor = {
-						order = 5,
+						order = 4,
 						type = "color",
 						name = L["COLOR"],
 						width = "full",
@@ -268,7 +261,7 @@ local function BuildABConfig()
 						end
 					},
 					textPosition = {
-						order = 6,
+						order = 5,
 						type = "group",
 						name = L["Text Position"],
 						guiInline = true,
@@ -785,11 +778,11 @@ local function BuildABConfig()
 				disabled = function() return not E.db.actionbar.microbar.enabled end
 			},
 			buttonsPerRow = {
-				order = 8,
+				order = 11,
 				type = "range",
 				name = L["Buttons Per Row"],
 				desc = L["The amount of buttons to display per row."],
-				min = 1, max = 10, step = 1,
+				min = 1, max = 11, step = 1,
 				disabled = function() return not E.db.actionbar.microbar.enabled end
 			},
 			alpha = {
@@ -914,8 +907,7 @@ local function BuildABConfig()
 					type = "range",
 					name = L["Button Size"],
 					desc = L["The size of the action buttons."],
-					min = 15, softMax = 60, max = 150, step = 1,
-					
+					min = 15, max = 60, step = 1,
 					disabled = function() return not E.db.actionbar["bar"..i].enabled end
 				},
 				buttonspacing = {

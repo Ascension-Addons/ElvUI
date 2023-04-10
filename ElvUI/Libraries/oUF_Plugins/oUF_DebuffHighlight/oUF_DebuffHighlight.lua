@@ -26,6 +26,12 @@ local function GetDebuffType(unit, filterTable)
 end
 
 local function Update(object, event, unit)
+	if unit and object.isNamePlate and unit:sub(1, 9) ~= "nameplate" then
+		local isUnit = object.unit and UnitIsUnit(object.unit, unit)
+		if isUnit then
+			unit = object.unit
+		end
+	end
 	if unit ~= object.unit then return end
 
 	local debuffType, texture, wasFiltered, style, color = GetDebuffType(unit, object.DebuffHighlightFilterTable)

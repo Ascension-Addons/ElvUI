@@ -1,358 +1,254 @@
-local E, L, V, P, G = unpack(select(2, ...)); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
-local NP = E:GetModule("NamePlates")
+local E, L, V, P, G = unpack(ElvUI)
+local NP = E:GetModule('NamePlates')
+local UF = E:GetModule('UnitFrames')
+local CH = E:GetModule('Chat')
 local LSM = E.Libs.LSM
 
---Lua functions
+local _G = _G
+local abs = abs
+local next = next
 local unpack = unpack
-local abs = math.abs
---WoW API / Variables
+local strjoin = strjoin
+local strmatch = strmatch
 local CreateFrame = CreateFrame
-local GetTime = GetTime
-local UnitCastingInfo = UnitCastingInfo
-local UnitChannelInfo = UnitChannelInfo
-local FAILED = FAILED
+local UnitCanAttack = UnitCanAttack
+local UnitName = UnitName
+
 local INTERRUPTED = INTERRUPTED
 
-local function resetAttributes(self)
-	self.casting = nil
-	self.channeling = nil
-	self.notInterruptible = nil
-	self.spellName = nil
+function NP:Castbar_CheckInterrupt(unit)
+	if unit == 'vehicle' then
+		unit = 'player'
+	end
+
+	if self.notInterruptible and UnitCanAttack('player', unit) then
+		self:SetStatusBarColor(NP.db.colors.castNoInterruptColor.r, NP.db.colors.castNoInterruptColor.g, NP.db.colors.castNoInterruptColor.b)
+
+		if self.Icon and NP.db.colors.castbarDesaturate then
+			self.Icon:SetDesaturated(true)
+		end
+	else
+		self:SetStatusBarColor(NP.db.colors.castColor.r, NP.db.colors.castColor.g, NP.db.colors.castColor.b)
+
+		if self.Icon then
+			self.Icon:SetDesaturated(false)
+		end
+	end
 end
 
-function NP:Update_CastBarOnUpdate(elapsed)
-	if self.casting or self.channeling then
-		local isCasting = self.casting
-		if isCasting then
-			self.value = self.value + elapsed
-			if self.value >= self.max then
-				resetAttributes(self)
-				self:Hide()
-				NP:StyleFilterUpdate(self:GetParent(), "FAKE_Casting")
-				return
-			end
-		else
-			self.value = self.value - elapsed
-			if self.value <= 0 then
-				resetAttributes(self)
-				self:Hide()
-				NP:StyleFilterUpdate(self:GetParent(), "FAKE_Casting")
-				return
-			end
+function NP:Castbar_CustomDelayText(duration)
+	if self.channeling then
+		if self.channelTimeFormat == 'CURRENT' then
+			self.Time:SetFormattedText('%.1f |cffaf5050%.1f|r', abs(duration - self.max), self.delay)
+		elseif self.channelTimeFormat == 'CURRENTMAX' then
+			self.Time:SetFormattedText('%.1f / %.1f |cffaf5050%.1f|r', duration, self.max, self.delay)
+		elseif self.channelTimeFormat == 'REMAINING' then
+			self.Time:SetFormattedText('%.1f |cffaf5050%.1f|r', duration, self.delay)
+		elseif self.channelTimeFormat == 'REMAININGMAX' then
+			self.Time:SetFormattedText('%.1f / %.1f |cffaf5050%.1f|r', abs(duration - self.max), self.max, self.delay)
 		end
+	else
+		if self.castTimeFormat == 'CURRENT' then
+			self.Time:SetFormattedText('%.1f |cffaf5050%s %.1f|r', duration, '+', self.delay)
+		elseif self.castTimeFormat == 'CURRENTMAX' then
+			self.Time:SetFormattedText('%.1f / %.1f |cffaf5050%s %.1f|r', duration, self.max, '+', self.delay)
+		elseif self.castTimeFormat == 'REMAINING' then
+			self.Time:SetFormattedText('%.1f |cffaf5050%s %.1f|r', abs(duration - self.max), '+', self.delay)
+		elseif self.castTimeFormat == 'REMAININGMAX' then
+			self.Time:SetFormattedText('%.1f / %.1f |cffaf5050%s %.1f|r', abs(duration - self.max), self.max, '+', self.delay)
+		end
+	end
+end
 
-		if self.delay ~= 0 then
-			if self.channeling then
-				if self.channelTimeFormat == "CURRENT" then
-					self.Time:SetFormattedText("%.1f |cffaf5050%.2f|r", abs(self.value - self.max), self.delay)
-				elseif self.channelTimeFormat == "CURRENTMAX" then
-					self.Time:SetFormattedText("%.1f / %.2f |cffaf5050%.2f|r", abs(self.value - self.max), self.max, self.delay)
-				elseif self.channelTimeFormat == "REMAINING" then
-					self.Time:SetFormattedText("%.1f |cffaf5050%.2f|r", self.value, self.delay)
-				elseif self.channelTimeFormat == "REMAININGMAX" then
-					self.Time:SetFormattedText("%.1f / %.2f |cffaf5050%.2f|r", self.value, self.max, self.max, self.delay)
+function NP:Castbar_CustomTimeText(duration)
+	if self.channeling then
+		if self.channelTimeFormat == 'CURRENT' then
+			self.Time:SetFormattedText('%.1f', abs(duration - self.max))
+		elseif self.channelTimeFormat == 'CURRENTMAX' then
+			self.Time:SetFormattedText('%.1f / %.1f', abs(duration - self.max), self.max)
+		elseif self.channelTimeFormat == 'REMAINING' then
+			self.Time:SetFormattedText('%.1f', duration)
+		elseif self.channelTimeFormat == 'REMAININGMAX' then
+			self.Time:SetFormattedText('%.1f / %.1f', duration, self.max)
+		end
+	else
+		if self.castTimeFormat == 'CURRENT' then
+			self.Time:SetFormattedText('%.1f', duration)
+		elseif self.castTimeFormat == 'CURRENTMAX' then
+			self.Time:SetFormattedText('%.1f / %.1f', duration, self.max)
+		elseif self.castTimeFormat == 'REMAINING' then
+			self.Time:SetFormattedText('%.1f', abs(duration - self.max))
+		elseif self.castTimeFormat == 'REMAININGMAX' then
+			self.Time:SetFormattedText('%.1f / %.1f', abs(duration - self.max), self.max)
+		end
+	end
+end
+
+function NP:Castbar_PostCastStart(unit)
+	self:CheckInterrupt(unit)
+
+	-- player or NPCs; if used on other players: the cast target doesn't match their target, can be misleading if they mouseover cast
+	local plate = self.__owner
+	local db = NP:PlateDB(plate)
+	if db.castbar and db.castbar.enable then
+		if db.castbar.displayTarget then
+			local frameType = plate.frameType
+			if frameType == 'PLAYER' then
+				if self.curTarget then
+					self.Text:SetText(self.spellName..' > '..self.curTarget)
 				end
-			else
-				if self.castTimeFormat == "CURRENT" then
-					self.Time:SetFormattedText("%.1f |cffaf5050%s %.2f|r", self.value, "+", self.delay)
-				elseif self.castTimeFormat == "CURRENTMAX" then
-					self.Time:SetFormattedText("%.1f / %.2f |cffaf5050%s %.2f|r", self.value, self.max, "+", self.delay)
-				elseif self.castTimeFormat == "REMAINING" then
-					self.Time:SetFormattedText("%.1f |cffaf5050%s %.2f|r", abs(self.value - self.max), "+", self.delay)
-				elseif self.castTimeFormat == "REMAININGMAX" then
-					self.Time:SetFormattedText("%.1f / %.2f |cffaf5050%s %.2f|r", abs(self.value - self.max), self.max, "+", self.delay)
-				end
-			end
-		else
-			if self.channeling then
-				if self.channelTimeFormat == "CURRENT" then
-					self.Time:SetFormattedText("%.1f", abs(self.value - self.max))
-				elseif self.channelTimeFormat == "CURRENTMAX" then
-					self.Time:SetFormattedText("%.1f / %.2f", abs(self.value - self.max), self.max)
-				elseif self.channelTimeFormat == "REMAINING" then
-					self.Time:SetFormattedText("%.1f", self.value)
-				elseif self.channelTimeFormat == "REMAININGMAX" then
-					self.Time:SetFormattedText("%.1f / %.2f", self.value, self.max)
-				end
-			else
-				if self.castTimeFormat == "CURRENT" then
-					self.Time:SetFormattedText("%.1f", self.value)
-				elseif self.castTimeFormat == "CURRENTMAX" then
-					self.Time:SetFormattedText("%.1f / %.2f", self.value, self.max)
-				elseif self.castTimeFormat == "REMAINING" then
-					self.Time:SetFormattedText("%.1f", abs(self.value - self.max))
-				elseif self.castTimeFormat == "REMAININGMAX" then
-					self.Time:SetFormattedText("%.1f / %.2f", abs(self.value - self.max), self.max)
+			elseif frameType == 'ENEMY_NPC' or frameType == 'FRIENDLY_NPC' then
+				local target = self.curTarget or UnitName(unit..'target')
+				if target and target ~= '' and target ~= plate.unitName then
+					self.Text:SetText(self.spellName..' > '..target)
 				end
 			end
 		end
-
-		self:SetValue(self.value)
-	elseif self.holdTime > 0 then
-		self.holdTime = self.holdTime - elapsed
-	else
-		resetAttributes(self)
-		self:Hide()
-		NP:StyleFilterUpdate(self:GetParent(), "FAKE_Casting")
+		NP:StyleFilterUpdate(plate, 'FAKE_Cast')
 	end
 end
 
-function NP:Update_CastBar(frame, event, unit)
-	local castBar = frame.CastBar
-	if unit then
-		if not event then
-			if UnitChannelInfo(unit) then
-				event = "UNIT_SPELLCAST_CHANNEL_START"
-			elseif UnitCastingInfo(unit) then
-				event = "UNIT_SPELLCAST_START"
-			end
-		end
-	elseif castBar:IsShown() then
-		resetAttributes(castBar)
-		castBar:Hide()
+function NP:Castbar_PostCastFail()
+	NP:StyleFilterUpdate(self.__owner, 'FAKE_Cast')
+	self:SetStatusBarColor(NP.db.colors.castInterruptedColor.r, NP.db.colors.castInterruptedColor.g, NP.db.colors.castInterruptedColor.b)
+end
+
+function NP:Castbar_PostCastInterruptible(unit)
+	self:CheckInterrupt(unit)
+end
+
+function NP:Castbar_PostCastStop()
+	NP:StyleFilterUpdate(self.__owner, 'FAKE_Cast')
+end
+
+function NP:Construct_Castbar(nameplate)
+	local castbar = CreateFrame('StatusBar', nameplate:GetName()..'Castbar', nameplate)
+	castbar:SetParent(nameplate)
+	castbar:CreateBackdrop('Transparent', nil, nil, nil, nil, true, true)
+	castbar:SetStatusBarTexture(LSM:Fetch('statusbar', NP.db.statusbar))
+
+	NP.StatusBars[castbar] = true
+	castbar.ModuleStatusBars = NP.StatusBars -- not oUF
+
+	castbar.Button = CreateFrame('Frame', nil, castbar)
+	castbar.Button:SetTemplate(nil, nil, nil, nil, nil, true, true)
+
+	castbar.Icon = castbar.Button:CreateTexture(nil, 'ARTWORK')
+	castbar.Icon:SetParent(castbar.Button)
+	castbar.Icon:SetTexCoord(unpack(E.TexCoords))
+	castbar.Icon:SetInside()
+
+	castbar.Time = castbar:CreateFontString(nil, 'OVERLAY')
+	castbar.Time:FontTemplate(LSM:Fetch('font', NP.db.font), NP.db.fontSize, NP.db.fontOutline)
+	castbar.Time:Point('RIGHT', castbar, 'RIGHT', -4, 0)
+	castbar.Time:SetJustifyH('RIGHT')
+
+	castbar.Text = castbar:CreateFontString(nil, 'OVERLAY')
+	castbar.Text:FontTemplate(LSM:Fetch('font', NP.db.font), NP.db.fontSize, NP.db.fontOutline)
+	castbar.Text:Point('LEFT', castbar, 'LEFT', 4, 0)
+	castbar.Text:SetJustifyH('LEFT')
+	castbar.Text:SetWordWrap(false)
+
+	castbar.CheckInterrupt = NP.Castbar_CheckInterrupt
+	castbar.CustomDelayText = NP.Castbar_CustomDelayText
+	castbar.CustomTimeText = NP.Castbar_CustomTimeText
+	castbar.PostCastStart = NP.Castbar_PostCastStart
+	castbar.PostCastFail = NP.Castbar_PostCastFail
+	castbar.PostCastInterruptible = NP.Castbar_PostCastInterruptible
+	castbar.PostCastStop = NP.Castbar_PostCastStop
+
+	if nameplate == _G.ElvNP_Test then
+		castbar.Hide = castbar.Show
+		castbar:Show()
+		castbar.Text:SetText('Casting')
+		castbar.Time:SetText('3.1')
+		castbar.Icon:SetTexture([[Interface\Icons\Achievement_Character_Pandaren_Female]])
+		castbar:SetStatusBarColor(NP.db.colors.castColor.r, NP.db.colors.castColor.g, NP.db.colors.castColor.b)
 	end
 
-	if self.db.units[frame.UnitType].castbar.enable ~= true then return end
-	if self.db.units[frame.UnitType].health.enable ~= true and not (frame.isTarget and self.db.alwaysShowTargetHealth) then return end --Bug
+	return castbar
+end	
 
-	if event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_CHANNEL_START" then
-		local name, _, _, texture, startTime, endTime, _, _, notInterruptible = UnitCastingInfo(unit)
-		event = "UNIT_SPELLCAST_START"
-		if not name then
-			name, _, _, texture, startTime, endTime, _, notInterruptible = UnitChannelInfo(unit)
-			event = "UNIT_SPELLCAST_CHANNEL_START"
+function NP:CASTBAR_COMBAT_LOG_EVENT_UNFILTERED(event, sourceGUID, sourceName, targetGUID)
+	if (event == 'SPELL_INTERRUPT' or event == 'SPELL_PERIODIC_INTERRUPT') and targetGUID and (sourceName and sourceName ~= '') then
+		local plate, classColor = NP.PlateGUID[targetGUID]
+		if plate and plate.Castbar then
+			local db = NP:PlateDB(plate)
+			if db.castbar and db.castbar.enable and db.castbar.sourceInterrupt and (db.castbar.timeToHold > 0) then
+				local name = strmatch(sourceName, '([^%-]+).*')
+				if db.castbar.sourceInterruptClassColor then
+					local data = CH:GetPlayerInfoByGUID(sourceGUID)
+					if data and data.classColor then
+						classColor = data.classColor.colorStr
+					end
+
+					plate.Castbar.Text:SetFormattedText('%s > %s', INTERRUPTED, classColor and strjoin('', '|c', classColor, name) or name)
+				else
+					plate.Castbar.Text:SetFormattedText('%s > %s', INTERRUPTED, name)
+				end
+			end
+		end
+	end
+end
+
+function NP:Update_Castbar(nameplate)
+	local frameDB = NP:PlateDB(nameplate)
+	local db = frameDB.castbar
+
+	local castbar = nameplate.Castbar
+	if nameplate == _G.ElvNP_Test then
+		castbar:SetAlpha((not frameDB.nameOnly and db.enable) and 1 or 0)
+	end
+
+	if db.enable then
+		if not nameplate:IsElementEnabled('Castbar') then
+			nameplate:EnableElement('Castbar')
 		end
 
-		if not name then
-			resetAttributes(castBar)
-			castBar:Hide()
-			return
-		end
+		castbar.timeToHold = db.timeToHold
+		castbar.castTimeFormat = db.castTimeFormat
+		castbar.channelTimeFormat = db.channelTimeFormat
 
-		endTime = endTime / 1000
-		startTime = startTime / 1000
+		castbar:Size(db.width, db.height)
+		castbar:Point('CENTER', nameplate, 'CENTER', db.xOffset, db.yOffset)
 
-		castBar.max = endTime - startTime
-		castBar.startTime = startTime
-		castBar.delay = 0
-		castBar.casting = event == "UNIT_SPELLCAST_START"
-		castBar.channeling = event == "UNIT_SPELLCAST_CHANNEL_START"
-		castBar.notInterruptible = notInterruptible
-		castBar.holdTime = 0
-		castBar.interrupted = nil
-		castBar.spellName = name
-
-		if castBar.casting then
-			castBar.value = GetTime() - startTime
+		if db.showIcon then
+			castbar.Button:ClearAllPoints()
+			castbar.Button:Point(db.iconPosition == 'RIGHT' and 'BOTTOMLEFT' or 'BOTTOMRIGHT', castbar, db.iconPosition == 'RIGHT' and 'BOTTOMRIGHT' or 'BOTTOMLEFT', db.iconOffsetX, db.iconOffsetY)
+			castbar.Button:Size(db.iconSize, db.iconSize)
+			castbar.Button:Show()
 		else
-			castBar.value = endTime - GetTime()
+			castbar.Button:Hide()
 		end
 
-		castBar:SetMinMaxValues(0, castBar.max)
-		castBar:SetValue(castBar.value)
+		castbar.Time:ClearAllPoints()
+		castbar.Text:ClearAllPoints()
 
-		castBar.Icon.texture:SetTexture(texture)
-		castBar.Spark:Show()
-		castBar.Name:SetText(name)
-		castBar.Time:SetText()
-
-		castBar:Show()
-	elseif event == "UNIT_SPELLCAST_STOP" or event == "UNIT_SPELLCAST_CHANNEL_STOP" then
-		if castBar:IsShown() then
-			resetAttributes(castBar)
-		end
-	elseif event == "UNIT_SPELLCAST_FAILED" or event == "UNIT_SPELLCAST_INTERRUPTED" then
-		if castBar:IsShown() then
-			castBar.Spark:Hide()
-			castBar.Name:SetText(event == "UNIT_SPELLCAST_FAILED" and FAILED or INTERRUPTED)
-
-			castBar.holdTime = self.db.units[frame.UnitType].castbar.timeToHold --How long the castbar should stay visible after being interrupted, in seconds
-			castBar.interrupted = true
-
-			resetAttributes(castBar)
-			castBar:SetValue(castBar.max)
-		end
-	elseif event == "UNIT_SPELLCAST_DELAYED" or event == "UNIT_SPELLCAST_CHANNEL_UPDATE" then
-		if frame:IsShown() then
-			local name, startTime, endTime, _
-			if event == "UNIT_SPELLCAST_DELAYED" then
-				name, _, _, _, startTime, endTime = UnitCastingInfo(unit)
-			else
-				name, _, _, _, startTime, endTime = UnitChannelInfo(unit)
-			end
-
-			if not name then
-				resetAttributes(castBar)
-				castBar:Hide()
-				return
-			end
-
-			endTime = endTime / 1000
-			startTime = startTime / 1000
-
-			local delta
-			if castBar.casting then
-				delta = startTime - castBar.startTime
-				castBar.value = GetTime() - startTime
-			else
-				delta = castBar.startTime - startTime
-				castBar.value = endTime - GetTime()
-			end
-
-			if delta < 0 then
-				delta = 0
-			end
-
-			castBar.Name:SetText(name)
-			castBar.max = endTime - startTime
-			castBar.startTime = startTime
-			castBar.delay = castBar.delay + delta
-			castBar:SetMinMaxValues(0, castBar.max)
-			castBar:SetValue(castBar.value)
-		end
-	elseif event == "UNIT_SPELLCAST_INTERRUPTIBLE" or event == "UNIT_SPELLCAST_NOT_INTERRUPTIBLE" then
-		castBar.notInterruptible = event == "UNIT_SPELLCAST_NOT_INTERRUPTIBLE"
-	end
-
-	if not castBar.notInterruptible then
-		if castBar.interrupted then
-			castBar:SetStatusBarColor(self.db.colors.castInterruptedColor.r, self.db.colors.castInterruptedColor.g, self.db.colors.castInterruptedColor.b)
+		if db.textPosition == 'BELOW' then
+			castbar.Time:Point('TOPRIGHT', castbar, 'BOTTOMRIGHT', db.timeXOffset, db.timeYOffset)
+			castbar.Text:Point('TOPLEFT', castbar, 'BOTTOMLEFT', db.textXOffset, db.textYOffset)
+		elseif db.textPosition == 'ABOVE' then
+			castbar.Time:Point('BOTTOMRIGHT', castbar, 'TOPRIGHT', db.timeXOffset, db.timeYOffset)
+			castbar.Text:Point('BOTTOMLEFT', castbar, 'TOPLEFT', db.textXOffset, db.textYOffset)
 		else
-			castBar:SetStatusBarColor(self.db.colors.castColor.r, self.db.colors.castColor.g, self.db.colors.castColor.b)
-		end
-		castBar.Icon.texture:SetDesaturated(false)
-	else
-		castBar:SetStatusBarColor(self.db.colors.castNoInterruptColor.r, self.db.colors.castNoInterruptColor.g, self.db.colors.castNoInterruptColor.b)
-
-		if self.db.colors.castbarDesaturate then
-			castBar.Icon.texture:SetDesaturated(true)
-		end
-	end
-
-	self:StyleFilterUpdate(frame, "FAKE_Casting")
-end
-
-function NP:Configure_CastBarScale(frame, scale, noPlayAnimation)
-	if frame.currentScale == scale then return end
-	local db = self.db.units[frame.UnitType].castbar
-	if not db.enable then return end
-
-	local castBar = frame.CastBar
-
-	if noPlayAnimation then
-		castBar:SetSize(db.width * scale, db.height * scale)
-		castBar.Icon:SetSize(db.iconSize * scale, db.iconSize * scale)
-	else
-		if castBar.scale:IsPlaying() or castBar.Icon.scale:IsPlaying() then
-			castBar.scale:Stop()
-			castBar.Icon.scale:Stop()
+			castbar.Time:Point('RIGHT', castbar, 'RIGHT', db.timeXOffset, db.timeYOffset)
+			castbar.Text:Point('LEFT', castbar, 'LEFT', db.textXOffset, db.textYOffset)
 		end
 
-		castBar.scale.width:SetChange(db.width * scale)
-		castBar.scale.height:SetChange(db.height * scale)
-		castBar.scale:Play()
+		if db.hideTime then
+			castbar.Time:Hide()
+		else
+			castbar.Time:FontTemplate(LSM:Fetch('font', db.font), db.fontSize, db.fontOutline)
+			castbar.Time:Show()
+		end
 
-		castBar.Icon.scale.width:SetChange(db.iconSize * scale)
-		castBar.Icon.scale.height:SetChange(db.iconSize * scale)
-		castBar.Icon.scale:Play()
+		if db.hideSpellName then
+			castbar.Text:Hide()
+		else
+			castbar.Text:FontTemplate(LSM:Fetch('font', db.font), db.fontSize, db.fontOutline)
+			castbar.Text:Show()
+		end
+	elseif nameplate:IsElementEnabled('Castbar') then
+		nameplate:DisableElement('Castbar')
 	end
-end
-
-function NP:Configure_CastBar(frame, configuring)
-	local db = self.db.units[frame.UnitType].castbar
-	local castBar = frame.CastBar
-
-	castBar:SetPoint("TOP", frame.Health, "BOTTOM", db.xOffset, db.yOffset)
-
-	if db.showIcon then
-		castBar.Icon:ClearAllPoints()
-		castBar.Icon:SetPoint(db.iconPosition == "RIGHT" and "BOTTOMLEFT" or "BOTTOMRIGHT", castBar, db.iconPosition == "RIGHT" and "BOTTOMRIGHT" or "BOTTOMLEFT", db.iconOffsetX, db.iconOffsetY)
-		castBar.Icon:Show()
-	else
-		castBar.Icon:Hide()
-	end
-
-	castBar.Time:ClearAllPoints()
-	castBar.Name:ClearAllPoints()
-
-	castBar.Spark:SetPoint("CENTER", castBar:GetStatusBarTexture(), "RIGHT", 0, 0)
-	castBar.Spark:SetHeight(db.height * 2)
-
-	if db.textPosition == "BELOW" then
-		castBar.Time:SetPoint("TOPRIGHT", castBar, "BOTTOMRIGHT")
-		castBar.Name:SetPoint("TOPLEFT", castBar, "BOTTOMLEFT")
-	elseif db.textPosition == "ABOVE" then
-		castBar.Time:SetPoint("BOTTOMRIGHT", castBar, "TOPRIGHT")
-		castBar.Name:SetPoint("BOTTOMLEFT", castBar, "TOPLEFT")
-	else
-		castBar.Time:SetPoint("RIGHT", castBar, "RIGHT", -4, 0)
-		castBar.Name:SetPoint("LEFT", castBar, "LEFT", 4, 0)
-	end
-
-	if configuring then
-		self:Configure_CastBarScale(frame, frame.currentScale or 1, configuring)
-	end
-
-	castBar.Name:FontTemplate(LSM:Fetch("font", db.font), db.fontSize, db.fontOutline)
-	castBar.Time:FontTemplate(LSM:Fetch("font", db.font), db.fontSize, db.fontOutline)
-
-	if db.hideSpellName then
-		castBar.Name:Hide()
-	else
-		castBar.Name:Show()
-	end
-	if db.hideTime then
-		castBar.Time:Hide()
-	else
-		castBar.Time:Show()
-	end
-
-	castBar:SetStatusBarTexture(LSM:Fetch("statusbar", self.db.statusbar))
-
-	castBar.castTimeFormat = db.castTimeFormat
-	castBar.channelTimeFormat = db.channelTimeFormat
-end
-
-function NP:Construct_CastBar(parent)
-	local frame = CreateFrame("StatusBar", "$parentCastBar", parent)
-	NP:StyleFrame(frame)
-	frame:SetScript("OnUpdate", NP.Update_CastBarOnUpdate)
-
-	frame.Icon = CreateFrame("Frame", nil, frame)
-	frame.Icon.texture = frame.Icon:CreateTexture(nil, "BORDER")
-	frame.Icon.texture:SetAllPoints()
-	frame.Icon.texture:SetTexCoord(unpack(E.TexCoords))
-	NP:StyleFrame(frame.Icon)
-
-	frame.Time = frame:CreateFontString(nil, "OVERLAY")
-	frame.Time:SetJustifyH("RIGHT")
-	frame.Time:SetWordWrap(false)
-
-	frame.Name = frame:CreateFontString(nil, "OVERLAY")
-	frame.Name:SetJustifyH("LEFT")
-	frame.Name:SetWordWrap(false)
-
-	frame.Spark = frame:CreateTexture(nil, "OVERLAY")
-	frame.Spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]])
-	frame.Spark:SetBlendMode("ADD")
-	frame.Spark:SetSize(15, 15)
-
-	frame.holdTime = 0
-	frame.interrupted = nil
-
-	frame.scale = CreateAnimationGroup(frame)
-	frame.scale.width = frame.scale:CreateAnimation("Width")
-	frame.scale.width:SetDuration(0.2)
-	frame.scale.height = frame.scale:CreateAnimation("Height")
-	frame.scale.height:SetDuration(0.2)
-
-	frame.Icon.scale = CreateAnimationGroup(frame.Icon)
-	frame.Icon.scale.width = frame.Icon.scale:CreateAnimation("Width")
-	frame.Icon.scale.width:SetDuration(0.2)
-	frame.Icon.scale.height = frame.Icon.scale:CreateAnimation("Height")
-	frame.Icon.scale.height:SetDuration(0.2)
-
-	frame:Hide()
-
-	return frame
 end

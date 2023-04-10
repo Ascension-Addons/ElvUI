@@ -86,6 +86,12 @@ local oUF = ns.oUF
 local Private = oUF.Private
 
 local function UpdateColor(self, event, unit)
+	if unit and self.isNamePlate and unit:sub(1, 9) ~= "nameplate" then
+		local isUnit = self.unit and UnitIsUnit(self.unit, unit)
+		if isUnit then
+			unit = self.unit
+		end
+	end
 	if(not unit or self.unit ~= unit) then return end
 	local element = self.Health
 
@@ -146,7 +152,14 @@ local function ColorPath(self, ...)
 end
 
 local function Update(self, event, unit)
+	if unit and self.isNamePlate and unit:sub(1, 9) ~= "nameplate" then
+		local isUnit = self.unit and UnitIsUnit(self.unit, unit)
+		if isUnit then
+			unit = self.unit
+		end
+	end
 	if(not unit or self.unit ~= unit) then return end
+
 	local element = self.Health
 
 	--[[ Callback: Health:PreUpdate(unit)
@@ -200,7 +213,6 @@ local function Path(self, ...)
 	* unit  - the unit accompanying the event (string)
 	--]]
 	(self.Health.Override or Update) (self, ...);
-
 	ColorPath(self, ...)
 end
 
@@ -238,6 +250,23 @@ local function SetColorHappiness(element, state)
 			element.__owner:RegisterEvent('UNIT_HAPPINESS', ColorPath)
 		else
 			element.__owner:UnregisterEvent('UNIT_HAPPINESS', ColorPath)
+		end
+	end
+end
+
+--[[ Health:SetColorSelection(state, isForced)
+Used to toggle coloring by the unit's selection.
+* self     - the Health element
+* state    - the desired state (boolean)
+* isForced - forces the event update even if the state wasn't changed (boolean)
+--]]
+local function SetColorSelection(element, state, isForced)
+	if(element.colorSelection ~= state or isForced) then
+		element.colorSelection = state
+		if(state) then
+			element.__owner:RegisterEvent('UNIT_FLAGS', ColorPath)
+		else
+			element.__owner:UnregisterEvent('UNIT_FLAGS', ColorPath)
 		end
 	end
 end
@@ -320,6 +349,7 @@ local function Enable(self, unit)
 		element.__owner = self
 		element.ForceUpdate = ForceUpdate
 		element.SetColorDisconnected = SetColorDisconnected
+		element.SetColorSelection = SetColorSelection
 		element.SetColorHappiness = SetColorHappiness
 		element.SetColorTapping = SetColorTapping
 		element.SetColorThreat = SetColorThreat
@@ -353,6 +383,16 @@ local function Enable(self, unit)
 		end
 
 		self:RegisterEvent('UNIT_MAXHEALTH', Path)
+
+		if self.isNamePlate then
+			local healthBar = self.nameplateAnchor.HealthBar
+			healthBar:SetScript("OnValueChanged", function()
+				Path(self, "UNIT_HEALTH", self.unit)
+			end)
+			healthBar:SetScript("OnMinMaxChanged", function()
+				Path(self, "UNIT_MAXHEALTH", self.unit)
+			end)
+		end
 
 		if(element:IsObjectType('StatusBar') and not element:GetStatusBarTexture()) then
 			element:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])

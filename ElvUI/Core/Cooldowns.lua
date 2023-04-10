@@ -228,23 +228,28 @@ function E:RegisterCooldown(cooldown)
 	end
 end
 
-function E:GetCooldownColors(db)
-	if not db then db = E.db.cooldown end -- just incase someone calls this without a first arg use the global
-	local c13 = E:RGBToHex(db.hhmmColorIndicator.r, db.hhmmColorIndicator.g, db.hhmmColorIndicator.b) -- color for timers that are soon to expire
-	local c12 = E:RGBToHex(db.mmssColorIndicator.r, db.mmssColorIndicator.g, db.mmssColorIndicator.b) -- color for timers that are soon to expire
-	local c11 = E:RGBToHex(db.expireIndicator.r, db.expireIndicator.g, db.expireIndicator.b) -- color for timers that are soon to expire
-	local c10 = E:RGBToHex(db.secondsIndicator.r, db.secondsIndicator.g, db.secondsIndicator.b) -- color for timers that have seconds remaining
-	local c9 = E:RGBToHex(db.minutesIndicator.r, db.minutesIndicator.g, db.minutesIndicator.b) -- color for timers that have minutes remaining
-	local c8 = E:RGBToHex(db.hoursIndicator.r, db.hoursIndicator.g, db.hoursIndicator.b) -- color for timers that have hours remaining
-	local c7 = E:RGBToHex(db.daysIndicator.r, db.daysIndicator.g, db.daysIndicator.b) -- color for timers that have days remaining
-	local c6 = db.hhmmColor -- HH:MM color
-	local c5 = db.mmssColor -- MM:SS color
-	local c4 = db.expiringColor -- color for timers that are soon to expire
-	local c3 = db.secondsColor -- color for timers that have seconds remaining
-	local c2 = db.minutesColor -- color for timers that have minutes remaining
-	local c1 = db.hoursColor -- color for timers that have hours remaining
-	local c0 = db.daysColor -- color for timers that have days remaining
-	return c0, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13
+do
+	local function RGB(db) return E:CopyTable({r = 1, g = 1, b = 1}, db) end
+	local function HEX(db) return E:RGBToHex(db.r, db.g, db.b) end
+
+	function E:GetCooldownColors(db)
+		if not db then db = E.db.cooldown end -- just incase someone calls this without a first arg use the global
+		return
+		HEX(db.hhmmColorIndicator),
+		HEX(db.mmssColorIndicator),
+		HEX(db.expireIndicator),
+		HEX(db.secondsIndicator),
+		HEX(db.minutesIndicator),
+		HEX(db.hoursIndicator),
+		HEX(db.daysIndicator),
+		RGB(db.hhmmColor),
+		RGB(db.mmssColor),
+		RGB(db.expiringColor),
+		RGB(db.secondsColor),
+		RGB(db.minutesColor),
+		RGB(db.hoursColor),
+		RGB(db.daysColor)
+	end
 end
 
 function E:UpdateCooldownOverride(module)

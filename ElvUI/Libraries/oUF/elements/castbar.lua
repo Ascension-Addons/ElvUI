@@ -103,6 +103,7 @@ local function resetAttributes(self)
 	self.channeling = nil
 	self.notInterruptible = nil
 	self.spellName = nil -- ElvUI
+	self.spellID = nil
 end
 
 -- ElvUI block
@@ -113,13 +114,19 @@ end
 -- end block
 
 local function CastStart(self, event, unit)
+	if unit and self.isNamePlate and unit:sub(1, 9) ~= "nameplate" then
+		local isUnit = self.unit and UnitIsUnit(self.unit, unit)
+		if isUnit then
+			unit = self.unit
+		end
+	end
 	if(self.unit ~= unit) then return end
 
 	local element = self.Castbar
-	local name, _, _, texture, startTime, endTime, isTradeSkill, castID, notInterruptible = UnitCastingInfo(unit)
+	local name, _, _, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID = UnitCastingInfo(unit)
 	event = 'UNIT_SPELLCAST_START'
 	if(not name) then
-		name, _, _, texture, startTime, endTime, isTradeSkill, notInterruptible = UnitChannelInfo(unit)
+		name, _, _, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID = UnitChannelInfo(unit)
 		event = 'UNIT_SPELLCAST_CHANNEL_START'
 	end
 
@@ -141,6 +148,7 @@ local function CastStart(self, event, unit)
 	element.notInterruptible = notInterruptible
 	element.holdTime = 0
 	element.castID = castID
+	element.spellID = spellID
 	element.spellName = name -- ElvUI
 
 	if(element.casting) then
@@ -205,6 +213,12 @@ local function CastStart(self, event, unit)
 end
 
 local function CastUpdate(self, event, unit, _, _, castID)
+	if unit and self.isNamePlate and unit:sub(1, 9) ~= "nameplate" then
+		local isUnit = self.unit and UnitIsUnit(self.unit, unit)
+		if isUnit then
+			unit = self.unit
+		end
+	end
 	if(self.unit ~= unit) then return end
 
 	local element = self.Castbar
@@ -258,6 +272,12 @@ local function CastUpdate(self, event, unit, _, _, castID)
 end
 
 local function CastStop(self, event, unit, _, _, castID)
+	if unit and self.isNamePlate and unit:sub(1, 9) ~= "nameplate" then
+		local isUnit = self.unit and UnitIsUnit(self.unit, unit)
+		if isUnit then
+			unit = self.unit
+		end
+	end
 	if(self.unit ~= unit) then return end
 
 	local element = self.Castbar
@@ -287,6 +307,12 @@ local function CastStop(self, event, unit, _, _, castID)
 end
 
 local function CastFail(self, event, unit, _, _, castID)
+	if unit and self.isNamePlate and unit:sub(1, 9) ~= "nameplate" then
+		local isUnit = self.unit and UnitIsUnit(self.unit, unit)
+		if isUnit then
+			unit = self.unit
+		end
+	end
 	if(self.unit ~= unit) then return end
 
 	local element = self.Castbar
@@ -324,6 +350,12 @@ local function CastFail(self, event, unit, _, _, castID)
 end
 
 local function CastInterruptible(self, event, unit)
+	if unit and self.isNamePlate and unit:sub(1, 9) ~= "nameplate" then
+		local isUnit = self.unit and UnitIsUnit(self.unit, unit)
+		if isUnit then
+			unit = self.unit
+		end
+	end
 	if(self.unit ~= unit) then return end
 
 	local element = self.Castbar
@@ -408,22 +440,43 @@ local function ForceUpdate(element)
 	return Update(element.__owner, 'ForceUpdate', element.__owner.unit)
 end
 
+local function NamePlateCastBarOnShow(self)
+	if C_NamePlateManager.IsNamePlateMoving(self) then return end
+	CastStart(self, "UNIT_SPELLCAST_START", self.unit)
+end
+
+local function NamePlateCastBarOnHide(self)
+	if C_NamePlateManager.IsNamePlateMoving(self) then return end
+	CastFail(self, "UNIT_SPELLCAST_FAILED", self.unit, nil, nil, self.Castbar.castID)
+end
+
+local function NamePlateCastBarOnValueChanged(self)
+	CastUpdate(self, nil, self.unit, nil, nil, self.Castbar.castID)
+end
+
 local function Enable(self, unit)
 	local element = self.Castbar
 	if(element and unit and not unit:match('%wtarget$')) then
 		element.__owner = self
 		element.ForceUpdate = ForceUpdate
 
-		self:RegisterEvent('UNIT_SPELLCAST_START', CastStart)
-		self:RegisterEvent('UNIT_SPELLCAST_CHANNEL_START', CastStart)
-		self:RegisterEvent('UNIT_SPELLCAST_STOP', CastStop)
-		self:RegisterEvent('UNIT_SPELLCAST_CHANNEL_STOP', CastStop)
-		self:RegisterEvent('UNIT_SPELLCAST_DELAYED', CastUpdate)
-		self:RegisterEvent('UNIT_SPELLCAST_CHANNEL_UPDATE', CastUpdate)
-		self:RegisterEvent('UNIT_SPELLCAST_FAILED', CastFail)
-		self:RegisterEvent('UNIT_SPELLCAST_INTERRUPTED', CastFail)
-		self:RegisterEvent('UNIT_SPELLCAST_INTERRUPTIBLE', CastInterruptible)
-		self:RegisterEvent('UNIT_SPELLCAST_NOT_INTERRUPTIBLE', CastInterruptible)
+		if self.isNamePlate then
+			local castBar = self.nameplateAnchor.CastBar
+			castBar:SetScript("OnShow", GenerateClosure(NamePlateCastBarOnShow, self))
+			castBar:SetScript("OnHide", GenerateClosure(NamePlateCastBarOnHide, self))
+			castBar:SetScript("OnValueChanged", GenerateClosure(NamePlateCastBarOnValueChanged, self))
+		else
+			self:RegisterEvent('UNIT_SPELLCAST_START', CastStart)
+			self:RegisterEvent('UNIT_SPELLCAST_CHANNEL_START', CastStart)
+			self:RegisterEvent('UNIT_SPELLCAST_STOP', CastStop)
+			self:RegisterEvent('UNIT_SPELLCAST_CHANNEL_STOP', CastStop)
+			self:RegisterEvent('UNIT_SPELLCAST_DELAYED', CastUpdate)
+			self:RegisterEvent('UNIT_SPELLCAST_CHANNEL_UPDATE', CastUpdate)
+			self:RegisterEvent('UNIT_SPELLCAST_FAILED', CastFail)
+			self:RegisterEvent('UNIT_SPELLCAST_INTERRUPTED', CastFail)
+			self:RegisterEvent('UNIT_SPELLCAST_INTERRUPTIBLE', CastInterruptible)
+			self:RegisterEvent('UNIT_SPELLCAST_NOT_INTERRUPTIBLE', CastInterruptible)
+		end
 
 		-- ElvUI block
 		self:RegisterEvent('UNIT_SPELLCAST_SENT', UNIT_SPELLCAST_SENT, true)
@@ -454,7 +507,7 @@ local function Enable(self, unit)
 
 		local safeZone = element.SafeZone
 		if(safeZone and safeZone:IsObjectType('Texture') and not safeZone:GetTexture()) then
-			safeZone:SetColorTexture(1, 0, 0)
+			safeZone:SetTexture(1, 0, 0)
 		end
 
 		element:Hide()
@@ -468,16 +521,23 @@ local function Disable(self)
 	if(element) then
 		element:Hide()
 
-		self:UnregisterEvent('UNIT_SPELLCAST_START', CastStart)
-		self:UnregisterEvent('UNIT_SPELLCAST_CHANNEL_START', CastStart)
-		self:UnregisterEvent('UNIT_SPELLCAST_DELAYED', CastUpdate)
-		self:UnregisterEvent('UNIT_SPELLCAST_CHANNEL_UPDATE', CastUpdate)
-		self:UnregisterEvent('UNIT_SPELLCAST_STOP', CastStop)
-		self:UnregisterEvent('UNIT_SPELLCAST_CHANNEL_STOP', CastStop)
-		self:UnregisterEvent('UNIT_SPELLCAST_FAILED', CastFail)
-		self:UnregisterEvent('UNIT_SPELLCAST_INTERRUPTED', CastFail)
-		self:UnregisterEvent('UNIT_SPELLCAST_INTERRUPTIBLE', CastInterruptible)
-		self:UnregisterEvent('UNIT_SPELLCAST_NOT_INTERRUPTIBLE', CastInterruptible)
+		if self.isNamePlate then
+			local castBar = self.nameplateAnchor.CastBar
+			castBar:SetScript("OnShow", nil)
+			castBar:SetScript("OnHide", nil)
+			castBar:SetScript("OnValueChanged", nil)
+		else
+			self:UnregisterEvent('UNIT_SPELLCAST_START', CastStart)
+			self:UnregisterEvent('UNIT_SPELLCAST_CHANNEL_START', CastStart)
+			self:UnregisterEvent('UNIT_SPELLCAST_DELAYED', CastUpdate)
+			self:UnregisterEvent('UNIT_SPELLCAST_CHANNEL_UPDATE', CastUpdate)
+			self:UnregisterEvent('UNIT_SPELLCAST_STOP', CastStop)
+			self:UnregisterEvent('UNIT_SPELLCAST_CHANNEL_STOP', CastStop)
+			self:UnregisterEvent('UNIT_SPELLCAST_FAILED', CastFail)
+			self:UnregisterEvent('UNIT_SPELLCAST_INTERRUPTED', CastFail)
+			self:UnregisterEvent('UNIT_SPELLCAST_INTERRUPTIBLE', CastInterruptible)
+			self:UnregisterEvent('UNIT_SPELLCAST_NOT_INTERRUPTIBLE', CastInterruptible)
+		end
 
 		element:SetScript('OnUpdate', nil)
 
@@ -501,6 +561,12 @@ end)
 oUF:AddElement('Castbar', Update, Enable, Disable)
 
 function CastingBarFrame_SetUnit(self, unit, showTradeSkills, showShield)
+	if unit and self.isNamePlate and unit:sub(1, 9) ~= "nameplate" then
+		local isUnit = self.unit and UnitIsUnit(self.unit, unit)
+		if isUnit then
+			unit = self.unit
+		end
+	end
 	if(self.unit ~= unit) then
 		self.unit = unit
 		self.showTradeSkills = showTradeSkills

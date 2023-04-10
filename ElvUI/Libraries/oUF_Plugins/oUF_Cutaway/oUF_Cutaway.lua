@@ -83,6 +83,12 @@ local function Shared_UpdateCheckReturn(self, element, updateType, ...)
 		return (not element.enabled or not self.cur) or element.ready or not maxV
 	elseif (updateType == POST) then
 		local curV, maxV, unit = ...
+		if unit and element.isNamePlate and unit:sub(1, 9) ~= "nameplate" then
+			local isUnit = element.unit and UnitIsUnit(element.unit, unit)
+			if isUnit then
+				unit = element.unit
+			end
+		end
 		return (not element.enabled or not element.cur) or (not element.ready or not curV or not maxV) or element.unit ~= unit
 	else
 		return false

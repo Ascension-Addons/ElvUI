@@ -95,7 +95,12 @@ end
 
 function UF:UpdateThreat(unit, status, r, g, b)
 	local parent = self:GetParent()
-
+	if unit and parent.isNamePlate and unit:sub(1, 9) ~= "nameplate" then
+		local isUnit = parent.unit and UnitIsUnit(parent.unit, unit)
+		if isUnit then
+			unit = parent.unit
+		end
+	end
 	if (parent.unit ~= unit) or not unit then return end
 
 	local db = parent.db

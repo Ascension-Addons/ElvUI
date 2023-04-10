@@ -539,7 +539,6 @@ function AB:StyleButton(button, noBackdrop, useMasque)
 
 	if macroText then
 		macroText:ClearAllPoints()
-		macroText:SetWidth(self.db.fontWidth)
 		macroText:Point("BOTTOM", 0, 1)
 		macroText:FontTemplate(LSM:Fetch("font", self.db.font), self.db.fontSize, self.db.fontOutline)
 		macroText:SetTextColor(color.r, color.g, color.b)
