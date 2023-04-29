@@ -202,6 +202,7 @@ G.unitframe = {
 				[49376] = true, -- Feral Charge (25 yards)
 			},
 			longEnemySpells = {
+				[53005] = true, -- Penance (30 yards)
 				[8042] = true, -- Earth Shock (30 yards)
 				[8050] = true, -- Flame Shock (30 yards)
 				[5176] = true, -- Wrath (30 yards)
@@ -240,6 +241,7 @@ G.unitframe = {
 				[475] = true, -- Remove Curse (40 yards)
 				[4987] = true, -- Cleanse (40 yards)
 				[47541] = true, -- Death Coil (40 yards)
+				[53005] = true, -- Penance (30 yards)
 			},
 			resSpells = {
 				[50769] = true, -- Revive (30 yards)
