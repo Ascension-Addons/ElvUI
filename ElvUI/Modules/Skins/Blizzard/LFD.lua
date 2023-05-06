@@ -16,6 +16,7 @@ S:AddCallback("Skin_LFD", function()
 	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.lfd then return end
 
 	AscensionLFGFrame:StripTextures(true)
+	AscensionLFGFrame.PortraitFrame:StripTextures(true)
 	AscensionLFGFrame:CreateBackdrop("Transparent")
 	AscensionLFGFrameContent:StripTextures(true)
 	AscensionLFGFrameMenu:StripTextures(true)
@@ -87,7 +88,7 @@ S:AddCallback("Skin_LFD", function()
 	end
 
 	--Tabs
-	for i = 1, 3 do
+	for i = 1, 5 do
 		local tab = _G["AscensionLFGFrameTab"..i]
 		tab:Size(122, 32)
 		tab:GetRegions():SetPoint("CENTER", 0, 2)
