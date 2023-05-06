@@ -33,9 +33,7 @@ local UnitIsUnit = UnitIsUnit
 local UnitName = UnitName
 local UnitReaction = UnitReaction
 local UnitThreatSituation = UnitThreatSituation
-local C_NamePlate_SetNamePlateEnemyClickThrough = C_NamePlateManager.SetNamePlateEnemyClickThrough
 local C_NamePlate_SetNamePlateEnemySize = C_NamePlateManager.SetNamePlateEnemySize
-local C_NamePlate_SetNamePlateFriendlyClickThrough = C_NamePlateManager.SetNamePlateFriendlyClickThrough
 local C_NamePlate_SetNamePlateFriendlySize = C_NamePlateManager.SetNamePlateFriendlySize
 local hooksecurefunc = hooksecurefunc
 
@@ -382,7 +380,7 @@ function NP:DisablePlate(nameplate, nameOnly, nameOnlySF)
 	if nameOnly then
 		NP:Update_Tags(nameplate, nameOnlySF)
 		NP:Update_Highlight(nameplate, nameOnlySF)
-
+		NP:Update_TargetIndicator(nameplate, nameOnlySF)
 		-- The position values here are forced on purpose.
 		nameplate.Name:ClearAllPoints()
 		nameplate.Name:Point('CENTER', nameplate, 'CENTER', 0, 0)
@@ -463,21 +461,6 @@ function NP:SetupTarget(nameplate, removed)
 	end
 end
 
-function NP:SetNamePlateClickThrough()
-	if InCombatLockdown() then return end
-
-	self:SetNamePlateFriendlyClickThrough()
-	self:SetNamePlateEnemyClickThrough()
-end
-
-function NP:SetNamePlateFriendlyClickThrough()
-	C_NamePlate_SetNamePlateFriendlyClickThrough(NP.db.clickThrough.friendly)
-end
-
-function NP:SetNamePlateEnemyClickThrough()
-	C_NamePlate_SetNamePlateEnemyClickThrough(NP.db.clickThrough.enemy)
-end
-
 function NP:Update_StatusBars()
 	for bar in pairs(NP.StatusBars) do
 		local sf = NP:StyleFilterChanges(bar:GetParent())
@@ -547,7 +530,6 @@ function NP:ConfigureAll(init)
 	if not E.private.nameplates.enable then return end
 
 	NP:StyleFilterConfigure() -- keep this at the top
-	NP:SetNamePlateClickThrough()
 	NP:SetNamePlateSizes()
 	NP:PLAYER_REGEN_ENABLED()
 	NP:UpdateTargetPlate(_G.ElvNP_TargetClassPower)
@@ -673,11 +655,6 @@ function NP:NamePlateCallBack(nameplate, event, unit)
 		if (NP.db.fadeIn and not NP.SkipFading) and nameplate.frameType ~= 'PLAYER' then
 			NP:PlateFade(nameplate, 1, 0, 1)
 		end
-
-		local highlight = nameplate.nameplateAnchor.blizzHighlight
-		highlight:SetAtlas("128-button-highlight") 
-		highlight:SetParent(nameplate)
-		highlight:SetAllPoints(nameplate)
 	elseif event == 'NAME_PLATE_UNIT_REMOVED' then
 		if nameplate.isTarget then
 			NP:ScalePlate(nameplate, 1, true)

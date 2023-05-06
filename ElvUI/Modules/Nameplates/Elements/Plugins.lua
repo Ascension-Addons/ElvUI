@@ -83,12 +83,13 @@ end
 
 function NP:Construct_TargetIndicator(nameplate)
 	local TargetIndicator = CreateFrame('Frame', nameplate:GetName() .. 'TargetIndicator', nameplate)
+	TargetIndicator:SetFrameLevel(nameplate:GetFrameLevel()-1)
 
 	TargetIndicator.Shadow = CreateFrame('Frame', nil, TargetIndicator)
 	TargetIndicator.Shadow:Hide()
 
 	for _, object in ipairs(targetIndicators) do
-		local indicator = TargetIndicator:CreateTexture(nil, 'BACKGROUND', nil, -5)
+		local indicator = TargetIndicator:CreateTexture(nil, 'BACKGROUND')
 		indicator:Hide()
 
 		TargetIndicator[object] = indicator
@@ -108,10 +109,10 @@ function NP:Update_TargetIndicator(nameplate)
 	elseif not enabled then
 		nameplate:EnableElement('TargetIndicator')
 	end
-	
+
 	local tdb = NP.db.units.TARGET
 	local indicator = nameplate.TargetIndicator
-	indicator.arrow = E.Media.Textures[NP.db.units.TARGET.arrow] or E.Media.Textures.Arrow
+	indicator.arrow = E.Media.Textures[NP.db.units.TARGET.arrow] or E.Media.Textures.TopIndicator
 	indicator.lowHealthThreshold = NP.db.lowHealthThreshold
 	indicator.preferGlowColor = NP.db.colors.preferGlowColor
 	indicator.style = tdb.glowStyle
@@ -153,22 +154,25 @@ function NP:Update_TargetIndicator(nameplate)
 
 		-- background glow is 2, 6, and 8
 		if indicator.Spark and (style == 'style2' or style == 'style6' or style == 'style8') then
-			local size = E.Border + 14
-			indicator.Spark:Point('TOPLEFT', nameplate.Health, 'TOPLEFT', -(size * 2), size)
-			indicator.Spark:Point('BOTTOMRIGHT', nameplate.Health, 'BOTTOMRIGHT', (size * 2), -size)
+			local size
+			if db.health.enable and not (db.nameOnly or nameOnlySF) then
+				parent = nameplate.Health
+				size = E.Border + 14
+			else
+				parent = nameplate
+				size = -(E.Border + 4)
+			end
+			indicator.Spark:Point('TOPLEFT', parent, 'TOPLEFT', -(size * 2), size)
+			indicator.Spark:Point('BOTTOMRIGHT', parent, 'BOTTOMRIGHT', (size * 2), -size)
 			indicator.Spark:SetVertexColor(r, g, b, a)
 		end
 	end
 end
 
 function NP:Construct_Highlight(nameplate)
-	local Highlight = CreateFrame('Frame', nameplate:GetName() .. 'Highlight', nameplate)
-	Highlight:Hide()
-	Highlight:EnableMouse(false)
-	Highlight:SetFrameLevel(9)
-
-	Highlight.texture = Highlight:CreateTexture(nil, 'ARTWORK')
-
+	Highlight = nameplate.nameplateAnchor.blizzHighlight
+	Highlight:SetParent(nameplate)
+	Highlight:SetDrawLayer("OVERLAY")
 	return Highlight
 end
 
@@ -179,15 +183,15 @@ function NP:Update_Highlight(nameplate, nameOnlySF)
 		if not nameplate:IsElementEnabled('Highlight') then
 			nameplate:EnableElement('Highlight')
 		end
-
+		
 		if db.health.enable and not (db.nameOnly or nameOnlySF) then
-			nameplate.Highlight.texture:SetTexture(1, 1, 1, 0.25)
-			nameplate.Highlight.texture:SetAllPoints(nameplate.HealthFlashTexture)
-			nameplate.Highlight.texture:SetAlpha(0.75)
+			nameplate.Highlight:SetTexture(1, 1, 1, 0.25)
+			nameplate.Highlight:SetAllPoints(nameplate.HealthFlashTexture)
+			nameplate.Highlight:SetAlpha(0.75)
 		else
-			nameplate.Highlight.texture:SetTexture(E.Media.Textures.Spark)
-			nameplate.Highlight.texture:SetAllPoints(nameplate)
-			nameplate.Highlight.texture:SetAlpha(0.50)
+			nameplate.Highlight:SetTexture(E.Media.Textures.Spark)
+			nameplate.Highlight:SetAllPoints(nameplate)
+			nameplate.Highlight:SetAlpha(0.50)
 		end
 	elseif nameplate:IsElementEnabled('Highlight') then
 		nameplate:DisableElement('Highlight')

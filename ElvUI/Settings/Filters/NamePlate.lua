@@ -6,29 +6,30 @@
 local E, L, V, P, G = unpack(select(2, ...)); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 
 G.nameplates.filters = {
-	ElvUI_Boss = {
+	["Non-Target Alpha"] = {
+		actions = {
+			alpha = 40,
+		},
+		triggers = {
+			requireTarget = true,
+			notTarget = true,
+			enable = true,
+		},
+	},
+	["Enlarge Boss Nameplates"] = {
 		triggers = {
 			level = true,
 			curlevel = -1,
 			nameplateType = {
 				enable = true,
 				enemyNPC = true
-			}
+			},
+			enable = true,
 		},
 		actions = {
 			scale = 1.15
 		}
 	},
-	ElvUI_Totem = {
-		triggers = {
-			totems = {
-				enable = true
-			}
-		},
-		actions = {
-			iconOnly = true
-		}
-	}
 }
 
 E.StyleFilterDefaults = {

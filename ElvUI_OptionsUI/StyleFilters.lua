@@ -349,26 +349,26 @@ StyleFilters.triggers.args.slots = ACH:Group(L["Slots"], nil, 13, nil, nil, nil,
 StyleFilters.triggers.args.slots.args.types = ACH:MultiSelect(L["Equipped"], nil, 1, nil, nil, nil, function(_, key) local triggers = GetFilter(true) return triggers.slots[key] end, function(_, key, value) local triggers = GetFilter(true) triggers.slots[key] = value or nil NP:ConfigureAll() end)
 StyleFilters.triggers.args.slots.args.types.sortByValue = true
 StyleFilters.triggers.args.slots.args.types.values = {
-	[_G.INVSLOT_AMMO] = L["INVTYPE_AMMO"], -- 0
-	[_G.INVSLOT_HEAD] = L["INVTYPE_HEAD"], -- 1
-	[_G.INVSLOT_NECK] = L["INVTYPE_NECK"], -- 2
-	[_G.INVSLOT_SHOULDER] = L["INVTYPE_SHOULDER"], -- 3
-	[_G.INVSLOT_BODY] = L["INVTYPE_BODY"], -- 4 (shirt)
-	[_G.INVSLOT_CHEST] = L["INVTYPE_CHEST"], -- 5
-	[_G.INVSLOT_WAIST] = L["INVTYPE_WAIST"], -- 6
-	[_G.INVSLOT_LEGS] = L["INVTYPE_LEGS"], -- 7
-	[_G.INVSLOT_FEET] = L["INVTYPE_FEET"], -- 8
-	[_G.INVSLOT_WRIST] = L["INVTYPE_WRIST"], -- 9
-	[_G.INVSLOT_HAND] = L["INVTYPE_HAND"], -- 10
-	[_G.INVSLOT_FINGER1] = L["INVTYPE_FINGER1"], -- 11 (no real global)
-	[_G.INVSLOT_FINGER2] = L["INVTYPE_FINGER2"], -- 12 (no real global)
-	[_G.INVSLOT_TRINKET1] = L["INVTYPE_TRINKET1"], -- 13 (no real global)
-	[_G.INVSLOT_TRINKET2] = L["INVTYPE_TRINKET2"], -- 14 (no real global)
-	[_G.INVSLOT_BACK] = L["INVTYPE_CLOAK"], -- 15
-	[_G.INVSLOT_MAINHAND] = L["INVTYPE_WEAPONMAINHAND"], -- 16
-	[_G.INVSLOT_OFFHAND] = L["INVTYPE_WEAPONOFFHAND"], -- 17
-	[_G.INVSLOT_RANGED] = L["INVTYPE_RANGED"], -- 18
-	[_G.INVSLOT_TABARD] = L["INVTYPE_TABARD"], -- 19
+	[_G.INVSLOT_AMMO] = INVTYPE_AMMO, -- 0
+	[_G.INVSLOT_HEAD] = INVTYPE_HEAD, -- 1
+	[_G.INVSLOT_NECK] = INVTYPE_NECK, -- 2
+	[_G.INVSLOT_SHOULDER] = INVTYPE_SHOULDER, -- 3
+	[_G.INVSLOT_BODY] = INVTYPE_BODY, -- 4 (shirt)
+	[_G.INVSLOT_CHEST] = INVTYPE_CHEST, -- 5
+	[_G.INVSLOT_WAIST] = INVTYPE_WAIST, -- 6
+	[_G.INVSLOT_LEGS] = INVTYPE_LEGS, -- 7
+	[_G.INVSLOT_FEET] = INVTYPE_FEET, -- 8
+	[_G.INVSLOT_WRIST] = INVTYPE_WRIST, -- 9
+	[_G.INVSLOT_HAND] = INVTYPE_HAND, -- 10
+	[_G.INVSLOT_FINGER1] = INVTYPE_FINGER1, -- 11 (no real global)
+	[_G.INVSLOT_FINGER2] = INVTYPE_FINGER2, -- 12 (no real global)
+	[_G.INVSLOT_TRINKET1] = INVTYPE_TRINKET1, -- 13 (no real global)
+	[_G.INVSLOT_TRINKET2] = INVTYPE_TRINKET2, -- 14 (no real global)
+	[_G.INVSLOT_BACK] = INVTYPE_CLOAK, -- 15
+	[_G.INVSLOT_MAINHAND] = INVTYPE_WEAPONMAINHAND, -- 16
+	[_G.INVSLOT_OFFHAND] = INVTYPE_WEAPONOFFHAND, -- 17
+	[_G.INVSLOT_RANGED] = INVTYPE_RANGED, -- 18
+	[_G.INVSLOT_TABARD] = INVTYPE_TABARD, -- 19
 }
 
 StyleFilters.triggers.args.items = ACH:Group(L["Items"], nil, 14, nil, nil, nil, DisabledFilter)
@@ -393,10 +393,10 @@ end
 StyleFilters.triggers.args.classification = ACH:Group(L["Classification"], nil, 16, nil, function(info) local triggers = GetFilter(true) return triggers.classification[info[#info]] end, function(info, value) local triggers = GetFilter(true) triggers.classification[info[#info]] = value NP:ConfigureAll() end, DisabledFilter)
 StyleFilters.triggers.args.classification.args.types = ACH:Group('', nil, 2)
 StyleFilters.triggers.args.classification.args.types.inline = true
-StyleFilters.triggers.args.classification.args.types.args.worldboss = ACH:Toggle(L["RAID_INFO_WORLD_BOSS"], nil, 1)
+StyleFilters.triggers.args.classification.args.types.args.worldboss = ACH:Toggle(L["Boss"], nil, 1)
 StyleFilters.triggers.args.classification.args.types.args.rareelite = ACH:Toggle(L["Rare Elite"], nil, 2)
-StyleFilters.triggers.args.classification.args.types.args.normal = ACH:Toggle(L["PLAYER_DIFFICULTY1"], nil, 3)
-StyleFilters.triggers.args.classification.args.types.args.rare = ACH:Toggle(L["ITEM_QUALITY3_DESC"], nil, 4)
+StyleFilters.triggers.args.classification.args.types.args.normal = ACH:Toggle(PLAYER_DIFFICULTY1, nil, 3)
+StyleFilters.triggers.args.classification.args.types.args.rare = ACH:Toggle(ITEM_QUALITY3_DESC, nil, 4)
 StyleFilters.triggers.args.classification.args.types.args.trivial = ACH:Toggle(L["Trivial"], nil, 5)
 StyleFilters.triggers.args.classification.args.types.args.elite = ACH:Toggle(L["Elite"], nil, 6)
 
@@ -416,9 +416,9 @@ StyleFilters.triggers.args.keyMod = ACH:Group(L["Key Modifiers"], nil, 19, nil, 
 StyleFilters.triggers.args.keyMod.args.enable = ACH:Toggle(L["Enable"], nil, 0)
 StyleFilters.triggers.args.keyMod.args.types = ACH:Group('', nil, 1, nil, nil, nil, function() local triggers = GetFilter(true) return DisabledFilter() or not triggers.keyMod.enable end)
 StyleFilters.triggers.args.keyMod.args.types.inline = true
-StyleFilters.triggers.args.keyMod.args.types.args.Shift = ACH:Toggle(L["SHIFT_KEY_TEXT"], nil, 1)
+StyleFilters.triggers.args.keyMod.args.types.args.Shift = ACH:Toggle(SHIFT_KEY_TEXT, nil, 1)
 StyleFilters.triggers.args.keyMod.args.types.args.Alt = ACH:Toggle(L["ALT_KEY_TEXT"], nil, 2)
-StyleFilters.triggers.args.keyMod.args.types.args.Control = ACH:Toggle(L["CTRL_KEY_TEXT"], nil, 3)
+StyleFilters.triggers.args.keyMod.args.types.args.Control = ACH:Toggle(CTRL_KEY_TEXT, nil, 3)
 StyleFilters.triggers.args.keyMod.args.types.args.Modifier = ACH:Toggle(L["Any"], nil, 4)
 StyleFilters.triggers.args.keyMod.args.types.args.LeftShift = ACH:Toggle(L["Left Shift"], nil, 6)
 StyleFilters.triggers.args.keyMod.args.types.args.LeftAlt = ACH:Toggle(L["Left Alt"], nil, 7)
