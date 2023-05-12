@@ -230,7 +230,7 @@ for textFormat in pairs(E.GetFormattedTextStyles) do
 		return E:GetFormattedText(textFormat, UnitHealth(unit), UnitHealthMax(unit))
 	end)
 
-	E:AddTag(format('power:%s', tagFormat), 'UNIT_DISPLAYPOWER UNIT_POWER_FREQUENT UNIT_MAXPOWER', function(unit)
+	E:AddTag(format('power:%s', tagFormat), 'UNIT_MAXENERGY UNIT_MAXFOCUS UNIT_MAXMANA UNIT_MAXRAGE UNIT_ENERGY UNIT_FOCUS UNIT_MANA UNIT_RAGE UNIT_MAXRUNIC_POWER UNIT_RUNIC_POWER', function(unit)
 		local powerType = UnitPowerType(unit)
 		local min = UnitPower(unit, powerType)
 		if min ~= 0 then
@@ -238,10 +238,24 @@ for textFormat in pairs(E.GetFormattedTextStyles) do
 		end
 	end)
 
-	E:AddTag(format('mana:%s', tagFormat), 'UNIT_POWER_FREQUENT UNIT_MAXPOWER UNIT_DISPLAYPOWER', function(unit)
+	E:AddTag(format('mana:%s', tagFormat), 'UNIT_MAXPOWER UNIT_DISPLAYPOWER UNIT_MANA', function(unit)
 		local min = UnitPower(unit, 0)
 		if min ~= 0 then
 			return E:GetFormattedText(textFormat, min, UnitPowerMax(unit, 0))
+		end
+	end)
+	
+	E:AddTag(format('rage:%s', tagFormat), 'UNIT_MAXRAGE UNIT_DISPLAYPOWER UNIT_RAGE', function(unit)
+		local min = UnitPower(unit, 1)
+		if min ~= 0 then
+			return E:GetFormattedText(textFormat, min, UnitPowerMax(unit, 1))
+		end
+	end)
+	
+	E:AddTag(format('energy:%s', tagFormat), 'UNIT_MAXENERGY UNIT_DISPLAYPOWER UNIT_ENERGY', function(unit)
+		local min = UnitPower(unit, 3)
+		if min ~= 0 then
+			return E:GetFormattedText(textFormat, min, UnitPowerMax(unit, 3))
 		end
 	end)
 
@@ -516,13 +530,18 @@ E:AddTag('pvptimer', 1, function(unit)
 	end
 end)
 
-E:AddTag('classpowercolor', 'UNIT_POWER_FREQUENT UNIT_DISPLAYPOWER', function()
-	local _, _, r, g, b = GetClassPower(E.myclass)
-	return Hex(r, g, b)
+E:AddTag('manacolor', 'UNIT_DISPLAYPOWER', function()
+	local color = ElvUF.colors.power.MANA
+	return Hex(color)
 end)
 
-E:AddTag('manacolor', 'UNIT_POWER_FREQUENT UNIT_DISPLAYPOWER', function()
-	local color = ElvUF.colors.power.MANA
+E:AddTag('ragecolor', 'UNIT_DISPLAYPOWER', function()
+	local color = ElvUF.colors.power.RAGE
+	return Hex(color)
+end)
+
+E:AddTag('energycolor', 'UNIT_DISPLAYPOWER', function()
+	local color = ElvUF.colors.power.ENERGY
 	return Hex(color)
 end)
 
@@ -1080,6 +1099,20 @@ do -- classic things
 		E:TextureString(E.Media.ChatEmojis.SlightFrown, ':16:16:0:0:32:32:0:32:0:32'),
 		E:TextureString(E.Media.ChatEmojis.HeartEyes, ':16:16:0:0:32:32:0:32:0:32')
 	}
+	
+	E:AddTag('happiness', 'UNIT_HAPPINESS PET_UI_UPDATE', function(unit)
+		local hasPetUI, isHunterPet = HasPetUI()
+		if hasPetUI and isHunterPet and UnitIsUnit('pet', unit) then
+			local happiness = GetPetHappiness()
+			if(happiness == 1) then
+				return ':<'
+			elseif(happiness == 2) then
+				return ':|'
+			elseif(happiness == 3) then
+				return ':D'
+			end
+		end
+	end)
 
 	E:AddTag('happiness:full', 'UNIT_HAPPINESS PET_UI_UPDATE', function(unit)
 		local hasPetUI, isHunterPet = HasPetUI()
@@ -1169,7 +1202,6 @@ E.TagInfo = {
 		['cpoints'] = { category = 'Classpower', description = "Displays amount of combo points the player has (only for player, shows nothing on 0)" },
 	-- Colors
 		['classificationcolor'] = { category = 'Colors', description = "Changes the text color, depending on the unit's classification" },
-		['classpowercolor'] = { category = 'Colors', description = "Changes the color of the special power based upon its type" },
 		['difficulty'] = { category = 'Colors', description = "Changes color of the next tag based on how difficult the unit is compared to the players level" },
 		['difficultycolor'] = { category = 'Colors', description = "Colors the following tags by difficulty, red for impossible, orange for hard, green for easy" },
 		['healthcolor'] = { category = 'Colors', description = "Changes the text color, depending on the unit's current health" },
@@ -1178,6 +1210,8 @@ E.TagInfo = {
 		['namecolor'] = { hidden = true, category = 'Colors', description = "Deprecated version of [classcolor]" },
 		['powercolor'] = { category = 'Colors', description = "Colors the power text based upon its type" },
 		['manacolor'] = { category = 'Colors', description = "Colors the power text based on the mana color" },
+		['ragecolor'] = { category = 'Colors', description = "Colors the power text based on the rage color" },
+		['energycolor'] = { category = 'Colors', description = "Colors the power text based on the energy color" },
 		['factioncolor'] = { category = 'Colors', description = "Colors names by Faction (Alliance, Horde, Neutral)" },
 		['reactioncolor'] = { category = 'Colors', description = "Colors names by NPC reaction (Bad/Neutral/Good)" },
 		['threatcolor'] = { category = 'Colors', description = "Changes the text color, depending on the unit's threat situation" },
@@ -1226,6 +1260,7 @@ E.TagInfo = {
 		['perhp'] = { category = 'Health', description = "Displays percentage HP without decimals or the % sign. You can display the percent sign by adjusting the tag to [perhp<%]." },
 	--Hunter
 		['diet'] = { category = 'Hunter', description = "Displays the diet of your pet (Fish, Meat, ...)" },
+		['happiness'] = { category = 'Hunter', description = "Displays the pet happiness in simple text emojis (e.g. :D)" },
 		['happiness:discord'] = { category = 'Hunter', description = "Displays the pet happiness like a Discord emoji" },
 		['happiness:full'] = { category = 'Hunter', description = "Displays the pet happiness as a word (e.g. 'Happy')" },
 		['happiness:icon'] = { category = 'Hunter', description = "Displays the pet happiness like the default Blizzard icon" },
@@ -1298,6 +1333,22 @@ E.TagInfo = {
 		['power:max:shortvalue'] = { category = 'Power', description = "Shortvalue of the unit's maximum power" },
 		['power:max'] = { category = 'Power', description = "Displays the unit's maximum power" },
 		['power:percent'] = { category = 'Power', description = "Displays the unit's power as a percentage" },
+		--Energy
+		["energy:current"] = {category = "Energy", description = "Displays the unit's current amount of energy"},
+		["energy:current-percent"] = {category = "Energy", description = "Displays the current energy and energy as a percentage, separated by a dash"},
+		["energy:current-max"] = {category = "Energy", description = "Displays the current energy and max energy, separated by a dash"},
+		["energy:current-max-percent"] = {category = "Energy", description = "Displays the current energy and max energy, separated by a dash (% when not full energy)"},
+		["energy:percent"] = {category = "Energy", description = "Displays the unit's energy as a percentage"},
+		["energy:max"] = {category = "Energy", description = "Displays the unit's maximum energy"},
+		["energy:deficit"] = {category = "Energy", description = "Displays the energy as a deficit (Total Energy - Current Energy = -Deficit)"},
+		--Rage
+		["rage:current"] = {category = "Rage", description = "Displays the unit's current amount of rage"},
+		["rage:current-percent"] = {category = "Rage", description = "Displays the current rage and rage as a percentage, separated by a dash"},
+		["rage:current-max"] = {category = "Rage", description = "Displays the current rage and max rage, separated by a dash"},
+		["rage:current-max-percent"] = {category = "Rage", description = "Displays the current rage and max rage, separated by a dash (% when not full rage)"},
+		["rage:percent"] = {category = "Rage", description = "Displays the unit's rage as a percentage"},
+		["rage:max"] = {category = "Rage", description = "Displays the unit's maximum rage"},
+		["rage:deficit"] = {category = "Rage", description = "Displays the rage as a deficit (Total Rage - Current Rage = -Deficit)"},
 	-- PvP
 		['arena:number'] = { category = 'PvP', description = "Displays the arena number 1-5" },
 		['faction:icon'] = { category = 'PvP', description = "Displays the 'Alliance' or 'Horde' texture" },

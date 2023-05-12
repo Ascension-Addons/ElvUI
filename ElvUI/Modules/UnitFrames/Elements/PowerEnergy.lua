@@ -60,7 +60,7 @@ function UF:Configure_Energy(frame)
 	local energy = frame.Energy
 	energy.origParent = frame
 
-	if frame.USE_ENERGYBAR then
+	if frame.USE_ENERGYBAR and C_Player:IsHero() then
 		if not frame:IsElementEnabled("Energy") then
 			frame:EnableElement("Energy")
 			energy:Show()

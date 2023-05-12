@@ -2860,6 +2860,13 @@ do -- CharacterFrame
 		E.private.enhanced.character.player.orderName2 = E.private.enhanced.character.player.orderName
 		E.private.enhanced.character.player.collapsedName2 = table.copy(E.private.enhanced.character.player.collapsedName)
 	end
+	
+	if C_Player:IsDefaultClass() then
+		-- default class has no primary stat
+		PAPERDOLL_STATCATEGORIES["PRIMARY_STAT"] = nil
+		PAPERDOLL_STATINFO["PRIMARY_STAT"] = nil
+		table.RemoveItem(PAPERDOLL_STATCATEGORY_DEFAULTORDER, "PRIMARY_STAT")
+	end
 
 	local activeSpec = GetActiveTalentGroup()
 	if activeSpec == 1 then

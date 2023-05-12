@@ -145,6 +145,7 @@ function NP:BossMods_AddIcon(unitGUID, texture, duration, desaturate, skip)
 
 	if duration then
 		button.cd:SetCooldown(startTime, duration)
+		button.cd:Show()
 	else
 		button.cd:Hide()
 	end

@@ -653,7 +653,7 @@ function NP:NamePlateCallBack(nameplate, event, unit)
 		NP:StyleFilterSetVariables(nameplate) -- sets: isTarget, isTargetingMe, isFocused
 
 		if (NP.db.fadeIn and not NP.SkipFading) and nameplate.frameType ~= 'PLAYER' then
-			NP:PlateFade(nameplate, 1, 0, 1)
+			NP:PlateFade(nameplate, 0.5, 0, 1)
 		end
 	elseif event == 'NAME_PLATE_UNIT_REMOVED' then
 		if nameplate.isTarget then

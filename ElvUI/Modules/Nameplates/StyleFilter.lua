@@ -483,7 +483,7 @@ function mod:StyleFilterBaseUpdate(frame, state)
 	end
 
 	if state and not mod.SkipFading then
-		mod:PlateFade(frame, mod.db.fadeIn and 1 or 0, 0, 1) -- fade those back in so it looks clean
+		mod:PlateFade(frame, mod.db.fadeIn and 0.5 or 0, 0, 1) -- fade those back in so it looks clean
 	end
 end
 
@@ -556,7 +556,7 @@ function mod:StyleFilterSetChanges(frame, actions, HealthColor, PowerColor, Bord
 	end
 	if Alpha then
 		c.Alpha = true
-		mod:PlateFade(frame, mod.db.fadeIn and 1 or 0, frame:GetAlpha(), actions.alpha * 0.01)
+		mod:PlateFade(frame, mod.db.fadeIn and 0.5 or 0, frame:GetAlpha(), actions.alpha * 0.01)
 	end
 	if Portrait then
 		c.Portrait = true
@@ -654,7 +654,7 @@ function mod:StyleFilterClearChanges(frame, HealthColor, PowerColor, Borders, He
 		mod:ScalePlate(frame, frame.ThreatScale or 1)
 	end
 	if Alpha then
-		mod:PlateFade(frame, mod.db.fadeIn and 1 or 0, (frame.FadeObject and frame.FadeObject.endAlpha) or 0.5, 1)
+		mod:PlateFade(frame, mod.db.fadeIn and 0.5 or 0, (frame.FadeObject and frame.FadeObject.endAlpha) or 0.5, 1)
 	end
 	if Portrait then
 		mod:Update_Portrait(frame)

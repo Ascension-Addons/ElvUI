@@ -171,8 +171,6 @@ end
 
 function NP:Construct_Highlight(nameplate)
 	Highlight = nameplate.nameplateAnchor.blizzHighlight
-	Highlight:SetParent(nameplate)
-	Highlight:SetDrawLayer("OVERLAY")
 	return Highlight
 end
 
@@ -184,14 +182,22 @@ function NP:Update_Highlight(nameplate, nameOnlySF)
 			nameplate:EnableElement('Highlight')
 		end
 		
+		local highlight = nameplate.Highlight
+		if highlight:GetParent() ~= nameplate then
+			highlight:SetParent(nameplate)
+		end
+		
+		if highlight:GetDrawLayer() ~= "OVERLAY" then
+			Highlight:SetDrawLayer("OVERLAY")
+		end
+		
+		highlight:SetTexture(E.Media.Textures.Spark)
+		highlight:SetAllPoints(nameplate)
+		
 		if db.health.enable and not (db.nameOnly or nameOnlySF) then
-			nameplate.Highlight:SetTexture(1, 1, 1, 0.25)
-			nameplate.Highlight:SetAllPoints(nameplate.HealthFlashTexture)
-			nameplate.Highlight:SetAlpha(0.75)
+			highlight:SetAlpha(0.75)
 		else
-			nameplate.Highlight:SetTexture(E.Media.Textures.Spark)
-			nameplate.Highlight:SetAllPoints(nameplate)
-			nameplate.Highlight:SetAlpha(0.50)
+			highlight:SetAlpha(0.50)
 		end
 	elseif nameplate:IsElementEnabled('Highlight') then
 		nameplate:DisableElement('Highlight')
@@ -235,7 +241,7 @@ function NP:Update_Fader(nameplate)
 		if nameplate:IsElementEnabled('Fader') then
 			nameplate:DisableElement('Fader')
 
-			NP:PlateFade(nameplate, 1, nameplate:GetAlpha(), 1)
+			NP:PlateFade(nameplate, 0.5, nameplate:GetAlpha(), 1)
 		end
 	elseif db.enable then
 		if not nameplate.Fader then

@@ -81,6 +81,8 @@ function NP:Construct_AuraIcon(button)
 
 	button.overlay:SetTexture()
 	button.stealable:SetTexture()
+	
+	button.isNamePlate = true
 
 	E:RegisterCooldown(button.cd, 'nameplates')
 

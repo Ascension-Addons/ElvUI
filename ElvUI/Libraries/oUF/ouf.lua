@@ -774,6 +774,7 @@ Used to create nameplates and apply the currently active style to them.
               (function?)
 * variables - list of console variable-value pairs to be set when the player logs in (table?)
 --]]
+local nameplateUnitToFrame = {}
 function oUF:SpawnNamePlates(namePrefix, nameplateCallback, nameplateCVars)
 	argcheck(nameplateCallback, 3, 'function', 'nil')
 	argcheck(nameplateCVars, 4, 'table', 'nil')
@@ -830,6 +831,7 @@ function oUF:SpawnNamePlates(namePrefix, nameplateCallback, nameplateCVars)
 		elseif(event == 'NAME_PLATE_UNIT_ADDED' and unit) then
 			local nameplate = C_NamePlate.GetNamePlateForUnit(unit)
 			if(not nameplate) then return end
+			nameplateUnitToFrame[unit] = nameplate
 
 			if(not nameplate.unitFrame) then
 				self:DisableBlizzardNamePlate(nameplate)
@@ -861,8 +863,9 @@ function oUF:SpawnNamePlates(namePrefix, nameplateCallback, nameplateCVars)
 			-- ForceUpdate calls layout devs have to do themselves
 			nameplate.unitFrame:UpdateAllElements(event)
 		elseif(event == 'NAME_PLATE_UNIT_REMOVED' and unit) then
-			local nameplate = C_NamePlate.GetNamePlateForUnit(unit)
+			local nameplate = nameplateUnitToFrame[unit]
 			if(not nameplate) then return end
+			nameplateUnitToFrame[unit] = nil
 			nameplate.unitFrame:SetAttribute('unit', nil)
 			if(nameplateCallback) then
 				nameplateCallback(nameplate.unitFrame, event, unit)

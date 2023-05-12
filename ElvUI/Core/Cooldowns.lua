@@ -162,11 +162,13 @@ function E:Cooldown_Options(timer, db, parent)
 	end
 end
 
-function E:CreateCooldownTimer(parent)
-	local timer = CreateFrame("Frame", parent:GetName() and "$parentTimer" or nil, parent)
+function E:CreateCooldownTimer(parent, displayParent)
+	local timer = CreateFrame("Frame", parent:GetName() and parent:GetName().."Timer" or nil, displayParent)
+	hooksecurefunc(parent, "Hide", function() timer:Hide() end)
+	hooksecurefunc(parent, "Show", function() timer:Show() end)
 	timer:SetFrameLevel(parent:GetFrameLevel() + 1)
 	timer:Hide()
-	timer:SetAllPoints()
+	timer:SetAllPoints(parent)
 	timer.parent = parent
 	parent.timer = timer
 
@@ -199,9 +201,9 @@ function E:CreateCooldownTimer(parent)
 end
 
 E.RegisteredCooldowns = {}
-function E:OnSetCooldown(start, duration)
+function E:OnSetCooldown(start, duration, recursive)
 	if (not self.forceDisabled) and (start and duration) and (duration > MIN_DURATION) then
-		local timer = self.timer or E:CreateCooldownTimer(self)
+		local timer = self.timer or E:CreateCooldownTimer(self, self:GetParent())
 		timer.start = start
 		timer.duration = duration
 		timer.endTime = start + duration
@@ -213,14 +215,22 @@ function E:OnSetCooldown(start, duration)
 	end
 end
 
-function E:RegisterCooldown(cooldown)
+function E:RegisterCooldown(cooldown, module)
 	if not cooldown.isHooked then
 		hooksecurefunc(cooldown, "SetCooldown", E.OnSetCooldown)
+		if cooldown:GetParent().isNamePlate then
+			cooldown.Show = cooldown.Hide
+			cooldown:Hide()
+		end
 		cooldown.isHooked = true
 	end
 
 	if not cooldown.isRegisteredCooldown then
-		local module = (cooldown.CooldownOverride or "global")
+		if module then
+			cooldown.CooldownOverride = module
+		else
+			module = (cooldown.CooldownOverride or "global")
+		end
 		if not E.RegisteredCooldowns[module] then E.RegisteredCooldowns[module] = {} end
 
 		tinsert(E.RegisteredCooldowns[module], cooldown)
@@ -229,26 +239,24 @@ function E:RegisterCooldown(cooldown)
 end
 
 do
-	local function RGB(db) return E:CopyTable({r = 1, g = 1, b = 1}, db) end
 	local function HEX(db) return E:RGBToHex(db.r, db.g, db.b) end
-
 	function E:GetCooldownColors(db)
 		if not db then db = E.db.cooldown end -- just incase someone calls this without a first arg use the global
 		return
-		HEX(db.hhmmColorIndicator),
-		HEX(db.mmssColorIndicator),
-		HEX(db.expireIndicator),
-		HEX(db.secondsIndicator),
-		HEX(db.minutesIndicator),
-		HEX(db.hoursIndicator),
+		db.daysColor,
+		db.hoursColor,
+		db.minutesColor,
+		db.secondsColor,
+		db.expiringColor,
+		db.mmssColor,
+		db.hhmmColor,
 		HEX(db.daysIndicator),
-		RGB(db.hhmmColor),
-		RGB(db.mmssColor),
-		RGB(db.expiringColor),
-		RGB(db.secondsColor),
-		RGB(db.minutesColor),
-		RGB(db.hoursColor),
-		RGB(db.daysColor)
+		HEX(db.hoursIndicator),
+		HEX(db.minutesIndicator),
+		HEX(db.secondsIndicator),
+		HEX(db.expireIndicator),
+		HEX(db.mmssColorIndicator),
+		HEX(db.hhmmColorIndicator)
 	end
 end
 
