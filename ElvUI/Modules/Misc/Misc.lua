@@ -63,7 +63,7 @@ do
 end
 
 do
-	local interruptMsg = INTERRUPTED.." %s's \124cff71d5ff\124Hspell:%d\124h[%s]\124h\124r!"
+	local interruptMsg = " "..INTERRUPTED.." %s's \124cff71d5ff\124Hspell:%d\124h[%s]\124h\124r!"
 
 	function M:ToggleInterruptAnnounce()
 		if E.db.general.interruptAnnounce == "NONE" then
