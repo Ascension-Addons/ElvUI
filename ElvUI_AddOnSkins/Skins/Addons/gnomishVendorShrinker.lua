@@ -33,7 +33,7 @@ S:AddCallbackForAddon("GnomishVendorShrinker", "GnomishVendorShrinker", function
 	if not GVS then return end
 
 	GVS:Size(304, 294)
-	GVS:Point("TOPLEFT", 19, -44)
+	GVS:Point("TOPLEFT", 19, -54)
 	GVS:SetTemplate("Transparent")
 
 	MerchantBuyBackItem:ClearAllPoints()
@@ -84,7 +84,7 @@ S:AddCallbackForAddon("GnomishVendorShrinker", "GnomishVendorShrinker", function
 			end
 
 			child:Height(18)
-			child:Point("TOPLEFT", GVS, "BOTTOMLEFT", 1, -3)
+			child:Point("TOPLEFT", GVS, "BOTTOMLEFT", 1, -61)
 			S:HandleEditBox(child)
 		elseif objType == "Slider" then
 			for _, child2 in ipairs({child:GetChildren()}) do
@@ -112,8 +112,4 @@ S:AddCallbackForAddon("GnomishVendorShrinker", "GnomishVendorShrinker", function
 			S:HandleScrollBar(child)
 		end
 	end
-	MerchantBuyBackItem:ClearAllPoints()
-	MerchantBuyBackItem:Point("TOPLEFT", MerchantItem10, "BOTTOMLEFT", 0, -24)
-	MerchantBuyBackItemItemButton:ClearAllPoints()
-	MerchantBuyBackItemItemButton:Point("TOPLEFT", MerchantBuyBackItem, "TOPLEFT", 4, -4)
 end)

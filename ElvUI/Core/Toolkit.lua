@@ -1,5 +1,6 @@
 local E, L, V, P, G = unpack(select(2, ...)); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local LSM = E.Libs.LSM
+local NP = E:GetModule('NamePlates')
 
 --Lua functions
 local _G = _G
@@ -78,7 +79,7 @@ local function SetInside(obj, anchor, xOffset, yOffset, anchor2)
 	obj:Point("BOTTOMRIGHT", anchor2 or anchor, "BOTTOMRIGHT", -xOffset, yOffset)
 end
 
-local function SetTemplate(frame, template, glossTex, ignoreUpdates, forcePixelMode, isUnitFrameElement)
+local function SetTemplate(frame, template, glossTex, ignoreUpdates, forcePixelMode, isUnitFrameElement, isNamePlateElement)
 	GetTemplate(template, isUnitFrameElement)
 
 	frame.template = template or "Default"
@@ -86,10 +87,25 @@ local function SetTemplate(frame, template, glossTex, ignoreUpdates, forcePixelM
 	if ignoreUpdates then frame.ignoreUpdates = ignoreUpdates end
 	if forcePixelMode then frame.forcePixelMode = forcePixelMode end
 	if isUnitFrameElement then frame.isUnitFrameElement = isUnitFrameElement end
+	frame.isNamePlateElement = isNamePlateElement
 
 	local bgFile = glossTex and E.media.glossTex or E.media.blankTex
 
-	if template ~= "NoBackdrop" then
+	if isNamePlateElement then
+		local bg = frame:CreateTexture(nil, "BACKGROUND")
+		bg:SetAllPoints()
+		GetTemplate(template, isUnitFrameElement)
+		--bg:SetTexture(bgFile)
+		bg:SetTexture(backdropr, backdropg, backdropb, backdropa)
+		if not frame.ignoreUpdates then
+			if frame.isUnitFrameElement then
+				E.unitFrameElements[frame] = true
+			else
+				E.frames[frame] = true
+			end
+		end
+		return
+	elseif template ~= "NoBackdrop" then
 		frame:SetBackdrop({
 			bgFile = bgFile,
 			edgeFile = E.media.blankTex,
@@ -99,7 +115,8 @@ local function SetTemplate(frame, template, glossTex, ignoreUpdates, forcePixelM
 
 		frame:SetBackdropColor(backdropr, backdropg, backdropb, backdropa)
 
-		if not E.PixelMode and not frame.forcePixelMode then
+		local notPixelMode = not isUnitFrameElement and not isNamePlateElement and not E.PixelMode
+		if notPixelMode and not frame.forcePixelMode then
 			if not frame.iborder then
 				local border = CreateFrame("Frame", nil, frame)
 				border:SetInside(frame, E.mult, E.mult)
@@ -139,7 +156,7 @@ local function SetTemplate(frame, template, glossTex, ignoreUpdates, forcePixelM
 	end
 end
 
-local function CreateBackdrop(frame, template, glossTex, ignoreUpdates, forcePixelMode, isUnitFrameElement)
+local function CreateBackdrop(frame, template, glossTex, ignoreUpdates, forcePixelMode, isUnitFrameElement, isNamePlateElement)
 	if not template then template = "Default" end
 
 	local parent = (frame.IsObjectType and frame:IsObjectType("Texture") and frame:GetParent()) or frame
@@ -147,12 +164,13 @@ local function CreateBackdrop(frame, template, glossTex, ignoreUpdates, forcePix
 	if not frame.backdrop then frame.backdrop = backdrop end
 
 	if frame.forcePixelMode or forcePixelMode then
-		backdrop:SetOutside(frame, E.mult, E.mult)
+		backdrop:SetOutside(frame, E.twoPixelsPlease and 2 or 1, E.twoPixelsPlease and 2 or 1)
 	else
-		backdrop:SetOutside(frame)
+		local border = isNamePlateElement and NP.BORDER or nil
+		backdrop:SetOutside(frame, border, border)
 	end
-
-	backdrop:SetTemplate(template, glossTex, ignoreUpdates, forcePixelMode, isUnitFrameElement)
+		
+	backdrop:SetTemplate(template, glossTex, ignoreUpdates, forcePixelMode, isUnitFrameElement, isNamePlateElement)
 
 	local frameLevel = parent.GetFrameLevel and parent:GetFrameLevel()
 	local frameLevelMinusOne = frameLevel and (frameLevel - 1)

@@ -162,11 +162,13 @@ function E:Cooldown_Options(timer, db, parent)
 	end
 end
 
-function E:CreateCooldownTimer(parent)
-	local timer = CreateFrame("Frame", parent:GetName() and "$parentTimer" or nil, parent)
+function E:CreateCooldownTimer(parent, displayParent)
+	local timer = CreateFrame("Frame", parent:GetName() and parent:GetName().."Timer" or nil, displayParent)
+	hooksecurefunc(parent, "Hide", function() timer:Hide() end)
+	hooksecurefunc(parent, "Show", function() timer:Show() end)
 	timer:SetFrameLevel(parent:GetFrameLevel() + 1)
 	timer:Hide()
-	timer:SetAllPoints()
+	timer:SetAllPoints(parent)
 	timer.parent = parent
 	parent.timer = timer
 
@@ -199,9 +201,9 @@ function E:CreateCooldownTimer(parent)
 end
 
 E.RegisteredCooldowns = {}
-function E:OnSetCooldown(start, duration)
+function E:OnSetCooldown(start, duration, recursive)
 	if (not self.forceDisabled) and (start and duration) and (duration > MIN_DURATION) then
-		local timer = self.timer or E:CreateCooldownTimer(self)
+		local timer = self.timer or E:CreateCooldownTimer(self, self:GetParent())
 		timer.start = start
 		timer.duration = duration
 		timer.endTime = start + duration
@@ -213,14 +215,22 @@ function E:OnSetCooldown(start, duration)
 	end
 end
 
-function E:RegisterCooldown(cooldown)
+function E:RegisterCooldown(cooldown, module)
 	if not cooldown.isHooked then
 		hooksecurefunc(cooldown, "SetCooldown", E.OnSetCooldown)
+		if cooldown:GetParent().isNamePlate then
+			cooldown.Show = cooldown.Hide
+			cooldown:Hide()
+		end
 		cooldown.isHooked = true
 	end
 
 	if not cooldown.isRegisteredCooldown then
-		local module = (cooldown.CooldownOverride or "global")
+		if module then
+			cooldown.CooldownOverride = module
+		else
+			module = (cooldown.CooldownOverride or "global")
+		end
 		if not E.RegisteredCooldowns[module] then E.RegisteredCooldowns[module] = {} end
 
 		tinsert(E.RegisteredCooldowns[module], cooldown)
@@ -228,23 +238,26 @@ function E:RegisterCooldown(cooldown)
 	end
 end
 
-function E:GetCooldownColors(db)
-	if not db then db = E.db.cooldown end -- just incase someone calls this without a first arg use the global
-	local c13 = E:RGBToHex(db.hhmmColorIndicator.r, db.hhmmColorIndicator.g, db.hhmmColorIndicator.b) -- color for timers that are soon to expire
-	local c12 = E:RGBToHex(db.mmssColorIndicator.r, db.mmssColorIndicator.g, db.mmssColorIndicator.b) -- color for timers that are soon to expire
-	local c11 = E:RGBToHex(db.expireIndicator.r, db.expireIndicator.g, db.expireIndicator.b) -- color for timers that are soon to expire
-	local c10 = E:RGBToHex(db.secondsIndicator.r, db.secondsIndicator.g, db.secondsIndicator.b) -- color for timers that have seconds remaining
-	local c9 = E:RGBToHex(db.minutesIndicator.r, db.minutesIndicator.g, db.minutesIndicator.b) -- color for timers that have minutes remaining
-	local c8 = E:RGBToHex(db.hoursIndicator.r, db.hoursIndicator.g, db.hoursIndicator.b) -- color for timers that have hours remaining
-	local c7 = E:RGBToHex(db.daysIndicator.r, db.daysIndicator.g, db.daysIndicator.b) -- color for timers that have days remaining
-	local c6 = db.hhmmColor -- HH:MM color
-	local c5 = db.mmssColor -- MM:SS color
-	local c4 = db.expiringColor -- color for timers that are soon to expire
-	local c3 = db.secondsColor -- color for timers that have seconds remaining
-	local c2 = db.minutesColor -- color for timers that have minutes remaining
-	local c1 = db.hoursColor -- color for timers that have hours remaining
-	local c0 = db.daysColor -- color for timers that have days remaining
-	return c0, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13
+do
+	local function HEX(db) return E:RGBToHex(db.r, db.g, db.b) end
+	function E:GetCooldownColors(db)
+		if not db then db = E.db.cooldown end -- just incase someone calls this without a first arg use the global
+		return
+		db.daysColor,
+		db.hoursColor,
+		db.minutesColor,
+		db.secondsColor,
+		db.expiringColor,
+		db.mmssColor,
+		db.hhmmColor,
+		HEX(db.daysIndicator),
+		HEX(db.hoursIndicator),
+		HEX(db.minutesIndicator),
+		HEX(db.secondsIndicator),
+		HEX(db.expireIndicator),
+		HEX(db.mmssColorIndicator),
+		HEX(db.hhmmColorIndicator)
+	end
 end
 
 function E:UpdateCooldownOverride(module)

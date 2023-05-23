@@ -65,6 +65,12 @@ function UF:Configure_Happiness(frame)
 end
 
 function UF:HappinessOverride(event, unit)
+	if unit and self.isNamePlate and unit:sub(1, 9) ~= "nameplate" then
+		local isUnit = self.unit and UnitIsUnit(self.unit, unit)
+		if isUnit then
+			unit = self.unit
+		end
+	end
 	if not unit or self.unit ~= unit then return end
 
 	local db = self.db

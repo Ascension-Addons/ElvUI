@@ -14,6 +14,10 @@ local hiddenParent = CreateFrame('Frame', nil, UIParent)
 hiddenParent:SetAllPoints()
 hiddenParent:Hide()
 
+local offScreenParent = CreateFrame('Frame', nil, UIParent)
+offScreenParent:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", 0, -128)
+offScreenParent:SetFrameLevel(0)
+
 local function handleFrame(baseName)
 	local frame
 	if(type(baseName) == 'string') then
@@ -49,6 +53,34 @@ local function handleFrame(baseName)
 			buffFrame:UnregisterAllEvents()
 		end
 	end
+end
+
+function oUF:DisableBlizzardNamePlate(nameplate)
+	-- we have to preserve the base frame since the unit frame will attach to it
+	local blizzElements = {nameplate:GetRegions()}
+	local healthBar, castBar = nameplate:GetChildren()
+	tinsert(blizzElements, healthBar)
+
+	nameplate.blizzHighlight = blizzElements[6]
+	nameplate.HealthBar = healthBar
+	nameplate.CastBar = castBar
+
+	for _, child in ipairs(blizzElements) do
+		child:SetParent(hiddenParent)
+		child:SetAlpha(0)
+		child:Hide()
+		if child.SetTexture then
+			child:SetTexture()
+		elseif child.SetStatusBarTexture then
+			child:SetStatusBarTexture(nil) -- this needs nil
+		end
+	end
+
+	-- cast bar has to be special because we need onhide / onshow to fire still
+	castBar:SetParent(offScreenParent)
+	castBar:SetStatusBarTexture(nil)
+	castBar:SetAlpha(0)
+	castBar:Hide()
 end
 
 function oUF:DisableBlizzard(unit)

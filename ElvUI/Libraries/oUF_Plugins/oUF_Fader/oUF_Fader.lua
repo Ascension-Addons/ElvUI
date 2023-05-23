@@ -62,6 +62,12 @@ local function Update(self, _, unit)
 	end
 
 	unit = unit or self.unit
+	if unit and self.isNamePlate and unit:sub(1, 9) ~= "nameplate" then
+		local isUnit = self.unit and UnitIsUnit(self.unit, unit)
+		if isUnit then
+			unit = self.unit
+		end
+	end
 	if self.unit ~= unit then return end
 
 	-- range fader
@@ -129,6 +135,7 @@ local function HoverScript(self)
 end
 
 local function TargetScript(self)
+	if self.isNamePlate and C_NamePlateManager.IsNamePlateMoving(self) then return end
 	if self.Fader and self.Fader.TargetHooked == 1 then
 		if self:IsShown() then
 			self.Fader:ForceUpdate()

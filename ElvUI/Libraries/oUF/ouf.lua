@@ -311,6 +311,10 @@ local function togglemenu(self, unit)
 end
 
 local function onShow(self)
+	if self.isNamePlate then
+		local nameplate = C_NamePlate.GetNamePlateForUnit(self.unit)
+		if nameplate and C_NamePlateManager.IsNamePlateMoving(nameplate.unitFrame) then return end
+	end
 	if(not updateActiveUnit(self, 'OnShow')) then
 		return self:UpdateAllElements('OnShow')
 	end
@@ -417,7 +421,6 @@ local function initObject(unit, style, styleFunc, header, ...)
 		activeElements[object] = {} -- ElvUI: styleFunc on headers break before this is set when they try to enable elements before it's set.
 
 		Private.UpdateUnits(object, objectUnit)
-
 		styleFunc(object, objectUnit, not header)
 
 		object:HookScript('OnAttributeChanged', onAttributeChanged)
@@ -759,6 +762,116 @@ function oUF:Spawn(unit, overrideName)
 	RegisterUnitWatch(object)
 
 	return object
+end
+
+--[[ oUF:SpawnNamePlates(prefix, callback, variables)
+Used to create nameplates and apply the currently active style to them.
+
+* self      - the global oUF object
+* prefix    - prefix for the global name of the nameplate. Defaults to an auto-generated prefix (string?)
+* callback  - function to be called after a nameplate unit or the player's target has changed. The arguments passed to
+              the callback are the updated nameplate, if any, the event that triggered the update, and the new unit
+              (function?)
+* variables - list of console variable-value pairs to be set when the player logs in (table?)
+--]]
+local nameplateUnitToFrame = {}
+function oUF:SpawnNamePlates(namePrefix, nameplateCallback, nameplateCVars)
+	argcheck(nameplateCallback, 3, 'function', 'nil')
+	argcheck(nameplateCVars, 4, 'table', 'nil')
+	if(not style) then return error('Unable to create frame. No styles have been registered.') end
+	if(_G.oUF_NamePlateDriver) then return error('oUF nameplate driver has already been initialized.') end
+
+	local style = style
+	local prefix = namePrefix or generateName()
+
+	local eventHandler = CreateFrame('Frame', 'oUF_NamePlateDriver')
+	eventHandler:RegisterEvent('NAME_PLATE_UNIT_ADDED')
+	eventHandler:RegisterEvent('NAME_PLATE_UNIT_REMOVED')
+	eventHandler:RegisterEvent('PLAYER_TARGET_CHANGED')
+	eventHandler:RegisterEvent('UNIT_FACTION')
+	eventHandler:RegisterEvent('UNIT_FLAGS')
+
+	if(IsLoggedIn()) then
+		if(nameplateCVars) then
+			for cvar, value in next, nameplateCVars do
+				SetCVar(cvar, value)
+			end
+		end
+	else
+		eventHandler:RegisterEvent('PLAYER_LOGIN')
+	end
+
+	C_NamePlateManager.SetEnableResizeNamePlates(true)
+
+	eventHandler:SetScript('OnEvent', function(_, event, unit)
+		if(event == 'PLAYER_LOGIN') then
+			if(nameplateCVars) then
+				for cvar, value in next, nameplateCVars do
+					SetCVar(cvar, value)
+				end
+			end
+		elseif(event == 'PLAYER_TARGET_CHANGED') then
+			local nameplate = C_NamePlate.GetNamePlateForUnit('target')
+			if(nameplateCallback) then
+				nameplateCallback(nameplate and nameplate.unitFrame, event, 'target')
+			end
+
+			-- UAE is called after the callback to reduce the number of
+			-- ForceUpdate calls layout devs have to do themselves
+			if(nameplate) then
+				nameplate.unitFrame:UpdateAllElements(event)
+			end
+		elseif(event == 'UNIT_FACTION' and unit) then
+			local nameplate = C_NamePlate.GetNamePlateForUnit(unit)
+			if(not nameplate) then return end
+
+			if(nameplateCallback) then
+				nameplateCallback(nameplate.unitFrame, event, unit)
+			end
+		elseif(event == 'NAME_PLATE_UNIT_ADDED' and unit) then
+			local nameplate = C_NamePlate.GetNamePlateForUnit(unit)
+			if(not nameplate) then return end
+			nameplateUnitToFrame[unit] = nameplate
+
+			if(not nameplate.unitFrame) then
+				self:DisableBlizzardNamePlate(nameplate)
+				nameplate.style = style
+				nameplate.isNamePlate = true
+
+				nameplate.unitFrame = CreateFrame('Button', prefix..tostring(nameplate), nameplate)
+				nameplate.unitFrame:EnableMouse(false)
+				nameplate.unitFrame.isNamePlate = true
+				nameplate.unitFrame.nameplateAnchor = nameplate
+
+				Private.UpdateUnits(nameplate.unitFrame, unit)
+				walkObject(nameplate.unitFrame, unit)
+				C_NamePlateManager.ApplyFPSIncrease(nameplate.unitFrame)
+			else
+				-- for _, child in ipairs(nameplate.blizzElements) do
+				-- 	ClearNamePlateElement(child)
+				-- end
+				Private.UpdateUnits(nameplate.unitFrame, unit)
+			end
+
+			nameplate.unitFrame:SetAttribute('unit', unit)
+
+			if(nameplateCallback) then
+				nameplateCallback(nameplate.unitFrame, event, unit)
+			end
+
+			-- UAE is called after the callback to reduce the number of
+			-- ForceUpdate calls layout devs have to do themselves
+			nameplate.unitFrame:UpdateAllElements(event)
+		elseif(event == 'NAME_PLATE_UNIT_REMOVED' and unit) then
+			local nameplate = nameplateUnitToFrame[unit]
+			if(not nameplate) then return end
+			nameplateUnitToFrame[unit] = nil
+			nameplate.unitFrame:SetAttribute('unit', nil)
+			if(nameplateCallback) then
+				nameplateCallback(nameplate.unitFrame, event, unit)
+			end
+		end
+	end)
 end
 
 --[[ oUF:AddElement(name, update, enable, disable)

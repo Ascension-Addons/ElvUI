@@ -60,7 +60,7 @@ function UF:Configure_Rage(frame)
 	local rage = frame.Rage
 	rage.origParent = frame
 
-	if frame.USE_RAGEBAR then
+	if frame.USE_RAGEBAR and C_Player:IsHero() then
 		if not frame:IsElementEnabled("Rage") then
 			frame:EnableElement("Rage")
 			rage:Show()

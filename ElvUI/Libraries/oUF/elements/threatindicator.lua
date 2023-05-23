@@ -36,7 +36,14 @@ local UnitExists = UnitExists
 local UnitThreatSituation = UnitThreatSituation
 
 local function Update(self, event, unit)
-	if(not unit or self.unit ~= unit) then return end
+	if not unit then return end
+	if unit and self.isNamePlate and unit:sub(1, 9) ~= "nameplate" then
+		local isUnit = self.unit and UnitIsUnit(self.unit, unit)
+		if isUnit then
+			unit = self.unit
+		end
+	end
+	if(self.unit ~= unit) then return end
 
 	local element = self.ThreatIndicator
 	--[[ Callback: ThreatIndicator:PreUpdate(unit)

@@ -1,5 +1,6 @@
 local E, L, V, P, G = unpack(select(2, ...)); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local UF = E:GetModule("UnitFrames")
+local NP = E:GetModule('NamePlates')
 local LSM = E.Libs.LSM
 
 --Lua functions
@@ -15,6 +16,58 @@ local IsControlKeyDown = IsControlKeyDown
 local UnitCanAttack = UnitCanAttack
 local UnitIsFriend = UnitIsFriend
 local UnitIsUnit = UnitIsUnit
+
+UF.MatchGrowthY = { TOP = 'TOP', BOTTOM = 'BOTTOM' }
+UF.MatchGrowthX = { LEFT = 'LEFT', RIGHT = 'RIGHT' }
+
+UF.SortAuraFuncs = {
+	TIME_REMAINING = function(a, b, dir)
+		local A = a.noTime and huge or a.expiration or -huge
+		local B = b.noTime and huge or b.expiration or -huge
+		if dir == 'DESCENDING' then return A < B else return A > B end
+	end,
+	DURATION = function(a, b, dir)
+		local A = a.noTime and huge or a.duration or -huge
+		local B = b.noTime and huge or b.duration or -huge
+		if dir == 'DESCENDING' then return A < B else return A > B end
+	end,
+	NAME = function(a, b, dir)
+		local A, B = a.name or '', b.name or ''
+		if dir == 'DESCENDING' then return A < B else return A > B end
+	end,
+	PLAYER = function(a, b, dir)
+		local A, B = a.isPlayer or false, b.isPlayer or false
+		if dir == 'DESCENDING' then return A and not B else return not A and B end
+	end,
+}
+
+UF.SmartPosition = {
+	BUFFS_ON_DEBUFFS = {
+		from = 'BUFFS', to = 'Debuffs',
+		warning = format(L["This setting caused a conflicting anchor point, where '%s' would be attached to itself. Please check your anchor points. Setting '%s' to be attached to '%s'."], L["Buffs"], L["Debuffs"], L["Frame"]),
+		func = function(db, buffs, debuffs)
+			db.buffs.attachTo = 'DEBUFFS'
+			buffs.attachTo = debuffs
+
+			buffs.PostUpdate = nil
+			debuffs.PostUpdate = UF.UpdateAuraSmartPoisition
+		end
+	},
+	DEBUFFS_ON_BUFFS = {
+		from = 'DEBUFFS', to = 'Buffs',
+		warning = format(L["This setting caused a conflicting anchor point, where '%s' would be attached to itself. Please check your anchor points. Setting '%s' to be attached to '%s'."], L["Debuffs"], L["Buffs"], L["Frame"]),
+		func = function(db, buffs, debuffs)
+			db.debuffs.attachTo = 'BUFFS'
+			debuffs.attachTo = buffs
+
+			debuffs.PostUpdate = nil
+			buffs.PostUpdate = UF.UpdateAuraSmartPoisition
+		end
+	}
+}
+
+UF.SmartPosition.FLUID_BUFFS_ON_DEBUFFS = E:CopyTable({fluid = true}, UF.SmartPosition.BUFFS_ON_DEBUFFS)
+UF.SmartPosition.FLUID_DEBUFFS_ON_BUFFS = E:CopyTable({fluid = true}, UF.SmartPosition.DEBUFFS_ON_BUFFS)
 
 function UF:Construct_Buffs(frame)
 	local buffs = CreateFrame("Frame", frame:GetName().."Buffs", frame)
@@ -132,6 +185,48 @@ function UF:UpdateAuraCooldownPosition(button)
 	end
 
 	button.needsUpdateCooldownPosition = nil
+end
+
+function UF:GetAuraElements(frame)
+	if frame.isNamePlate then
+		return frame.Buffs_, frame.Debuffs_
+	else
+		return frame.Buffs, frame.Debuffs
+	end
+end
+
+function UF:SetSmartPosition(frame, db)
+	if frame.isNamePlate then db = NP:PlateDB(frame) end
+
+	local position, fluid = db.smartAuraPosition
+	local buffs, debuffs = UF:GetAuraElements(frame)
+	local info = UF.SmartPosition[position]
+	if info then
+		local TO = db[strlower(info.to)]
+		if TO.attachTo == info.from then
+			TO.attachTo = 'FRAME'
+
+			E:Print(info.warning)
+
+			local element = (info.to == 'Debuffs' and debuffs) or buffs
+			element.attachTo = frame
+			element:ClearAllPoints()
+			element:Point(element.initialAnchor, element.attachTo, element.anchorPoint, element.xOffset, element.yOffset)
+		end
+
+		fluid = info.fluid
+		info.func(db, buffs, debuffs, info.isFuild)
+	else
+		buffs.PostUpdate = nil
+		debuffs.PostUpdate = nil
+	end
+
+	if db.debuffs.attachTo == 'BUFFS' and db.buffs.attachTo == 'DEBUFFS' then
+		E:Print(format(L["%s frame has a conflicting anchor point. Forcing the Buffs to be attached to the main unitframe."], E:StringTitle(frame:GetName())))
+		db.buffs.attachTo = 'FRAME'
+	end
+
+	return position, fluid
 end
 
 function UF:Configure_Auras(frame, auraType)
@@ -379,6 +474,31 @@ function UF:PostUpdateAura(unit, button)
 
 	if button.needsUpdateCooldownPosition and (button.cd and button.cd.timer and button.cd.timer.text) then
 		UF:UpdateAuraCooldownPosition(button)
+	end
+end
+
+function UF:GetSmartAuraElements(auras)
+	local Buffs, Debuffs = UF:GetAuraElements(auras:GetParent())
+	if auras == Buffs then
+		return Debuffs, Buffs, auras.visibleBuffs
+	else
+		return Buffs, Debuffs, auras.visibleDebuffs
+	end
+end
+
+function UF:UpdateAuraSmartPoisition()
+	local element, other, visible = UF:GetSmartAuraElements(self)
+
+	if visible == 0 then
+		if self.smartFluid then
+			element:ClearAllPoints()
+			element:Point(other.initialAnchor, other.attachTo, other.anchorPoint, other.xOffset, other.yOffset)
+		else
+			other:Height(UF:GetAuraPosition(other, true))
+		end
+	else
+		element:ClearAllPoints()
+		element:Point(element.initialAnchor, element.attachTo, element.anchorPoint, element.xOffset, element.yOffset)
 	end
 end
 

@@ -31,15 +31,15 @@ local colors = {
 }
 
 for classToken, color in next, RAID_CLASS_COLORS do
-	colors.class[classToken] = {color.r, color.g, color.b}
+	colors.class[classToken] = {color.r, color.g, color.b, r = color.r, g = color.g, b = color.b}
 end
 
 for debuffType, color in next, DebuffTypeColor do
-	colors.debuff[debuffType] = {color.r, color.g, color.b}
+	colors.debuff[debuffType] = {color.r, color.g, color.b, r = color.r, g = color.g, b = color.b}
 end
 
 for eclass, color in next, FACTION_BAR_COLORS do
-	colors.reaction[eclass] = {color.r, color.g, color.b}
+	colors.reaction[eclass] = {color.r, color.g, color.b, r = color.r, g = color.g, b = color.b}
 end
 
 for power, color in next, PowerBarColor do
@@ -48,10 +48,10 @@ for power, color in next, PowerBarColor do
 			colors.power[power] = {}
 
 			for index, color in next, color do
-				colors.power[power][index] = {color.r, color.g, color.b}
+				colors.power[power][index] = {color.r, color.g, color.b, r = color.r, g = color.g, b = color.b}
 			end
 		else
-			colors.power[power] = {color.r, color.g, color.b, atlas = color.atlas}
+			colors.power[power] = {color.r, color.g, color.b, atlas = color.atlas, r = color.r, g = color.g, b = color.b}
 		end
 	end
 end

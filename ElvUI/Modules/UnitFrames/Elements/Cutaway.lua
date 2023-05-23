@@ -10,7 +10,7 @@ function UF:Construct_Cutaway(frame)
 
 	if frame.Power then
 		local powerTexture = frame.Power:GetStatusBarTexture()
-		local cutawayPower = frame.Power.ClipFrame:CreateTexture(frameName.."CutawayPower")
+		local cutawayPower = frame.Power:CreateTexture(frameName.."CutawayPower")
 		cutawayPower:SetPoint("TOPLEFT", powerTexture, "TOPRIGHT")
 		cutawayPower:SetPoint("BOTTOMLEFT", powerTexture, "BOTTOMRIGHT")
 		cutawayPower:SetTexture(E.media.blankTex)
@@ -18,7 +18,7 @@ function UF:Construct_Cutaway(frame)
 	end
 
 	local healthTexture = frame.Health:GetStatusBarTexture()
-	local cutawayHealth = frame.Health.ClipFrame:CreateTexture(frameName.."CutawayHealth")
+	local cutawayHealth = frame.Health:CreateTexture(frameName.."CutawayHealth")
 	cutawayHealth:SetPoint("TOPLEFT", healthTexture, "TOPRIGHT")
 	cutawayHealth:SetPoint("BOTTOMLEFT", healthTexture, "BOTTOMRIGHT")
 	cutawayHealth:SetTexture(E.media.blankTex)

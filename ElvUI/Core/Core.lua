@@ -60,6 +60,7 @@ E.myname = UnitName("player")
 E.myrealm = GetRealmName()
 E.mynameRealm = format('%s - %s', E.myname, E.myrealm) -- contains spaces/dashes in realm (for profile keys)
 E.version = GetAddOnMetadata("ElvUI", "Version")
+E.versionNum = tonumber(E.version)
 E.wowpatch, E.wowbuild = GetBuildInfo()
 E.wowbuild = tonumber(E.wowbuild)
 E.resolution = GetCVar("gxResolution")
@@ -1134,6 +1135,14 @@ function E:DBConversions()
 	if E.private.skins.blizzard.greeting ~= nil then
 		E.private.skins.blizzard.greeting = nil
 	end
+
+	-- VERSION 7.0 -- nameplate overhaul
+	if not E.db.version or E.db.version < 7 then
+		-- wipe nameplates
+		E:CopyTable(self.db.nameplates, P.nameplates)
+	end
+
+	E.db.version = E.versionNum
 end
 
 function E:RefreshModulesDB()
@@ -1141,6 +1150,37 @@ function E:RefreshModulesDB()
 	-- onto the unitframe module, its useful dont delete! D:
 	twipe(UnitFrames.db) --old ref, dont need so clear it
 	UnitFrames.db = self.db.unitframe --new ref
+end
+
+do
+	-- Shamelessly taken from AceDB-3.0 and stripped down by Simpy
+	function E:CopyDefaults(dest, src)
+		for k, v in pairs(src) do
+			if type(v) == 'table' then
+				if not rawget(dest, k) then rawset(dest, k, {}) end
+				if type(dest[k]) == 'table' then E:CopyDefaults(dest[k], v) end
+			elseif rawget(dest, k) == nil then
+				rawset(dest, k, v)
+			end
+		end
+
+		return dest
+	end
+
+	function E:RemoveDefaults(db, defaults)
+		setmetatable(db, nil)
+
+		for k, v in pairs(defaults) do
+			if type(v) == 'table' and type(db[k]) == 'table' then
+				E:RemoveDefaults(db[k], v)
+				if next(db[k]) == nil then db[k] = nil end
+			elseif db[k] == defaults[k] then
+				db[k] = nil
+			end
+		end
+
+		return db
+	end
 end
 
 function E:Initialize()

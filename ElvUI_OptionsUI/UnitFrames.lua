@@ -4205,8 +4205,6 @@ E.Options.args.unitframe.args.player = {
 		health = GetOptionsTable_Health(false, UF.CreateAndUpdateUF, "player"),
 		infoPanel = GetOptionsTable_InformationPanel(UF.CreateAndUpdateUF, "player"),
 		power = GetOptionsTable_Power(true, UF.CreateAndUpdateUF, "player", nil, true),
-		energy = GetOptionsTable_Energy(true, UF.CreateAndUpdateUF, "player", nil, true),
-		rage = GetOptionsTable_Rage(true, UF.CreateAndUpdateUF, "player", nil, true),
 		name = GetOptionsTable_Name(UF.CreateAndUpdateUF, "player"),
 		portrait = GetOptionsTable_Portrait(UF.CreateAndUpdateUF, "player"),
 		fader = GetOptionsTable_Fader(UF.CreateAndUpdateUF, "player"),
@@ -4702,6 +4700,11 @@ E.Options.args.unitframe.args.player = {
 		}
 	}
 }
+
+if C_Player:IsHero() then
+	E.Options.args.unitframe.args.player.args.energy = GetOptionsTable_Energy(true, UF.CreateAndUpdateUF, "player", nil, true)
+	E.Options.args.unitframe.args.player.args.rage = GetOptionsTable_Rage(true, UF.CreateAndUpdateUF, "player", nil, true)
+end
 
 --Target Frame
 E.Options.args.unitframe.args.target = {
