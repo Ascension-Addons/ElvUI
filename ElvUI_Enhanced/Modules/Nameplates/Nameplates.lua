@@ -520,7 +520,7 @@ function ENP:UpdateAllSettings()
 
 	if E.db.enhanced.nameplates.chatBubbles or E.db.enhanced.nameplates.titleCache then
 		if not ENP:IsHooked(NP, "OnHide") then
-			ENP:Hook(NP, "OnHide", OnHideHook)
+			ENP:Hook(NP, "OnHide", OnHideHook, true)
 		end
 	elseif not E.db.enhanced.nameplates.chatBubbles and not E.db.enhanced.nameplates.titleCache then
 		if ENP:IsHooked(NP, "OnHide") then
