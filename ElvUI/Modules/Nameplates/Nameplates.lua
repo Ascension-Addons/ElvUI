@@ -706,10 +706,8 @@ end
 
 function NP:SetNamePlateSizes()
 	--if InCombatLockdown() then return end
-
-	local scale = C_CVar.GetNumber("uiScale")
-	C_NamePlate_SetNamePlateEnemySize(NP.db.plateSize.enemyWidth * scale, NP.db.plateSize.enemyHeight * scale)
-	C_NamePlate_SetNamePlateFriendlySize(NP.db.plateSize.friendlyWidth * scale, NP.db.plateSize.friendlyHeight * scale)
+	C_NamePlate_SetNamePlateEnemySize(NP.db.plateSize.enemyWidth, NP.db.plateSize.enemyHeight)
+	C_NamePlate_SetNamePlateFriendlySize(NP.db.plateSize.friendlyWidth, NP.db.plateSize.friendlyHeight)
 end
 
 function NP:Initialize()

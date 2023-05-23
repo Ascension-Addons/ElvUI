@@ -410,10 +410,6 @@ NamePlates.generalGroup.args.bossMods.args.settings.args.anchorPoint = ACH:Selec
 NamePlates.generalGroup.args.bossMods.args.settings.args.growthX = ACH:Select(L["Growth X-Direction"], nil, 8, { LEFT = L["Left"], RIGHT = L["Right"] }, nil, nil, nil, nil, function() local point = E.db.nameplates.bossMods.anchorPoint return point == 'LEFT' or point == 'RIGHT' end)
 NamePlates.generalGroup.args.bossMods.args.settings.args.growthY = ACH:Select(L["Growth Y-Direction"], nil, 9, { UP = L["Up"], DOWN = L["Down"] }, nil, nil, nil, nil, function() local point = E.db.nameplates.bossMods.anchorPoint return point == 'TOP' or point == 'BOTTOM' end)
 
-NamePlates.generalGroup.args.clickThrough = ACH:Group(L["Click Through"], nil, 65, nil, function(info) return E.db.nameplates.clickThrough[info[#info]] end)
-NamePlates.generalGroup.args.clickThrough.args.friendly = ACH:Toggle(L["Friendly"], nil, 2, nil, nil, nil, nil, function(info, value) E.db.nameplates.clickThrough[info[#info]] = value NP:SetNamePlateFriendlyClickThrough() end)
-NamePlates.generalGroup.args.clickThrough.args.enemy = ACH:Toggle(L["Enemy"], nil, 3, nil, nil, nil, nil, function(info, value) E.db.nameplates.clickThrough[info[#info]] = value NP:SetNamePlateEnemyClickThrough() end)
-
 NamePlates.generalGroup.args.clickableRange = ACH:Group(L["Clickable Size"], nil, 70, nil, function(info) return E.db.nameplates.plateSize[info[#info]] end, function(info, value) E.db.nameplates.plateSize[info[#info]] = value NP:ConfigureAll() end)
 
 NamePlates.generalGroup.args.clickableRange.args.friendly = ACH:Group(L["Friendly"], nil, 2)

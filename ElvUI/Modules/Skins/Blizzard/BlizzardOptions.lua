@@ -137,6 +137,9 @@ S:AddCallback("Skin_BlizzardOptions", function()
 		"InterfaceOptionsCombatPanelTargetOfTarget",
 		"InterfaceOptionsCombatPanelEnemyCastBarsOnPortrait",
 		"InterfaceOptionsCombatPanelEnemyCastBarsOnNameplates",
+		"InterfaceOptionsCombatPanelAoEIndicatorsSelf",
+		"InterfaceOptionsCombatPanelAoEIndicatorsEnemies",
+		"InterfaceOptionsCombatPanelAoEIndicatorsFriendly",
 		"InterfaceOptionsDisplayPanelShowCloak",
 		"InterfaceOptionsDisplayPanelShowHelm",
 		"InterfaceOptionsDisplayPanelShowAggroPercentage",
@@ -257,7 +260,11 @@ S:AddCallback("Skin_BlizzardOptions", function()
 		"InterfaceOptionsAscensionLoseControlPanelEnableSlow",
 		"InterfaceOptionsAscensionLoseControlPanelEnableStun",
 		"InterfaceOptionsAscensionLoseControlPanelEnablePacify",
-
+		"InterfaceOptionsDraftPanelAutoPopupDraft",
+		"InterfaceOptionsDraftPanelAutoRevealDraft",
+		"InterfaceOptionsDraftPanelSkipDraftConfirmation",
+		"InterfaceOptionsDraftPanelSkipDraftSacrificeConfirmation",
+		"InterfaceOptionsDraftPanelShowBuildDraftSpellCards",
 
 		"AudioOptionsSoundPanelEnableSound",
 		"AudioOptionsSoundPanelSoundEffects",
@@ -306,7 +313,9 @@ S:AddCallback("Skin_BlizzardOptions", function()
 		"InterfaceOptionsCombatPanelSpellActivationOverlayAlpha",
 		"InterfaceOptionsMousePanelMouseLookSpeedSlider",
 		"InterfaceOptionsMousePanelMouseSensitivitySlider",
-
+		"InterfaceOptionsCombatPanelNameplateDistance",
+		"InterfaceOptionsCombatPanelNameplateZ",
+		
 		"AudioOptionsSoundPanelSoundQuality",
 		"AudioOptionsSoundPanelSoundChannels",
 		"AudioOptionsSoundPanelMasterVolume",

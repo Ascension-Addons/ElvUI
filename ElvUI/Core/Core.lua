@@ -1137,7 +1137,7 @@ function E:DBConversions()
 	end
 
 	-- VERSION 7.0 -- nameplate overhaul
-	if not E.db.version or E.db.version < 7 or UnitName("player") == "Andrew" then
+	if not E.db.version or E.db.version < 7 then
 		-- wipe nameplates
 		E:CopyTable(self.db.nameplates, P.nameplates)
 	end
