@@ -117,6 +117,9 @@ end
 function E:Cooldown_StopTimer(cd)
 	cd.enabled = nil
 	cd:Hide()
+	if self.timer then
+		self.timer:Hide()
+	end
 end
 
 function E:Cooldown_Options(timer, db, parent)
@@ -164,8 +167,8 @@ end
 
 function E:CreateCooldownTimer(parent, displayParent)
 	local timer = CreateFrame("Frame", parent:GetName() and parent:GetName().."Timer" or nil, displayParent)
-	hooksecurefunc(parent, "Hide", function() timer:Hide() end)
-	hooksecurefunc(parent, "Show", function() timer:Show() end)
+	parent:HookScript("OnHide", function() timer:Hide() end)
+	parent:HookScript("OnShow", function() timer:Show() end)
 	timer:SetFrameLevel(parent:GetFrameLevel() + 1)
 	timer:Hide()
 	timer:SetAllPoints(parent)
@@ -201,7 +204,7 @@ function E:CreateCooldownTimer(parent, displayParent)
 end
 
 E.RegisteredCooldowns = {}
-function E:OnSetCooldown(start, duration, recursive)
+function E:OnSetCooldown(start, duration)
 	if (not self.forceDisabled) and (start and duration) and (duration > MIN_DURATION) then
 		local timer = self.timer or E:CreateCooldownTimer(self, self:GetParent())
 		timer.start = start
