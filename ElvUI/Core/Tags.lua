@@ -530,19 +530,45 @@ E:AddTag('pvptimer', 1, function(unit)
 	end
 end)
 
+E:AddTag('powercolor', 'UNIT_DISPLAYPOWER', function()
+	local _, powerType = UnitPowerType("player")
+	local color = ElvUF.colors.power[powerType] or ElvUF.colors.power.MANA
+	local altR, altG, altB = color.r, color.g, color.b
+	if color[1] then
+		return Hex(color[1], color[2], color[3])
+	else
+		return Hex(altR, altG, altB)
+	end
+end)
+
 E:AddTag('manacolor', 'UNIT_DISPLAYPOWER', function()
 	local color = ElvUF.colors.power.MANA
-	return Hex(color)
+	local altR, altG, altB = color.r, color.g, color.b
+	if color[1] then
+		return Hex(color[1], color[2], color[3])
+	else
+		return Hex(altR, altG, altB)
+	end
 end)
 
 E:AddTag('ragecolor', 'UNIT_DISPLAYPOWER', function()
 	local color = ElvUF.colors.power.RAGE
-	return Hex(color)
+	local altR, altG, altB = color.r, color.g, color.b
+	if color[1] then
+		return Hex(color[1], color[2], color[3])
+	else
+		return Hex(altR, altG, altB)
+	end
 end)
 
 E:AddTag('energycolor', 'UNIT_DISPLAYPOWER', function()
 	local color = ElvUF.colors.power.ENERGY
-	return Hex(color)
+	local altR, altG, altB = color.r, color.g, color.b
+	if color[1] then
+		return Hex(color[1], color[2], color[3])
+	else
+		return Hex(altR, altG, altB)
+	end
 end)
 
 E:AddTag('distance', 0.1, function(realUnit)

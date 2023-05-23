@@ -266,9 +266,9 @@ P.bags = {
 local NP_Auras = {
 	enable = true,
 	desaturate = true,
-	numAuras = 5,
+	numAuras = 8,
 	numRows = 1,
-	size = 27,
+	size = 20,
 	height = 23,
 	attachTo = 'FRAME',
 	keepSizeRatio = true,
@@ -293,7 +293,7 @@ local NP_Auras = {
 	countYOffset = 2,
 	durationPosition = 'CENTER',
 	minDuration = 0,
-	maxDuration = 0,
+	maxDuration = 300,
 	priority = ''
 }
 

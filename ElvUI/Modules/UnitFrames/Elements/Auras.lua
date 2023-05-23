@@ -506,8 +506,17 @@ function UF:AuraFilter(unit, button, name, _, _, _, debuffType, duration, expira
 	if not name then return end -- checking for an aura that is not there, pass nil to break while loop
 
 	local parent = self:GetParent()
-	local db = parent.db and parent.db[self.type]
-	if not db then return true end
+	local db
+	if self.isNamePlate then
+		db = NP:PlateDB(parent)
+		db = db and db[self.type]
+	else
+		db = parent.db and parent.db[self.type]
+	end
+	
+	if not db then
+		return true
+	end
 
 	local isPlayer = (caster == "player" or caster == "vehicle")
 	local isFriend = unit and UnitIsFriend("player", unit) and not UnitCanAttack("player", unit)
