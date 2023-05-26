@@ -125,7 +125,7 @@ end
 function ENP:ClassCache()
 	if E.db.enhanced.nameplates.classCache then
 		if not self:IsHooked(NP, "UnitClass") then
-			self:RawHook(NP, "UnitClass", UnitClassHook)
+			self:RawHook(NP, "UnitClass", UnitClassHook, true)
 		end
 	else
 		if self:IsHooked(NP, "UnitClass") then
