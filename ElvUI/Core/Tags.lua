@@ -191,6 +191,42 @@ local function GetClassPower(Class)
 end
 E.TagFunctions.GetClassPower = GetClassPower
 
+local unitStatus = {}
+local function GetUnitStatus(unit)
+	if not UnitIsPlayer(unit) then return end
+	local guid = UnitGUID(unit)
+	if UnitIsAFK(unit) then
+		if not unitStatus[guid] or unitStatus[guid] and unitStatus[guid][1] ~= "AFK" then
+			unitStatus[guid] = {"AFK", GetTime()}
+		end
+	elseif UnitIsDND(unit) then
+		if not unitStatus[guid] or unitStatus[guid] and unitStatus[guid][1] ~= "DND" then
+			unitStatus[guid] = {"DND", GetTime()}
+		end
+	elseif UnitIsDead(unit) or UnitIsGhost(unit) then
+		if not unitStatus[guid] or unitStatus[guid] and unitStatus[guid][1] ~= "Dead" then
+			unitStatus[guid] = {"Dead", GetTime()}
+		end
+	elseif not UnitIsConnected(unit) then
+		if not unitStatus[guid] or unitStatus[guid] and unitStatus[guid][1] ~= "Offline" then
+			unitStatus[guid] = {"Offline", GetTime()}
+		end
+	else
+		unitStatus[guid] = nil
+	end
+
+	if unitStatus[guid] ~= nil then
+		local status = unitStatus[guid][1]
+		local timer = GetTime() - unitStatus[guid][2]
+		local mins = floor(timer / 60)
+		local secs = floor(timer - (mins * 60))
+		return format("%s (%01.f:%02.f)", status, mins, secs)
+	else
+		return nil
+	end
+end
+E.TagFunctions.GetUnitStatus = GetUnitStatus
+
 ------------------------------------------------------------------------
 --	Looping
 ------------------------------------------------------------------------
@@ -321,6 +357,16 @@ for textFormat, length in pairs({ veryshort = 5, short = 10, medium = 15, long =
 
 	E:AddTag(format('name:%s:status', textFormat), 'UNIT_NAME_UPDATE UNIT_CONNECTION PLAYER_FLAGS_CHANGED UNIT_HEALTH INSTANCE_ENCOUNTER_ENGAGE_UNIT', function(unit)
 		local status = UnitIsDead(unit) and L["Dead"] or UnitIsGhost(unit) and L["Ghost"] or not UnitIsConnected(unit) and L["Offline"]
+		local name = UnitName(unit)
+		if status then
+			return status
+		elseif name then
+			return E:ShortenString(name, length)
+		end
+	end)
+	
+	E:AddTag(format('name:%s:statustimer', textFormat), 1, function(unit)
+		local status = GetUnitStatus(unit)
 		local name = UnitName(unit)
 		if status then
 			return status
@@ -696,6 +742,14 @@ E:AddTag('status:text', 'PLAYER_FLAGS_CHANGED', function(unit)
 	elseif UnitIsDND(unit) then
 		return format('|cffFF3333<|r%s|cffFF3333>|r', L["DND"])
 	end
+end)
+
+E:AddTag('name:statustimer', 1, function(unit)
+	local status = GetUnitStatus(unit)
+	if status then
+		return status
+	end
+	return UnitName(unit)
 end)
 
 do
@@ -1331,6 +1385,11 @@ E.TagInfo = {
 		['name:veryshort:status'] = { category = 'Names', description = "Replace the name of the unit with 'DEAD' or 'OFFLINE' if applicable (limited to 5 letters)" },
 		['name:veryshort:translit'] = { category = 'Names', description = "Displays the name of the unit with transliteration for cyrillic letters (limited to 5 letters)" },
 		['name:veryshort'] = { category = 'Names', description = "Displays the name of the unit (limited to 5 letters)" },
+		["name:statustimer"] = {category = "Names", description = "Displays a timer for how long a unit has had the status (e.g 'DEAD - 0:34') Otherwise the unit's Name"},
+		["name:veryshort:statustimer"] = {category = "Names", description = "Displays a timer for how long a unit has had the status (e.g 'DEAD - 0:34') Otherwise the unit's Name (limited to 5 letters)"},
+		["name:short:statustimer"] = {category = "Names", description = "Displays a timer for how long a unit has had the status (e.g 'DEAD - 0:34') Otherwise the unit's Name (limited to 10 letters)"},
+		["name:medium:statustimer"] = {category = "Names", description = "Displays a timer for how long a unit has had the status (e.g 'DEAD - 0:34') Otherwise the unit's Name (limited to 15 letters)"},
+		["name:long:statustimer"] = {category = "Names", description = "Displays a timer for how long a unit has had the status (e.g 'DEAD - 0:34') Otherwise the unit's Name (limited to 20 letters)"},
 		['name'] = { category = 'Names', description = "Displays the full name of the unit without any letter limitation" },
 		['name:health'] = { hidden = true, category = 'Names', description = "" },
 		['npctitle:brackets'] = { category = 'Names', description = "Displays the NPC title with brackets (e.g. <General Goods Vendor>)" },
