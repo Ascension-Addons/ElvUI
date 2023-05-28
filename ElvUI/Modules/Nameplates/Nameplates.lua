@@ -539,6 +539,7 @@ function NP:ConfigureAll(init)
 end
 
 function NP:PlateFade(nameplate, timeToFade, startAlpha, endAlpha)
+	if not nameplate.nameplateAnchor:IsShown() then return end
 	-- we need our own function because we want a smooth transition and dont want it to force update every pass.
 	-- its controlled by fadeTimer which is reset when UIFrameFadeOut or UIFrameFadeIn code runs.
 

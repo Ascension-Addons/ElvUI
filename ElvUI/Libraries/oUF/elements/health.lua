@@ -86,12 +86,6 @@ local oUF = ns.oUF
 local Private = oUF.Private
 
 local function UpdateColor(self, event, unit)
-	if unit and self.isNamePlate and unit:sub(1, 9) ~= "nameplate" then
-		local isUnit = self.unit and UnitIsUnit(self.unit, unit)
-		if isUnit then
-			unit = self.unit
-		end
-	end
 	if(not unit or self.unit ~= unit) then return end
 	local element = self.Health
 
@@ -148,16 +142,28 @@ local function ColorPath(self, ...)
 	* event - the event triggering the update (string)
 	* unit  - the unit accompanying the event (string)
 	--]]
-	(self.Health.UpdateColor or UpdateColor) (self, ...)
+	local _, unit = ...
+	local args
+	if unit and self.isNamePlate then
+		if (event == "UNIT_THREAT_SITUATION_UPDATE" or event == "UNIT_FLAGS") and unit == "player" then
+			args = { ... }
+			args[2] = self.unit
+		elseif unit:sub(1, 9) ~= "nameplate" then
+			local isUnit = self.unit and UnitIsUnit(self.unit, unit)
+			if isUnit then
+				args = { ... }
+				args[2] = self.unit
+			end
+		end
+	end
+	if args then
+		(self.Health.UpdateColor or UpdateColor) (self, unpack(args))
+	else
+		(self.Health.UpdateColor or UpdateColor) (self, ...)
+	end
 end
 
 local function Update(self, event, unit)
-	if unit and self.isNamePlate and unit:sub(1, 9) ~= "nameplate" then
-		local isUnit = self.unit and UnitIsUnit(self.unit, unit)
-		if isUnit then
-			unit = self.unit
-		end
-	end
 	if(not unit or self.unit ~= unit) then return end
 
 	local element = self.Health
@@ -212,6 +218,13 @@ local function Path(self, ...)
 	* event - the event triggering the update (string)
 	* unit  - the unit accompanying the event (string)
 	--]]
+	local _, unit = ...
+	if unit and self.isNamePlate and unit:sub(1, 9) ~= "nameplate" then
+		local isUnit = self.unit and UnitIsUnit(self.unit, unit)
+		if isUnit then
+			unit = self.unit
+		end
+	end
 	(self.Health.Override or Update) (self, ...);
 	ColorPath(self, ...)
 end
@@ -392,6 +405,8 @@ local function Enable(self, unit)
 			healthBar:SetScript("OnMinMaxChanged", function()
 				Path(self, "UNIT_MAXHEALTH", self.unit)
 			end)
+			self:RegisterEvent('UNIT_THREAT_SITUATION_UPDATE', Path)
+			self:RegisterEvent('UNIT_FLAGS', Path)
 		end
 
 		if(element:IsObjectType('StatusBar') and not element:GetStatusBarTexture()) then
@@ -419,6 +434,7 @@ local function Disable(self)
 		self:UnregisterEvent('UNIT_FACTION', ColorPath)
 		self:UnregisterEvent('UNIT_HAPPINESS', ColorPath)
 		self:UnregisterEvent('UNIT_THREAT_LIST_UPDATE', ColorPath)
+		self:UnregisterEvent(')UNIT_THREAT_SITUATION_UPDATE', ColorPath)
 	end
 end
 

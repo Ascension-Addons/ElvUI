@@ -17,12 +17,6 @@ local UnitPowerType = UnitPowerType
 local UnitReaction = UnitReaction
 
 local function UpdateColor(self, event, unit)
-	if unit and self.isNamePlate and unit:sub(1, 9) ~= "nameplate" then
-		local isUnit = self.unit and UnitIsUnit(self.unit, unit)
-		if isUnit then
-			unit = self.unit
-		end
-	end
 	if(self.unit ~= unit) then return end
 	local element = self.Rage
 
@@ -86,16 +80,25 @@ local function ColorPath(self, ...)
 	* event - the event triggering the update (string)
 	* unit  - the unit accompanying the event (string)
 	--]]
-	(self.Rage.UpdateColor or UpdateColor) (self, ...)
+	local _, unit = ...
+	local args
+	if unit and self.isNamePlate then
+		if unit:sub(1, 9) ~= "nameplate" then
+			local isUnit = self.unit and UnitIsUnit(self.unit, unit)
+			if isUnit then
+				args = { ... }
+				args[2] = self.unit
+			end
+		end
+	end
+	if args then
+		return (self.Rage.UpdateColor or UpdateColor) (self, unpack(args))
+	else
+		return (self.Rage.UpdateColor or UpdateColor) (self, ...)
+	end
 end
 
 local function Update(self, event, unit)
-	if unit and self.isNamePlate and unit:sub(1, 9) ~= "nameplate" then
-		local isUnit = self.unit and UnitIsUnit(self.unit, unit)
-		if isUnit then
-			unit = self.unit
-		end
-	end
 	if(self.unit ~= unit) then return end
 	local element = self.Rage
 
@@ -149,9 +152,24 @@ local function Path(self, ...)
 	* unit  - the unit accompanying the event (string)
 	* ...   - the arguments accompanying the event
 	--]]
-	(self.Rage.Override or Update) (self, ...);
-
-	ColorPath(self, ...)
+	local _, unit = ...
+	local args
+	if unit and self.isNamePlate then
+		if unit:sub(1, 9) ~= "nameplate" then
+			local isUnit = self.unit and UnitIsUnit(self.unit, unit)
+			if isUnit then
+				args = { ... }
+				args[2] = self.unit
+			end
+		end
+	end
+	if args then
+		(self.Rage.Override or Update) (self, unpack(args));
+		ColorPath(self, unpack(args))
+	else
+		(self.Rage.Override or Update) (self, ...);
+		ColorPath(self, ...)
+	end
 end
 
 local function ForceUpdate(element)

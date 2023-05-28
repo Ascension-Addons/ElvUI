@@ -33,12 +33,6 @@ local FFA_ICON = [[Interface\TargetingFrame\UI-PVP-FFA]]
 local FACTION_ICON = [[Interface\TargetingFrame\UI-PVP-]]
 
 local function Update(self, event, unit)
-	if unit and self.isNamePlate and unit:sub(1, 9) ~= "nameplate" then
-		local isUnit = self.unit and UnitIsUnit(self.unit, unit)
-		if isUnit then
-			unit = self.unit
-		end
-	end
 	if(unit ~= self.unit) then return end
 
 	local element = self.PvPIndicator
@@ -93,7 +87,22 @@ local function Path(self, ...)
 	* event - the event triggering the update (string)
 	* ...   - the arguments accompanying the event
 	--]]
-	return (self.PvPIndicator.Override or Update) (self, ...)
+	local _, unit = ...
+	local args
+	if unit and self.isNamePlate then
+		if unit:sub(1, 9) ~= "nameplate" then
+			local isUnit = self.unit and UnitIsUnit(self.unit, unit)
+			if isUnit then
+				args = { ... }
+				args[2] = self.unit
+			end
+		end
+	end
+	if args then
+		return (self.PvPIndicator.Override or Update) (self, unpack(args))
+	else
+		return (self.PvPIndicator.Override or Update) (self, ...)
+	end
 end
 
 local function ForceUpdate(element)
