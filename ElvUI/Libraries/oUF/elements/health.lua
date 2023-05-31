@@ -138,14 +138,14 @@ local function ColorPath(self, ...)
 	--[[ Override: Health.UpdateColor(self, event, unit)
 	Used to completely override the internal function for updating the widgets' colors.
 
-	* self  - the parent object
-	* event - the event triggering the update (string)
-	* unit  - the unit accompanying the event (string)
-	--]]
-	local _, unit = ...
-	local args
-	if unit and self.isNamePlate then
-		if (event == "UNIT_THREAT_SITUATION_UPDATE" or event == "UNIT_FLAGS") and unit == "player" then
+		* self  - the parent object
+		* event - the event triggering the update (string)
+		* unit  - the unit accompanying the event (string)
+		--]]
+		local _, unit = ...
+		local args
+		if unit and self.isNamePlate then
+			if ((event == "UNIT_THREAT_SITUATION_UPDATE" or event == "UNIT_FLAGS") and unit == "player") or event == "UNIT_THREAT_LIST_UPDATE" then
 			args = { ... }
 			args[2] = self.unit
 		elseif unit:sub(1, 9) ~= "nameplate" then

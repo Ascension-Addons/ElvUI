@@ -1994,10 +1994,10 @@ function EE:GetOptions()
 			equipmentInfoGroup = EquipmentInfoOptions(),
 			mapGroup = MapOptions(),
 			minimapGroup = MinimapOptions(),
-			namePlatesGroup = NamePlatesOptions(),
+	--		namePlatesGroup = NamePlatesOptions(),
 			tooltipGroup = TooltipOptions(),
 			unitframesGroup = UnitFrameOptions(),
-			loseControlGroup = LoseControlOptions(),
+	--		loseControlGroup = LoseControlOptions(),
 			interruptGroup = InterruptTrackerOptions(),
 		}
 	}

@@ -145,6 +145,8 @@ function NP:SetCVars()
 	NP:SetCVar('nameplateShowFriendlyGuardians', NP.db.visibility.friendly.guardians and 1 or 0)
 	NP:SetCVar('nameplateShowFriendlyTotems', NP.db.visibility.friendly.totems and 1 or 0)
 	NP:SetCVar('nameplateShowFriendlyPets', NP.db.visibility.friendly.pets and 1 or 0)
+	NP:SetCVar('showVKeyCastbar', 1)
+	SetNamePlateCastBarMode(1)
 end
 
 function NP:PLAYER_REGEN_DISABLED()

@@ -5,7 +5,6 @@
 	<Script file="Movers.lua"/>
 	<Script file="QuestLevel.lua"/>
 	<Script file="QuestReward.lua"/>
-	<Script file="LoseControl.lua"/>
 	<Script file="AlreadyKnown.lua"/>
 	<Script file="TrainAllSkills.lua"/>
 	<Script file="UndressButton.lua"/>

@@ -998,7 +998,7 @@ do
 end
 
 do
-	local gold, silver = '|A:nameplates-icon-elite-gold:16:16|a', '|A:nameplates-icon-elite-silver:16:16|a'
+	local gold, silver = CreateAtlasMarkup("nameplates-icon-elite-gold", 0.4, 0, 0), CreateAtlasMarkup("nameplates-icon-elite-silver", 0.4, 0, 0)
 	local typeIcon = { elite = gold, worldboss = gold, rareelite = silver, rare = silver }
 	E:AddTag('classification:icon', 'UNIT_NAME_UPDATE', function(unit)
 		if UnitIsPlayer(unit) then return end
