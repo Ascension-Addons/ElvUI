@@ -218,6 +218,8 @@ function UF:CheckFilter(name, caster, spellID, isFriend, isPlayer, isUnit, allow
 					return true, spell.priority -- this is the only difference from auarbars code
 				elseif filterType and (filterType == "Blacklist") and (spell and spell.enable) then
 					return false
+				elseif allowDuration then
+					return true
 				end
 			elseif filterName == "Personal" and isPlayer and allowDuration then
 				return true

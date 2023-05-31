@@ -167,8 +167,8 @@ end
 
 function E:CreateCooldownTimer(parent, displayParent)
 	local timer = CreateFrame("Frame", parent:GetName() and parent:GetName().."Timer" or nil, displayParent)
-	parent:HookScript("OnHide", function() timer:Hide() end)
-	parent:HookScript("OnShow", function() timer:Show() end)
+	parent:HookScript("OnHide", function(self) if self:GetParent().isNamePlate then return end timer:Hide() end)
+	parent:HookScript("OnShow", function(self) timer:Show() end)
 	timer:SetFrameLevel(parent:GetFrameLevel() + 1)
 	timer:Hide()
 	timer:SetAllPoints(parent)

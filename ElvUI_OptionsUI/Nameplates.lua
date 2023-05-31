@@ -23,6 +23,18 @@ local carryFilterFrom, carryFilterTo
 local ORDER = 100
 local filters = {}
 
+local positionValues = {
+	TOPLEFT = "TOPLEFT",
+	LEFT = "LEFT",
+	BOTTOMLEFT = "BOTTOMLEFT",
+	RIGHT = "RIGHT",
+	TOPRIGHT = "TOPRIGHT",
+	BOTTOMRIGHT = "BOTTOMRIGHT",
+	CENTER = "CENTER",
+	TOP = "TOP",
+	BOTTOM = "BOTTOM"
+}
+
 local minHeight, minWidth = 2, 40
 local function MaxHeight(unit) local heightType = strfind(unit, 'FRIENDLY') and 'friendlyHeight' or strfind(unit, 'ENEMY') and 'enemyHeight' return max(NP.db.plateSize[heightType] or 0, 20) end
 local function MaxWidth(unit) local widthType = strfind(unit, 'FRIENDLY') and 'friendlyWidth' or strfind(unit, 'ENEMY') and 'enemyWidth' return max(NP.db.plateSize[widthType] or 0, 250) end
@@ -146,7 +158,7 @@ local function GetUnitSettings(unit, name)
 	group.args.buffsGroup.args.spacing = ACH:Range(L["Spacing"], nil, 9, { min = 0, max = 60, step = 1 })
 	group.args.buffsGroup.args.xOffset = ACH:Range(L["X-Offset"], nil, 10, { min = -100, max = 100, step = 1 })
 	group.args.buffsGroup.args.yOffset = ACH:Range(L["Y-Offset"], nil, 11, { min = -100, max = 100, step = 1 })
-	group.args.buffsGroup.args.anchorPoint = ACH:Select(L["Anchor Point"], L["What point to anchor to the frame you set to attach to."], 12, C.Values.Anchors)
+	group.args.buffsGroup.args.anchorPoint = ACH:Select(L["Anchor Point"], L["What point to anchor to the frame you set to attach to."], 12, positionValues)
 	group.args.buffsGroup.args.attachTo = ACH:Select(L["Attach To"], L["What to attach the anchor frame to."], 13, { FRAME = L["Frame"], DEBUFFS = L["Debuffs"], HEALTH = L["Health"], POWER = L["Power"] }, nil, nil, nil, nil, function() local position = E.db.nameplates.units[unit].smartAuraPosition return position == 'BUFFS_ON_DEBUFFS' or position == 'FLUID_BUFFS_ON_DEBUFFS' end)
 	group.args.buffsGroup.args.growthX = ACH:Select(L["Growth X-Direction"], nil, 14, { LEFT = L["Left"], RIGHT = L["Right"] }, nil, nil, nil, nil, function() local point = E.db.nameplates.units[unit].buffs.anchorPoint return point == 'LEFT' or point == 'RIGHT' end)
 	group.args.buffsGroup.args.growthY = ACH:Select(L["Growth Y-Direction"], nil, 15, { UP = L["Up"], DOWN = L["Down"] }, nil, nil, nil, nil, function() local point = E.db.nameplates.units[unit].buffs.anchorPoint return point == 'TOP' or point == 'BOTTOM' end)
@@ -200,7 +212,7 @@ local function GetUnitSettings(unit, name)
 	group.args.debuffsGroup.args.spacing = ACH:Range(L["Spacing"], nil, 9, { min = 0, max = 60, step = 1 })
 	group.args.debuffsGroup.args.xOffset = ACH:Range(L["X-Offset"], nil, 10, { min = -100, max = 100, step = 1 })
 	group.args.debuffsGroup.args.yOffset = ACH:Range(L["Y-Offset"], nil, 11, { min = -100, max = 100, step = 1 })
-	group.args.debuffsGroup.args.anchorPoint = ACH:Select(L["Anchor Point"], L["What point to anchor to the frame you set to attach to."], 12, C.Values.Anchors)
+	group.args.debuffsGroup.args.anchorPoint = ACH:Select(L["Anchor Point"], L["What point to anchor to the frame you set to attach to."], 12, positionValues)
 	group.args.debuffsGroup.args.attachTo = ACH:Select(L["Attach To"], L["What to attach the anchor frame to."], 13, { FRAME = L["Frame"], BUFFS = L["Buffs"], HEALTH = L["Health"], POWER = L["Power"] }, nil, nil, nil, nil, function() local position = E.db.nameplates.units[unit].smartAuraPosition return position == 'BUFFS_ON_DEBUFFS' or position == 'FLUID_BUFFS_ON_DEBUFFS' end)
 	group.args.debuffsGroup.args.growthX = ACH:Select(L["Growth X-Direction"], nil, 14, { LEFT = L["Left"], RIGHT = L["Right"] }, nil, nil, nil, nil, function() local point = E.db.nameplates.units[unit].debuffs.anchorPoint return point == 'LEFT' or point == 'RIGHT' end)
 	group.args.debuffsGroup.args.growthY = ACH:Select(L["Growth Y-Direction"], nil, 15, { UP = L["Up"], DOWN = L["Down"] }, nil, nil, nil, nil, function() local point = E.db.nameplates.units[unit].debuffs.anchorPoint return point == 'TOP' or point == 'BOTTOM' end)
@@ -406,7 +418,7 @@ NamePlates.generalGroup.args.bossMods.args.settings.args.height = ACH:Range(L["I
 NamePlates.generalGroup.args.bossMods.args.settings.args.spacing = ACH:Range(L["Spacing"], nil, 4, { min = 6, max = 64, step = 1 }, nil, nil, nil, nil, function() return E.db.nameplates.bossMods.keepSizeRatio end)
 NamePlates.generalGroup.args.bossMods.args.settings.args.xOffset = ACH:Range(L["X-Offset"], nil, 5, { min = -100, max = 100, step = 1 })
 NamePlates.generalGroup.args.bossMods.args.settings.args.yOffset = ACH:Range(L["Y-Offset"], nil, 6, { min = -100, max = 100, step = 1 })
-NamePlates.generalGroup.args.bossMods.args.settings.args.anchorPoint = ACH:Select(L["Anchor Point"], L["What point to anchor to the frame you set to attach to."], 7, C.Values.Anchors)
+NamePlates.generalGroup.args.bossMods.args.settings.args.anchorPoint = ACH:Select(L["Anchor Point"], L["What point to anchor to the frame you set to attach to."], 7, positionValues)
 NamePlates.generalGroup.args.bossMods.args.settings.args.growthX = ACH:Select(L["Growth X-Direction"], nil, 8, { LEFT = L["Left"], RIGHT = L["Right"] }, nil, nil, nil, nil, function() local point = E.db.nameplates.bossMods.anchorPoint return point == 'LEFT' or point == 'RIGHT' end)
 NamePlates.generalGroup.args.bossMods.args.settings.args.growthY = ACH:Select(L["Growth Y-Direction"], nil, 9, { UP = L["Up"], DOWN = L["Down"] }, nil, nil, nil, nil, function() local point = E.db.nameplates.bossMods.anchorPoint return point == 'TOP' or point == 'BOTTOM' end)
 
