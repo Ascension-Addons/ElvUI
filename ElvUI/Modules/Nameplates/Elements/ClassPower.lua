@@ -12,7 +12,7 @@ local MAX_COMBO_POINTS = MAX_COMBO_POINTS
 
 local MAX_POINTS = { -- match to UF.classMaxResourceBar
 	DEATHKNIGHT	= max(6, MAX_COMBO_POINTS),
-	ROGUE		= max(7, MAX_COMBO_POINTS),
+	ROGUE		= max(5, MAX_COMBO_POINTS),
 	HERO		= max(5, MAX_COMBO_POINTS),
 	DRUID		= max(5, MAX_COMBO_POINTS)
 }
@@ -38,7 +38,7 @@ function NP:ClassPower_UpdateColor(powerType, rune)
 		local color = colors.DEATHKNIGHT[rune.runeType or 0]
 		NP:ClassPower_SetBarColor(rune, color.r, color.g, color.b)
 	else
-		local classColor = not classPower and ((isRunes and colors.DEATHKNIGHT) or (powerType == 'COMBO_POINTS' and colors.comboPoints) or (powerType == 'ESSENCE' and colors.EVOKER) or (powerType == 'CHI' and colors.MONK))
+		local classColor = not classPower and ((isRunes and colors.DEATHKNIGHT) or (powerType == 'COMBO_POINTS' and colors.comboPoints))
 		for i, bar in ipairs(self) do
 			local color = classPower or (isRunes and classColor[bar.runeType or 0]) or (classColor and classColor[i]) or colors[E.myclass] or fallback
 			NP:ClassPower_SetBarColor(bar, color.r, color.g, color.b)
@@ -57,7 +57,7 @@ function NP:ClassPower_PostUpdate(Cur, _, needUpdate, powerType, chargedPoints)
 		NP:Update_ClassPower(self.__owner)
 	end
 
-	if powerType == 'COMBO_POINTS' and E.myclass == 'ROGUE' then
+	if powerType == 'COMBO_POINTS' and (E.myclass == 'ROGUE' or E.myclass == 'DRUID' or E.myclass == 'HERO') then
 		NP.ClassPower_UpdateColor(self, powerType)
 
 		if chargedPoints then

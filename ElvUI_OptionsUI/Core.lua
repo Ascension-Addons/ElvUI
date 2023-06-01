@@ -6,7 +6,9 @@ Engine[1] = {Blank = function() return '' end }
 Engine[2] = E.Libs.ACL:GetLocale("ElvUI", E.global.general.locale or "enUS")
 local C, L = Engine[1], Engine[2]
 
-local format = string.format
+local format, strmatch, strsplit = string.format, string.match, string.split
+local tconcat, tinsert, tremove = table.concat, table.insert, table.remove
+local ipairs, gsub = ipairs, gsub
 
 C.Values = {
 	FontFlags = {

@@ -703,7 +703,7 @@ for unit, data in next, P.nameplates.units do
 end
 
 P.nameplates.units.PLAYER.buffs.maxDuration = 300
-P.nameplates.units.PLAYER.buffs.priority = 'Blacklist,blockNoDuration,Personal,TurtleBuffs,PlayerBuffs'
+P.nameplates.units.PLAYER.buffs.priority = 'Blacklist,Dispellable,blockNoDuration,Personal,TurtleBuffs,PlayerBuffs'
 P.nameplates.units.PLAYER.debuffs.anchorPoint = 'TOPRIGHT'
 P.nameplates.units.PLAYER.debuffs.growthDirection = 'LEFT_UP'
 P.nameplates.units.PLAYER.debuffs.yOffset = 35
@@ -714,33 +714,33 @@ P.nameplates.units.PLAYER.level.enable = false
 P.nameplates.units.PLAYER.power.enable = true
 P.nameplates.units.PLAYER.castbar.yOffset = -20
 
-P.nameplates.units.FRIENDLY_PLAYER.buffs.priority = 'Blacklist,blockNoDuration,Personal,TurtleBuffs'
+P.nameplates.units.FRIENDLY_PLAYER.buffs.priority = 'Blacklist,Dispellable,blockNoDuration,Personal,TurtleBuffs,PlayerBuffs'
 P.nameplates.units.FRIENDLY_PLAYER.debuffs.anchorPoint = 'TOPRIGHT'
 P.nameplates.units.FRIENDLY_PLAYER.debuffs.growthDirection = 'LEFT_UP'
 P.nameplates.units.FRIENDLY_PLAYER.debuffs.yOffset = 35
-P.nameplates.units.FRIENDLY_PLAYER.debuffs.priority = 'Blacklist,Personal,RaidDebuffs,CCDebuffs,Whitelist'
+P.nameplates.units.FRIENDLY_PLAYER.debuffs.priority = 'Blacklist,Personal,blockNonPersonal,RaidDebuffs,CCDebuffs,Whitelist'
 
-P.nameplates.units.ENEMY_PLAYER.buffs.priority = 'Blacklist,Dispellable,PlayerBuffs,TurtleBuffs'
+P.nameplates.units.ENEMY_PLAYER.buffs.priority = 'Blacklist,Dispellable,blockNoDuration,Personal,TurtleBuffs,PlayerBuffs'
 P.nameplates.units.ENEMY_PLAYER.buffs.maxDuration = 300
 P.nameplates.units.ENEMY_PLAYER.debuffs.anchorPoint = 'TOPRIGHT'
 P.nameplates.units.ENEMY_PLAYER.debuffs.growthDirection = 'LEFT_UP'
 P.nameplates.units.ENEMY_PLAYER.debuffs.yOffset = 35
-P.nameplates.units.ENEMY_PLAYER.debuffs.priority = 'Blacklist,Personal,RaidDebuffs,CCDebuffs,Whitelist'
+P.nameplates.units.ENEMY_PLAYER.debuffs.priority = 'Blacklist,Personal,blockNonPersonal,RaidDebuffs,CCDebuffs,Whitelist'
 P.nameplates.units.ENEMY_PLAYER.name.format = '[classcolor][name:abbrev:long]'
 
-P.nameplates.units.FRIENDLY_NPC.buffs.priority = 'Blacklist,blockNoDuration,Personal,TurtleBuffs'
+P.nameplates.units.FRIENDLY_NPC.buffs.priority = 'Blacklist,Dispellable,blockNoDuration,Personal,TurtleBuffs,PlayerBuffs'
 P.nameplates.units.FRIENDLY_NPC.debuffs.anchorPoint = 'TOPRIGHT'
 P.nameplates.units.FRIENDLY_NPC.debuffs.growthDirection = 'LEFT_UP'
 P.nameplates.units.FRIENDLY_NPC.debuffs.yOffset = 35
-P.nameplates.units.FRIENDLY_NPC.debuffs.priority = 'Blacklist,Personal,RaidDebuffs,CCDebuffs,Whitelist'
+P.nameplates.units.FRIENDLY_NPC.debuffs.priority = 'Blacklist,Personal,blockNonPersonal,RaidDebuffs,CCDebuffs,Whitelist'
 P.nameplates.units.FRIENDLY_NPC.level.format = '[difficultycolor][level][shortclassification]'
 P.nameplates.units.FRIENDLY_NPC.title.format = '[npctitle]'
 
-P.nameplates.units.ENEMY_NPC.buffs.priority = 'Blacklist,blockNoDuration,Personal,TurtleBuffs'
+P.nameplates.units.ENEMY_NPC.buffs.priority = 'Blacklist,Dispellable,blockNoDuration,Personal,TurtleBuffs,PlayerBuffs'
 P.nameplates.units.ENEMY_NPC.debuffs.anchorPoint = 'TOPRIGHT'
 P.nameplates.units.ENEMY_NPC.debuffs.growthDirection = 'LEFT_UP'
 P.nameplates.units.ENEMY_NPC.debuffs.yOffset = 35
-P.nameplates.units.ENEMY_NPC.debuffs.priority = 'Blacklist,Personal,RaidDebuffs,CCDebuffs,Whitelist'
+P.nameplates.units.ENEMY_NPC.debuffs.priority = 'Blacklist,Personal,blockNonPersonal,RaidDebuffs,CCDebuffs,Whitelist'
 P.nameplates.units.ENEMY_NPC.level.format = '[difficultycolor][level][shortclassification]'
 P.nameplates.units.ENEMY_NPC.title.format = '[npctitle]'
 P.nameplates.units.ENEMY_NPC.name.format = '[name]'
