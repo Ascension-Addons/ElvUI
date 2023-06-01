@@ -282,8 +282,7 @@ function NP:Update_BossMods(plate)
 	element.db = db
 	element.spacing = db.spacing
 	element.initialAnchor = inverse
-	element.growthY = UF.MatchGrowthY[anchor] or db.growthY
-	element.growthX = UF.MatchGrowthX[anchor] or db.growthX
+	element.growthDirection = db.growthDirection or "RIGHT_UP"
 	element.size = db.size + (db.spacing or 0)
 	element.height = not db.keepSizeRatio and db.height
 	element.rows = {}

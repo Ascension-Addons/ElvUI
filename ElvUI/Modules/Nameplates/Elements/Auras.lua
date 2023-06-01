@@ -7,6 +7,7 @@ local _G = _G
 local wipe = wipe
 local unpack = unpack
 local CreateFrame = CreateFrame
+local find = string.find
 
 function NP:Construct_Auras(nameplate)
 	local frameName = nameplate:GetName()
@@ -21,8 +22,7 @@ function NP:Construct_Auras(nameplate)
 	Buffs.isNamePlate = nameplate
 
 	Buffs.initialAnchor = 'BOTTOMLEFT'
-	Buffs.growthX = 'RIGHT'
-	Buffs.growthY = 'UP'
+	Buffs.growthDirection = "RIGHT_UP"
 	Buffs.type = 'buffs'
 	Buffs.forceShow = nameplate == _G.ElvNP_Test
 	Buffs.tickers = {} -- StyleFilters
@@ -38,8 +38,7 @@ function NP:Construct_Auras(nameplate)
 	Debuffs.disableMouse = true
 	Debuffs.isNamePlate = nameplate
 	Debuffs.initialAnchor = 'BOTTOMLEFT'
-	Debuffs.growthX = 'RIGHT'
-	Debuffs.growthY = 'UP'
+	Debuffs.growthDirection = "LEFT_UP"
 	Debuffs.type = 'debuffs'
 	Debuffs.forceShow = nameplate == _G.ElvNP_Test
 	Debuffs.tickers = {} -- StyleFilters
@@ -48,14 +47,12 @@ function NP:Construct_Auras(nameplate)
 
 	Buffs.PreUpdate = UF.PreUpdateAura
 	Buffs.PreSetPosition = UF.SortAuras
-	Buffs.SetPosition = UF.SetPosition
 	Buffs.PostCreateIcon = NP.Construct_AuraIcon
 	Buffs.PostUpdateIcon = UF.PostUpdateAura
 	Buffs.CustomFilter = UF.AuraFilter
 
 	Debuffs.PreUpdate = UF.PreUpdateAura
 	Debuffs.PreSetPosition = UF.SortAuras
-	Debuffs.SetPosition = UF.SetPosition
 	Debuffs.PostCreateIcon = NP.Construct_AuraIcon
 	Debuffs.PostUpdateIcon = UF.PostUpdateAura
 	Debuffs.CustomFilter = UF.AuraFilter
@@ -66,14 +63,14 @@ end
 
 function NP:Construct_AuraIcon(button)
 	if not button then return end
-
-	button:SetTemplate(nil, nil, nil, nil, nil, true, true)
+	local offset = UF.thinBorders and E.mult or E.Border
+	button:SetTemplate(nil, nil, nil, UF.thinBorders, true)
 
 	button.cd:SetReverse(true)
-	button.cd:SetInside(button)
+	button.cd:SetInside(button, offset, offset)
 
 	button.icon:SetDrawLayer('ARTWORK')
-	button.icon:SetInside()
+	button.icon:SetInside(button, offset, offset)
 
 	button.count:ClearAllPoints()
 	button.count:Point('BOTTOMRIGHT', 1, 1)
@@ -102,8 +99,7 @@ function NP:Configure_Auras(nameplate, auras, db)
 	auras.numRows = db.numRows
 	auras.onlyShowPlayer = false
 	auras.spacing = db.spacing
-	auras.growthY = UF.MatchGrowthY[db.anchorPoint] or db.growthY
-	auras.growthX = UF.MatchGrowthX[db.anchorPoint] or db.growthX
+	auras.growthDirection = db.growthDirection or "RIGHT_UP"
 	auras.xOffset = db.xOffset
 	auras.yOffset = db.yOffset
 	auras.anchorPoint = db.anchorPoint
@@ -114,6 +110,8 @@ function NP:Configure_Auras(nameplate, auras, db)
 	auras.attachTo = UF:GetAuraAnchorFrame(nameplate, db.attachTo) -- keep below SetSmartPosition
 	auras.num = db.numAuras * db.numRows
 	auras.db = db -- for auraSort
+	auras["growth-y"] = find(auras.growthDirection, "UP") and "UP" or "DOWN"
+	auras["growth-x"] = find(auras.growthDirection, "RIGHT") and "RIGHT" or "LEFT"
 
 	local index = 1
 	while auras[index] do
@@ -175,6 +173,10 @@ function NP:UpdateAuraSettings(button)
 		button.count:SetJustifyH(point:find('RIGHT') and 'RIGHT' or 'LEFT')
 		button.count:Point(point, db.countXOffset, db.countYOffset)
 		button.count:FontTemplate(LSM:Fetch('font', db.countFont), db.countFontSize, db.countFontOutline)
+	end
+
+	if button.icon then
+		button.icon:SetTexCoord(unpack(E.TexCoords))
 	end
 
 	if button.auraInfo then

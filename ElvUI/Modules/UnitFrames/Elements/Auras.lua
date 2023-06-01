@@ -17,9 +17,6 @@ local UnitCanAttack = UnitCanAttack
 local UnitIsFriend = UnitIsFriend
 local UnitIsUnit = UnitIsUnit
 
-UF.MatchGrowthY = { TOP = 'TOP', BOTTOM = 'BOTTOM' }
-UF.MatchGrowthX = { LEFT = 'LEFT', RIGHT = 'RIGHT' }
-
 UF.SortAuraFuncs = {
 	TIME_REMAINING = function(a, b, dir)
 		local A = a.noTime and huge or a.expiration or -huge
