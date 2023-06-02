@@ -58,6 +58,8 @@ local ClassPowerID, ClassPowerType
 local ClassPowerEnable, ClassPowerDisable
 local RequireSpec, RequirePower, RequireSpell
 
+local mathmin = math.min
+
 local function UpdateColor(element, powerType)
 	local color = element.__owner.colors.power[powerType]
 	local r, g, b = color.r, color.g, color.b
@@ -111,6 +113,7 @@ local function Update(self, event, unit, powerType)
 
         max = powerType == 'COMBO_POINTS' and GetComboPoints(unit, 'target') or UnitPower(unit, powerID)
 		cur = powerType == 'COMBO_POINTS' and GetComboPoints(unit, 'target') or UnitPower(unit, powerID)
+		max = mathmin(max or 0, element and #element or 0)
 
 		local numActive = cur + 0.9
 		for i = 1, max do
