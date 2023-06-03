@@ -242,9 +242,6 @@ function UF:CheckFilter(name, caster, spellID, isFriend, isPlayer, isUnit, allow
 			end
 		end
 	end
-	if allowDuration then
-		return true
-	end
 end
 
 function UF:AuraBarFilter(unit, name, _, _, _, debuffType, duration, _, unitCaster, isStealable, _, spellID)
