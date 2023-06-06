@@ -213,7 +213,7 @@ function NP:Update_ClassPowerTwo(nameplate)
 end
 
 function NP:StyleTargetPlate(nameplate)
-	nameplate:SetScale(C_CVar.GetNumber("uiScale"))
+	nameplate:SetScale(E.mult)
 	nameplate:ClearAllPoints()
 	nameplate:Point('CENTER')
 	nameplate:Size(NP.db.plateSize.personalWidth or 150, NP.db.plateSize.personalHeight or 40)
@@ -232,14 +232,13 @@ function NP:UpdateTargetPlate(nameplate)
 end
 
 function NP:ScalePlate(nameplate, scale, targetPlate)
-	local mult = C_CVar.GetNumber("uiScale")
 	if targetPlate and NP.targetPlate then
-		NP.targetPlate:SetScale(mult)
+		NP.targetPlate:SetScale(E.mult)
 		NP.targetPlate = nil
 	end
 
 	if not nameplate then return end
-	nameplate:SetScale(scale * mult)
+	nameplate:SetScale(scale * E.mult)
 
 	if nameplate ~= NP.currentTarget then
 		if scale > 1 then
@@ -268,7 +267,7 @@ function NP:PostUpdateAllElements(event)
 end
 
 function NP:StylePlate(nameplate)
-	nameplate:SetScale(C_CVar.GetNumber("uiScale"))
+	nameplate:SetScale(E.mult)
 
 	nameplate.RaisedElement = NP:Construct_RaisedELement(nameplate)
 	nameplate.Health = NP:Construct_Health(nameplate)
