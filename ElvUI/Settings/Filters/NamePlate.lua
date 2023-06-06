@@ -13,7 +13,6 @@ G.nameplates.filters = {
 		triggers = {
 			requireTarget = true,
 			notTarget = true,
-			enable = true,
 		},
 	},
 	["Enlarge Boss Nameplates"] = {
@@ -24,7 +23,6 @@ G.nameplates.filters = {
 				enable = true,
 				enemyNPC = true
 			},
-			enable = true,
 		},
 		actions = {
 			scale = 1.15
