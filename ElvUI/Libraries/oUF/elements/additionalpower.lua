@@ -170,8 +170,8 @@ end
 local function ElementEnable(self)
 	local element = self.AdditionalPower
 
-	self:RegisterEvent('UNIT_MANA', Path)
-	self:RegisterEvent('UNIT_MAXMANA', Path)
+	self:RegisterEvent('UNIT_'..ADDITIONAL_POWER_BAR_NAME, Path)
+	self:RegisterEvent('UNIT_MAX'..ADDITIONAL_POWER_BAR_NAME, Path)
 
 	element:Show()
 
@@ -187,8 +187,8 @@ local function ElementEnable(self)
 end
 
 local function ElementDisable(self)
-	self:UnregisterEvent('UNIT_MAXMANA', Path)
-	self:UnregisterEvent('UNIT_MANA', Path)
+	self:UnregisterEvent('UNIT_MAX'..ADDITIONAL_POWER_BAR_NAME, Path)
+	self:UnregisterEvent('UNIT_'..ADDITIONAL_POWER_BAR_NAME, Path)
 
 	self.AdditionalPower:Hide()
 
