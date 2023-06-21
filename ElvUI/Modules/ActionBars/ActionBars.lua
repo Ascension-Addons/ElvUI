@@ -324,9 +324,26 @@ function AB:PLAYER_REGEN_ENABLED()
 	self:UnregisterEvent("PLAYER_REGEN_ENABLED")
 end
 
+local function Vehicle_ExitVehicle(self)
+	if UnitOnTaxi("player") and TaxiRequestEarlyLanding then
+		TaxiRequestEarlyLanding();
+		-- Show that the request for landing has been received.
+		self:Disable();
+		self:LockHighlight();
+	else
+		VehicleExit();
+	end
+end
+
+local function Vehicle_CanExit()
+	return CanExitVehicle() or TaxiUtil and TaxiUtil.CanStopTaxi()
+end
+
 local function Vehicle_OnEvent(self, event)
-	if CanExitVehicle() and not E.db.general.minimap.icons.vehicleLeave.hide then
+	if Vehicle_CanExit() and not E.db.general.minimap.icons.vehicleLeave.hide then
 		self:Show()
+		self:Enable()
+		self:UnlockHighlight()
 	else
 		self:Hide()
 	end
@@ -350,19 +367,27 @@ function AB:CreateVehicleLeave()
 	vehicle:SetFrameStrata("HIGH")
 	vehicle:SetNormalTexture(E.Media.Textures.ExitVehicle)
 	vehicle:SetPushedTexture(E.Media.Textures.ExitVehicle)
-	vehicle:SetHighlightTexture(E.Media.Textures.ExitVehicle)
+	vehicle:GetPushedTexture():SetVertexColor(0.6, 0.6, 0.6)
+	vehicle:SetHighlightTexture(E.Media.Textures.ExitVehicle, "ADD")
 	vehicle:SetTemplate()
 	vehicle:EnableMouse(true)
 	vehicle:RegisterForClicks("AnyUp")
+	vehicle:SetMotionScriptsWhileDisabled(true)
 
-	vehicle:SetScript("OnClick", VehicleExit)
+	vehicle:SetScript("OnClick", Vehicle_ExitVehicle)
 	vehicle:SetScript("OnEvent", Vehicle_OnEvent)
+	vehicle:SetScript("OnEnter", MainMenuBarVehicleLeaveButtonMixin.OnEnter)
+	vehicle:SetScript("OnLeave", GameTooltip_Hide)
 	vehicle:RegisterEvent("PLAYER_ENTERING_WORLD")
 	vehicle:RegisterEvent("UPDATE_BONUS_ACTIONBAR")
 	vehicle:RegisterEvent("UPDATE_MULTI_CAST_ACTIONBAR")
 	vehicle:RegisterEvent("UNIT_ENTERED_VEHICLE")
 	vehicle:RegisterEvent("UNIT_EXITED_VEHICLE")
 	vehicle:RegisterEvent("VEHICLE_UPDATE")
+	if TaxiUtil then
+		TaxiUtil:RegisterCallback("TAXI_STARTED", Vehicle_OnEvent, vehicle)
+		TaxiUtil:RegisterCallback("TAXI_FINISHED", Vehicle_OnEvent, vehicle)
+	end
 
 	self.vehicle = vehicle
 	self:UpdateVehicleLeave()
