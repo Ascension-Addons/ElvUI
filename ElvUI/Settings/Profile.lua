@@ -4018,10 +4018,11 @@ P.actionbar = {
 		showGrid = true,
 		paging = {
 			HERO = "[bonusbar:1,nostealth] 7; [bonusbar:1,stealth] 8; [bonusbar:2] 8; [bonusbar:3] 9; [bonusbar:4] 10;",
+			PROPHET = "[stealth] 7; [nostealth] 1;",
 			RANGER = "[stealth] 7; [nostealth] 1;",
 			REAPER = "[stealth] 7; [nostealth] 1;",
+			ROGUE = "[stealth] 7; [nostealth] 1;",
 			SPIRITMAGE = "[stealth] 7; [nostealth] 1;",
-			PROPHET = "[stealth] 7; [nostealth] 1;",
 		},
 		visibility = ""
 	},
