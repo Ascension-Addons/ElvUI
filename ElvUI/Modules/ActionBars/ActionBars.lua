@@ -376,9 +376,7 @@ function AB:CreateVehicleLeave()
 
 	vehicle:SetScript("OnClick", Vehicle_ExitVehicle)
 	vehicle:SetScript("OnEvent", Vehicle_OnEvent)
-	if MainMenuBarVehicleLeaveButtonMixin then
-		vehicle:SetScript("OnEnter", MainMenuBarVehicleLeaveButtonMixin.OnEnter)
-	end
+	vehicle:SetScript("OnEnter", MainMenuBarVehicleLeaveButtonMixin.OnEnter)
 	vehicle:SetScript("OnLeave", GameTooltip_Hide)
 	vehicle:RegisterEvent("PLAYER_ENTERING_WORLD")
 	vehicle:RegisterEvent("UPDATE_BONUS_ACTIONBAR")
