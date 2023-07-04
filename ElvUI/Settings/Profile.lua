@@ -4017,11 +4017,15 @@ P.actionbar = {
 		inheritGlobalFade = false,
 		showGrid = true,
 		paging = {
+			DRUID = "[bonusbar:1,nostealth] 7; [bonusbar:1,stealth] 8; [bonusbar:2] 8; [bonusbar:3] 9; [bonusbar:4] 10;",
 			HERO = "[bonusbar:1,nostealth] 7; [bonusbar:1,stealth] 8; [bonusbar:2] 8; [bonusbar:3] 9; [bonusbar:4] 10;",
+			PRIEST = "[bonusbar:1] 7;",
+			PROPHET = "[stealth] 7; [nostealth] 1;",
 			RANGER = "[stealth] 7; [nostealth] 1;",
 			REAPER = "[stealth] 7; [nostealth] 1;",
+			ROGUE = "[bonusbar:1] 7; [form:3] 7;",
 			SPIRITMAGE = "[stealth] 7; [nostealth] 1;",
-			PROPHET = "[stealth] 7; [nostealth] 1;",
+			WARRIOR = "[bonusbar:1] 7; [bonusbar:2] 8; [bonusbar:3] 9;",
 		},
 		visibility = ""
 	},
