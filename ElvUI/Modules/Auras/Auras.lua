@@ -121,7 +121,19 @@ local OnLeave = function()
 	GameTooltip:Hide()
 end
 
-local OnClick = function(self)
+local OnClick = function(self, button)
+	if button == "LeftButton" then
+		if IsModifiedClick("CHATLINK") then
+			local spellID = select(11, UnitAura("player", self:GetID(), self:GetParent().filter))
+			if spellID then
+				local link = LinkUtil:GetSpellLink(spellID)
+				if link then
+					ChatEdit_InsertLink(link)
+				end
+			end
+		end
+		return
+	end
 	if self.IsWeapon then
 		CancelItemTempEnchantment(self:GetID())
 	else
@@ -140,7 +152,7 @@ function A:CreateIcon(button)
 		button.auraType = "buffs"
 	end
 
-	button:RegisterForClicks("RightButtonUp")
+	button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 
 	button.texture = button:CreateTexture(nil, "BORDER")
 	button.texture:SetInside()
