@@ -80,7 +80,7 @@ function UF:Update_PlayerFrame(frame, db)
 		frame.POWERBAR_WIDTH = frame.USE_MINI_POWERBAR and (frame.UNIT_WIDTH - (frame.BORDER*2))/2 or (frame.POWERBAR_DETACHED and db.power.detachedWidth or (frame.UNIT_WIDTH - ((frame.BORDER+frame.SPACING)*2)))
 
 		-- Energy
-		frame.USE_ENERGYBAR = db.energy.enable
+		frame.USE_ENERGYBAR = db.energy.enable and E.myclass == "HERO"
 		frame.ENERGYBAR_DETACHED = db.energy.detachFromFrame
 		frame.USE_INSET_ENERGYBAR = not frame.ENERGYBAR_DETACHED and db.energy.width == "inset" and frame.USE_ENERGYBAR
 		frame.USE_MINI_ENERGYBAR = (not frame.ENERGYBAR_DETACHED and db.energy.width == "spaced" and frame.USE_ENERGYBAR)
@@ -91,7 +91,7 @@ function UF:Update_PlayerFrame(frame, db)
 		frame.ENERGYBAR_WIDTH = frame.USE_MINI_ENERGYBAR and (frame.UNIT_WIDTH - (frame.BORDER*2))/2 or (frame.ENERGYBAR_DETACHED and db.energy.detachedWidth or (frame.UNIT_WIDTH - ((frame.BORDER+frame.SPACING)*2)))
 
 		-- Rage
-		frame.USE_RAGEBAR = db.rage.enable
+		frame.USE_RAGEBAR = db.rage.enable and E.myclass == "HERO"
 		frame.RAGEBAR_DETACHED = db.rage.detachFromFrame
 		frame.USE_INSET_RAGEBAR = not frame.RAGEBAR_DETACHED and db.rage.width == "inset" and frame.USE_RAGEBAR
 		frame.USE_MINI_RAGEBAR = (not frame.RAGEBAR_DETACHED and db.rage.width == "spaced" and frame.USE_RAGEBAR)
