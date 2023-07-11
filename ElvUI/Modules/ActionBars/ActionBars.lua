@@ -325,18 +325,11 @@ function AB:PLAYER_REGEN_ENABLED()
 end
 
 local function Vehicle_ExitVehicle(self)
-	if UnitOnTaxi("player") and TaxiRequestEarlyLanding then
-		TaxiRequestEarlyLanding();
-		-- Show that the request for landing has been received.
-		self:Disable();
-		self:LockHighlight();
-	else
-		VehicleExit();
-	end
+	VehicleExit();
 end
 
 local function Vehicle_CanExit()
-	return CanExitVehicle() or TaxiUtil and TaxiUtil.CanStopTaxi()
+	return CanExitVehicle()
 end
 
 local function Vehicle_OnEvent(self, event)
@@ -386,10 +379,6 @@ function AB:CreateVehicleLeave()
 	vehicle:RegisterEvent("UNIT_ENTERED_VEHICLE")
 	vehicle:RegisterEvent("UNIT_EXITED_VEHICLE")
 	vehicle:RegisterEvent("VEHICLE_UPDATE")
-	if TaxiUtil then
-		TaxiUtil:RegisterCallback("TAXI_STARTED", Vehicle_OnEvent, vehicle)
-		TaxiUtil:RegisterCallback("TAXI_FINISHED", Vehicle_OnEvent, vehicle)
-	end
 
 	self.vehicle = vehicle
 	self:UpdateVehicleLeave()
