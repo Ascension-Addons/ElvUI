@@ -808,6 +808,7 @@ function AB:UpdateButtonConfig(bar, buttonName)
 		button.keyBoundTarget = bar.buttonConfig.keyBoundTarget
 		button.postKeybind = AB.FixKeybindText
 		button:SetAttribute("buttonlock", self.db.lockActionBars)
+		button:SetAttribute("checkmouseovercast", true)
 		button:SetAttribute("checkselfcast", true)
 		button:SetAttribute("checkfocuscast", true)
 		if self.db.rightClickSelfCast then
