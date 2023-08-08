@@ -13,14 +13,9 @@ S:AddCallbackForAddon("AllStats", "AllStats", function()
 	AllStatsFrame:StripTextures()
 	AllStatsFrame:SetTemplate("Transparent")
 	AllStatsFrame:Height(424)
-	AllStatsFrame:Point("TOPLEFT", PaperDollFrame, "TOPLEFT", 351, -12)
+	AllStatsFrame:Point("TOPLEFT", AscensionCharacterFrame, "TOPRIGHT", 2, -6)
 
 	S:HandleButton(AllStatsButtonShowFrame)
 	AllStatsButtonShowFrame:Height(21)
-
-	if CharacterFrameExpandButton then
-		AllStatsButtonShowFrame:Point("BOTTOMRIGHT", -40, 84)
-	else
-		AllStatsButtonShowFrame:Point("BOTTOMRIGHT", -60, 84)
-	end
+	AllStatsButtonShowFrame:Point("BOTTOMRIGHT", 20, -22)
 end)
