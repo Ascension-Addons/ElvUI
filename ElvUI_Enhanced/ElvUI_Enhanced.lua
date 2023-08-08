@@ -75,11 +75,6 @@ function addon:DBConversions()
 		E.private.enhanced.blizzard.deathRecap = nil
 	end
 
-	if E.private.enhanced.character.model and E.private.enhanced.character.model.enable ~= nil then
-		E.private.enhanced.character.modelFrames = E.private.enhanced.character.model.enable
-		E.private.enhanced.character.model.enable = nil
-	end
-
 	if P.unitframe.units.player.portrait.detachFromFrame ~= nil then
 		E.db.enhanced.unitframe.detachPortrait.player.enable = P.unitframe.units.player.portrait.detachFromFrame
 		E.db.enhanced.unitframe.detachPortrait.player.width = P.unitframe.units.player.portrait.detachedWidth

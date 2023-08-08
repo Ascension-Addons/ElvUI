@@ -38,17 +38,6 @@ P.enhanced = {
 	chat = {
 		dpsLinks = false,
 	},
-	character = {
-		animations = false,
-		characterBackground = false,
-		petBackground = false,
-		inspectBackground = false,
-		companionBackground = false,
-		desaturateCharacter = false,
-		desaturatePet = false,
-		desaturateInspect = false,
-		desaturateCompanion = false
-	},
 	equipment = {
 		enable = false,
 		font = "Homespun",

@@ -12,7 +12,4 @@
 	<Script file="TimerTracker.lua"/>
 
 	<Script file="Modelframes.lua"/>
-
-	<Include file="CharacterFrame.xml"/>
-	<Script file="CharacterFrame.lua"/>
 </Ui>
