@@ -156,14 +156,6 @@ local addonFixes = {
 		end)
 	end,
 
-	-- All Stats 1.1
-	-- https://www.curseforge.com/wow/addons/all-stats/files/430951
-	["AllStats"] = function()
-		if E.private.enhanced.character.modelFrames and not E.private.enhanced.character.enable then
-			CharacterModelFrame:Size(237, 324)
-		end
-	end,
-
 	-- https://github.com/ElvUI-WotLK/ElvUI_Enhanced/issues/100
 	["OmniBar"] = function()
 		hooksecurefunc("OmniBar_CreateIcon", function(self)
@@ -172,59 +164,6 @@ local addonFixes = {
 
 		for _, icon in ipairs(OmniBar.icons) do
 			E:RegisterCooldown(icon.cooldown)
-		end
-	end,
-
-	-- BlizzMove r18
-	-- https://www.curseforge.com/wow/addons/blizzmove/files/456128
-	-- https://github.com/ElvUI-WotLK/ElvUI_Enhanced/issues/96
-	["BlizzMove"] = function()
-		if E.private.enhanced.character.enable then
-			local MouseIsOver = MouseIsOver
-
-			local origOnMouseWheel
-
-			local function onMouseWheel(self, delta)
-				if CharacterStatsPane:IsShown() and MouseIsOver(CharacterStatsPane) then
-					CharacterStatsPane:GetScript("OnMouseWheel")(CharacterStatsPane, delta)
-				elseif PaperDollTitlesPane:IsShown() and MouseIsOver(PaperDollTitlesPane) then
-					PaperDollTitlesPane:GetScript("OnMouseWheel")(PaperDollTitlesPane, delta)
-				elseif PaperDollEquipmentManagerPane:IsShown() and MouseIsOver(PaperDollEquipmentManagerPane) then
-					PaperDollEquipmentManagerPane:GetScript("OnMouseWheel")(PaperDollEquipmentManagerPane, delta)
-				else
-					origOnMouseWheel(self, delta)
-				end
-			end
-
-			local f = CreateFrame("Frame")
-			f:RegisterEvent("PLAYER_ENTERING_WORLD")
-			f:SetScript("OnEvent", function(self)
-				self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-
-				origOnMouseWheel = PaperDollFrame:GetScript("OnMouseWheel")
-
-				if PaperDollFrame.frameToMove and PaperDollFrame.frameToMove.EnableMouse then
-					PaperDollFrame:SetScript("OnMouseWheel", onMouseWheel)
-				end
-
-				hooksecurefunc(BlizzMove, "Toggle", function(self, handler)
-					if handler == PaperDollFrame then
-						if not handler:GetScript("OnDragStart") then
-							PaperDollFrame:SetScript("OnMouseWheel", nil)
-						else
-							PaperDollFrame:SetScript("OnMouseWheel", onMouseWheel)
-						end
-					end
-				end)
-			end)
-		end
-	end,
-
-	-- InspectEquip 1.7.7
-	["InspectEquip"] = function()
-		if E.private.enhanced.character.enable then
-			PaperDollFrame:HookScript("OnShow", InspectEquip.PaperDollFrame_OnShow)
-			PaperDollFrame:HookScript("OnHide", InspectEquip.PaperDollFrame_OnHide)
 		end
 	end,
 }

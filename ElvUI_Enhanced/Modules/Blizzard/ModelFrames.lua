@@ -14,10 +14,7 @@ local Model_RotateRight = Model_RotateRight
 local ROTATIONS_PER_SECOND = ROTATIONS_PER_SECOND
 
 local modelFrames = {
-	"CharacterModelFrame",
-	"CompanionModelFrame",
 	"DressUpModel",
-	"PetModelFrame",
 	"PetStableModel"
 }
 
@@ -403,8 +400,6 @@ function MF:ADDON_LOADED(event, addon)
 end
 
 function MF:Initialize()
-	if not E.private.enhanced.character.modelFrames then return end
-
 	for i = 1, #modelFrames do
 		local model = _G[modelFrames[i]]
 
@@ -415,15 +410,6 @@ function MF:Initialize()
 		_G[modelFrames[i].."RotateRightButton"]:Kill()
 
 		self:ModelWithControls(model)
-	end
-
-	if E.myclass == "HUNTER" then
-		if E.private.enhanced.character.enable then
-			PetPaperDollPetInfo:Point("TOPLEFT", PetPaperDollFrame, 24, -81)
-		else
-			PetPaperDollPetInfo:Point("TOPLEFT", PetPaperDollFrame, 24, -76)
-		end
-		PetStablePetInfo:Point("TOPLEFT", PetStableModel, 5, -5)
 	end
 
 	local modelPanning = CreateFrame("Frame", "ModelPanningFrame", UIParent)
