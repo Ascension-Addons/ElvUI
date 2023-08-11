@@ -124,14 +124,6 @@ function NP:CVarReset()
 end
 
 function NP:SetCVars()
-	-- if NP.db.clampToScreen then
-	-- 	NP:SetCVar('nameplateOtherTopInset', 0.08)
-	-- 	NP:SetCVar('nameplateOtherBottomInset', 0.1)
-	-- elseif GetCVar('nameplateOtherTopInset') == '0.08' and GetCVar('nameplateOtherBottomInset') == '0.1' then
-	-- 	NP:SetCVar('nameplateOtherTopInset', -1)
-	-- 	NP:SetCVar('nameplateOtherBottomInset', -1)
-	-- end
-
 	NP:SetCVar('nameplateAllowOverlap', NP.db.motionType == 'STACKED' and 1 or 0)
 	NP:SetCVar('nameplateDistance', NP.db.loadDistance)
 
