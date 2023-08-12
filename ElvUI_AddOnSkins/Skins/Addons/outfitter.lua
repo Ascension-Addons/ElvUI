@@ -17,11 +17,6 @@ S:AddCallbackForAddon("Outfitter", "Outfitter", function()
 	if not E.private.addOnSkins.Outfitter then return end
 
 	-- ButtonFrame
-	OutfitterButtonFrame:SetAllPoints(CharacterFrame.backdrop)
-
-	OutfitterButton:ClearAllPoints()
-	OutfitterButton:Point("TOPRIGHT", OutfitterButtonFrame, -25, -5)
-
 	OutfitterButton:Size(30, 16)
 	OutfitterButton:SetTemplate("Transparent")
 	OutfitterButton:SetHighlightTexture("")
