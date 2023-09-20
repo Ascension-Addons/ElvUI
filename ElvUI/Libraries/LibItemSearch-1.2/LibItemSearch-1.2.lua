@@ -123,7 +123,7 @@ Lib.Filters.type = {
 
 	match = function(self, item, _, search)
 		local type, subType, _, equipSlot = select(6, GetItemInfo(item))
-		return Search:Find(search, type, subType, _G[equipSlot])
+		return Search:Find(search, type, subType, equipSlot and equipSlot ~= "" and _G[equipSlot])
 	end
 }
 

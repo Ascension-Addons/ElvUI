@@ -775,6 +775,7 @@ Used to create nameplates and apply the currently active style to them.
 * variables - list of console variable-value pairs to be set when the player logs in (table?)
 --]]
 local nameplateUnitToFrame = {}
+local nameplateCounter = CreateCounter()
 function oUF:SpawnNamePlates(namePrefix, nameplateCallback, nameplateCVars)
 	argcheck(nameplateCallback, 3, 'function', 'nil')
 	argcheck(nameplateCVars, 4, 'table', 'nil')
@@ -782,7 +783,7 @@ function oUF:SpawnNamePlates(namePrefix, nameplateCallback, nameplateCVars)
 	if(_G.oUF_NamePlateDriver) then return error('oUF nameplate driver has already been initialized.') end
 
 	local style = style
-	local prefix = namePrefix or generateName()
+	local prefix = namePrefix or generateName(nil, "NamePlate")
 
 	local eventHandler = CreateFrame('Frame', 'oUF_NamePlateDriver')
 	eventHandler:RegisterEvent('NAME_PLATE_UNIT_ADDED')
@@ -838,7 +839,7 @@ function oUF:SpawnNamePlates(namePrefix, nameplateCallback, nameplateCVars)
 				nameplate.style = style
 				nameplate.isNamePlate = true
 
-				nameplate.unitFrame = CreateFrame('Button', prefix..tostring(nameplate), nameplate)
+				nameplate.unitFrame = CreateFrame('Button', prefix.."NamePlate"..nameplateCounter(), nameplate)
 				nameplate.unitFrame:EnableMouse(false)
 				nameplate.unitFrame.isNamePlate = true
 				nameplate.unitFrame.nameplateAnchor = nameplate

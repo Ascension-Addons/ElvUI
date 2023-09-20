@@ -183,7 +183,6 @@ function B:SetSearch(query)
 				local _, _, _, _, _, _, link = GetContainerItemInfo(bagID, slotID)
 				local button = bagFrame.Bags[bagID][slotID]
 				local success, result = pcall(Search.Matches, Search, link, query)
-
 				if empty or (success and result) then
 					SetItemButtonDesaturated(button, button.locked or button.junkDesaturate)
 					button.searchOverlay:Hide()
