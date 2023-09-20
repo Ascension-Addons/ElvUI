@@ -235,6 +235,7 @@ function E:ChangeRole(role)
 		["caster"]="Caster",
 		["ranged"]="Ranged",
 		["tank"]="Tank",
+		["healer"]="Healer",
 	}
 	E.Role = roles[lower(role)] or "Melee"
 	E:Print("Role was changed to "..E.Role)

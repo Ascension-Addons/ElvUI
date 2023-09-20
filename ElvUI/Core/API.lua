@@ -49,6 +49,24 @@ function E:GetPlayerRole()
 	return isTank and "TANK" or isHealer and "HEALER" or "DAMAGER"
 end
 
+function E:GetPlayerDesiredRole()
+	local myRole = E.Role
+	if myRole == "Tank" then
+		myRole = "TANK"
+	elseif myRole == "Healer" then
+		myRole = "HEALER"
+	else
+		local groupRole = E:GetPlayerRole()
+		if groupRole then
+			myRole = groupRole
+		else
+			myRole = "DAMAGER"
+		end
+	end
+
+	return myRole
+end
+
 do
 	--local Masque = E.Libs.Masque
 	local LBFGroupToTableElement = {

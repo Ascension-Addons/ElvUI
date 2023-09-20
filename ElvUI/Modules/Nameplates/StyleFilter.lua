@@ -904,7 +904,7 @@ function mod:StyleFilterConditionCheck(frame, filter, trigger)
 
 	-- My Role
 	if trigger.role.tank or trigger.role.healer or trigger.role.damager then
-		if trigger.role[mod.TriggerConditions.roles[E.myrole]] then passed = true else return end
+		if trigger.role[mod.TriggerConditions.roles[E:GetPlayerDesiredRole()]] then passed = true else return end
 	end
 
 	-- Unit Role
