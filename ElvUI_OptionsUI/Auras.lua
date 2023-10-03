@@ -356,6 +356,13 @@ E.Options.args.auras = {
 							name = L["Reverse Style"],
 							desc = L["When enabled active buff icons will light up instead of becoming darker, while inactive buff icons will become darker instead of being lit up."]
 						},
+						wide = {
+							order = 3,
+							type = "toggle",
+							name = "Two Rows",
+							desc = "Show all available buff reminders",
+							set = function(info, value) E.db.general.reminder[info[#info]] = value RB:UpdateSettings() M:UpdateSettings() end,
+						},
 						position = {
 							order = 4,
 							type = "select",
@@ -366,13 +373,6 @@ E.Options.args.auras = {
 								["RIGHT"] = L["Right"]
 							}
 						},
-						wide = {
-							order = 3,
-							type = "toggle",
-							name = "Two Rows",
-							desc = "Show all available buff reminders",
-							set = function(info, value) E.db.general.reminder[info[#info]] = value RB:UpdateSettings() M:UpdateSettings() end,
-						},		
 						classtype = {
 							order = 5,
 							type = "select",
