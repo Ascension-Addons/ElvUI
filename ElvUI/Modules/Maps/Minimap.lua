@@ -336,8 +336,7 @@ function M:UpdateSettings()
 	end
 
 	if MMHolder then
-		local widthAdjust = wide and 2 or 1
-		MMHolder:Width((Minimap:GetWidth() + E.Border*2 + E.Spacing*3) + E.RBRWidth * widthAdjust - widthAdjust)
+		MMHolder:Width((Minimap:GetWidth() + E.Border*2 + E.Spacing*3) + E.RBRWidth * (wide and 2 or 1) - (wide and 1 or 2))
 
 		if E.db.datatexts.minimapPanels then
 			MMHolder:Height(Minimap:GetHeight() + (LeftMiniPanel and (LeftMiniPanel:GetHeight() + E.Border) or 24) + E.Spacing*3)
