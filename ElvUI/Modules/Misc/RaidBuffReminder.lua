@@ -86,12 +86,16 @@ RB.CasterSpell7Buffs = {
 	61316, -- Dalaran Brilliance
 	43002, -- Arcane Brilliance
 	42995, -- Arcane Intellect
+	30706, -- Totem of Wrath
+	8227, -- Flametongue Totem
+	47236, -- Demonic Pact
 }
 
 RB.AttackSpell7Buffs = {
 	48934, -- Greater Blessing of Might
 	48932, -- Blessing of Might
 	47436, -- Battle Shout
+	25527, -- Strength of Earth Totem
 }
 
 RB.Spell8Buffs = {
@@ -99,72 +103,64 @@ RB.Spell8Buffs = {
 	469, -- Commanding Shout
 }
 
--- Armor buffs
-RB.Spell9Buffs = {
-	25506, -- Stoneskin Totem
-	465, -- Devotion Aura
-}
-
 -- Concentration / Thorns
-RB.CasterSpell10Buffs = {
+RB.CasterSpell9Buffs = {
 	19746, -- Concentration Aura
 }
-RB.AttackSpell10Buffs = {
+RB.AttackSpell9Buffs = {
 	467, -- Thorns
 	7294, -- Retribution Aura
 }
 
--- SP / Str+Dex totems
-RB.CasterSpell11Buffs = {
-	30706, -- Totem of Wrath
-	8227, -- Flametongue Totem
-	47236, -- Demonic Pact
-}
-RB.AttackSpell11Buffs = {
-	25527, -- Strength of Earth Totem
-}
-
 -- Mana regen
-RB.Spell12Buffs = {
+RB.Spell10Buffs = {
 	48938, -- Greater Blessing of Wisdom
 	48936, -- Blessing of Wisdom
 	58777, -- Mana Spring
 }
 
 -- Crit % Increase
-RB.CasterSpell13Buffs = {
+RB.CasterSpell11Buffs = {
 	51471, -- Elemental Oath
 	24907, -- Moonkin Aura
 }
-RB.AttackSpell13Buffs = {
+RB.AttackSpell11Buffs = {
 	17007, -- Leader of the Pack
 	29801, -- Rampage
 }
 
 -- Haste % Increase
-RB.CasterSpell14Buffs = {
+RB.CasterSpell12Buffs = {
 	50172, -- Moonkin's Presence
 	2895, -- Wrath of Air
 	853648, -- Swift Retribution
 }
-RB.AttackSpell14Buffs = {
+RB.AttackSpell12Buffs = {
 	8512, -- Windfury Totem
+}
+RB.HunterSpell12Buffs = {
+	61316, -- Dalaran Brilliance
+	43002, -- Arcane Brilliance
+	42995, -- Arcane Intellect
+	30706, -- Totem of Wrath
+	8227, -- Flametongue Totem
+	47236, -- Demonic Pact
 }
 
 -- Spirit Buff
-RB.CasterSpell15Buffs = {
+RB.CasterSpell13Buffs = {
 	14752, -- Divine Spirit
 	27681, -- Prayer of Spirit
 }
 -- Percent AP
-RB.AttackSpell15Buffs = {
+RB.AttackSpell13Buffs = {
 	19506, -- Trueshot Aura
 	30802, -- Unleashed Rage
 	53137, -- Abomination's Might
 }
 
 -- Percent Damage
-RB.Spell16Buffs = {
+RB.Spell14Buffs = {
 	31579, -- Arcane Empowerment
 	31869, -- Sanctified Retribution
 	34455, -- Ferocious Inspiration
@@ -206,8 +202,8 @@ end
 
 function RB:UpdateReminder(event, unit)
 	if event == "UNIT_AURA" and unit ~= "player" then return end
-
-	for i = 1, 16 do
+	local wide = E.db.general.reminder.wide
+	for i = 1, wide and 14 or 7 do
 		local texture, duration, expirationTime = self:CheckFilterForActiveBuff(self["Spell"..i.."Buffs"])
 		local button = self.frame[i]
 
@@ -276,11 +272,12 @@ end
 
 function RB:UpdateSettings(isCallback)
 	local frame = self.frame
-	frame:Width(E.RBRWidth * 2)
+	local wide = E.db.general.reminder.wide
+	frame:Width(E.RBRWidth * (wide and 2 or 1))
 
 	self:UpdateDefaultIcons()
 
-	for i = 1, 16 do
+	for i = 1, 14 do
 		local button = frame[i]
 		button:ClearAllPoints()
 		button:SetWidth(E.RBRWidth)
@@ -288,12 +285,11 @@ function RB:UpdateSettings(isCallback)
 
 		if i == 1 then
 			button:SetPoint("TOPLEFT", ElvUI_ReminderBuffs, "TOPLEFT", 0, -1)
-		elseif i == 9 then
+		elseif i == 8 then
 			button:SetPoint("TOPRIGHT", ElvUI_ReminderBuffs, "TOPRIGHT", 0, -1)
 		else
 			button:Point("TOP", frame[i - 1], "BOTTOM", 0, E.Border - E.Spacing*3)
 		end
-
 		if E.db.general.reminder.durations then
 			button.cd:SetAlpha(1)
 		else
@@ -301,6 +297,12 @@ function RB:UpdateSettings(isCallback)
 		end
 
 		button.timer:FontTemplate(LSM:Fetch("font", E.db.general.reminder.font), E.db.general.reminder.fontSize, E.db.general.reminder.fontOutline)
+		
+		if not wide and i > 7 then
+			button:Hide()
+		elseif wide and i > 7 then
+			button:Show()
+		end
 	end
 
 	if not isCallback then
@@ -335,6 +337,7 @@ end
 
 function RB:UpdateDefaultIcons()
 	local isCaster = E.private.general.reminder.classtype == "Caster"
+	local isRanged = E.private.general.reminder.classtype == "Ranged"
 	self.DefaultIcons = {
 		[1] = "Interface\\Icons\\INV_Potion_97",
 		[2] = "Interface\\Icons\\Spell_Misc_Food",
@@ -344,28 +347,26 @@ function RB:UpdateDefaultIcons()
 		[6] = "Interface\\Icons\\spell_nature_lightningshield",
 		[7] = (isCaster and "Interface\\Icons\\Spell_Holy_MagicalSentry") or "Interface\\Icons\\spell_holy_fistofjustice",
 		[8] = "Interface\\Icons\\ability_warrior_rallyingcry",
-		[9] = "Interface\\Icons\\spell_nature_stoneskintotem",
-		[10] = (isCaster and "Interface\\Icons\\spell_holy_mindsooth") or "Interface\\Icons\\spell_nature_thorns",
-		[11] = (isCaster and "Interface\\Icons\\spell_fire_totemofwrath") or "Interface\\Icons\\spell_nature_earthbindtotem",
-		[12] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom",
-		[13] = (isCaster and "Interface\\Icons\\spell_nature_moonglow") or "Interface\\Icons\\spell_nature_unyeildingstamina",
-		[14] = (isCaster and "Interface\\Icons\\spell_nature_forceofnature") or "Interface\\Icons\\spell_nature_windfury",
-		[15] = (isCaster and "Interface\\Icons\\spell_holy_prayerofspirit") or "Interface\\Icons\\ability_trueshot",
-		[16] = "Interface\\Icons\\spell_nature_starfall",
+		[9] = (isCaster and "Interface\\Icons\\spell_holy_mindsooth") or "Interface\\Icons\\spell_nature_thorns",
+		[10] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom",
+		[11] = (isCaster and "Interface\\Icons\\spell_nature_moonglow") or "Interface\\Icons\\spell_nature_unyeildingstamina",
+		[12] = (isCaster and "Interface\\Icons\\spell_nature_forceofnature") or (isRanged and "Interface\\Icons\\Spell_Holy_MagicalSentry") or "Interface\\Icons\\spell_nature_windfury",
+		[13] = (isCaster and "Interface\\Icons\\spell_holy_prayerofspirit") or "Interface\\Icons\\ability_trueshot",
+		[14] = "Interface\\Icons\\spell_nature_starfall",
 	}
 
 	self.Spell7Buffs = isCaster and self.CasterSpell7Buffs or self.AttackSpell7Buffs
 
-	self.Spell10Buffs = isCaster and self.CasterSpell10Buffs or self.AttackSpell10Buffs
-	self.Spell11Buffs = isCaster and self.CasterSpell11Buffs or self.AttackSpell11Buffs
+	self.Spell9Buffs = isCaster and self.CasterSpell9Buffs or self.AttackSpell9Buffs
 
+	self.Spell11Buffs = isCaster and self.CasterSpell11Buffs or self.AttackSpell11Buffs
+	self.Spell12Buffs = isCaster and self.CasterSpell12Buffs or isHunter and self.HunterSpell12Buffs or self.AttackSpell12Buffs
 	self.Spell13Buffs = isCaster and self.CasterSpell13Buffs or self.AttackSpell13Buffs
-	self.Spell14Buffs = isCaster and self.CasterSpell14Buffs or self.AttackSpell14Buffs
-	self.Spell15Buffs = isCaster and self.CasterSpell15Buffs or self.AttackSpell15Buffs
 end
 
 function RB:Initialize()
 	if not E.private.general.minimap.enable then return end
+	local wide = E.db.general.reminder.wide
 
 	self.db = E.db.general.reminder
 
@@ -380,7 +381,7 @@ function RB:Initialize()
 	end
 	self.frame = frame
 
-	for i = 1, 16 do
+	for i = 1, 14 do
 		frame[i] = self:CreateButton()
 		frame[i]:SetID(i)
 	end
