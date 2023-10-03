@@ -360,7 +360,7 @@ function RB:UpdateDefaultIcons()
 	self.Spell9Buffs = isCaster and self.CasterSpell9Buffs or self.AttackSpell9Buffs
 
 	self.Spell11Buffs = isCaster and self.CasterSpell11Buffs or self.AttackSpell11Buffs
-	self.Spell12Buffs = isCaster and self.CasterSpell12Buffs or isHunter and self.HunterSpell12Buffs or self.AttackSpell12Buffs
+	self.Spell12Buffs = isCaster and self.CasterSpell12Buffs or isRanged and self.HunterSpell12Buffs or self.AttackSpell12Buffs
 	self.Spell13Buffs = isCaster and self.CasterSpell13Buffs or self.AttackSpell13Buffs
 end
 
