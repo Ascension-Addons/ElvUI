@@ -108,7 +108,8 @@ P.general = {
 		position = "RIGHT",
 		font = "Homespun",
 		fontSize = 10,
-		fontOutline = "MONOCHROMEOUTLINE"
+		fontOutline = "MONOCHROMEOUTLINE",
+		wide = true
 	},
 	kittys = false
 }
