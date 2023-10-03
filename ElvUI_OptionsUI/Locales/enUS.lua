@@ -1396,3 +1396,5 @@ L["Set the size of the map markers"] = true
 L["Receive from Raid Members"] = true
 L["Allows Raid Members to send you Map Markers"] = true
 L["MAP_MARKER_DISCRIPTION"] = "Allows Map Markers to be created by middle clicking (Mouse3) on the world map.\nMarkers are automatically shared with raid members."
+L["Ranged"] = "Ranged"
+L["Melee"] = "Melee"
