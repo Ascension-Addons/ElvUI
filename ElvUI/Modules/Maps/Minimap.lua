@@ -262,12 +262,13 @@ function M:UpdateSettings()
 	if InCombatLockdown() then
 		self:RegisterEvent("PLAYER_REGEN_ENABLED")
 	end
+	local wide = E.db.general.reminder.wide
 
 	E.MinimapSize = E.private.general.minimap.enable and E.db.general.minimap.size or Minimap:GetWidth() + 10
 	E.MinimapWidth, E.MinimapHeight = E.MinimapSize, E.MinimapSize
 
 	if E.db.general.reminder.enable then
-		E.RBRWidth = (E.MinimapHeight + ((E.Border - E.Spacing*3) * 5) + E.Border*2) / 8
+		E.RBRWidth = (E.MinimapHeight + ((E.Border - E.Spacing*3) * 5) + E.Border*2) / 7
 	else
 		E.RBRWidth = 0
 	end
@@ -335,7 +336,8 @@ function M:UpdateSettings()
 	end
 
 	if MMHolder then
-		MMHolder:Width((Minimap:GetWidth() + E.Border*2 + E.Spacing*3) + E.RBRWidth * 2 - 2)
+		local widthAdjust = wide and 2 or 1
+		MMHolder:Width((Minimap:GetWidth() + E.Border*2 + E.Spacing*3) + E.RBRWidth * widthAdjust - widthAdjust)
 
 		if E.db.datatexts.minimapPanels then
 			MMHolder:Height(Minimap:GetHeight() + (LeftMiniPanel and (LeftMiniPanel:GetHeight() + E.Border) or 24) + E.Spacing*3)
@@ -409,7 +411,7 @@ function M:UpdateSettings()
 	if ElvConfigToggle then
 		if E.db.general.reminder.enable and E.db.datatexts.minimapPanels and E.private.general.minimap.enable then
 			ElvConfigToggle:Show()
-			ElvConfigToggle:Width(E.RBRWidth * 2)
+			ElvConfigToggle:Width(E.RBRWidth * (wide and 2 or 1))
 		else
 			ElvConfigToggle:Hide()
 		end
