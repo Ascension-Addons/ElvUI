@@ -110,6 +110,8 @@ RB.CasterSpell9Buffs = {
 RB.AttackSpell9Buffs = {
 	467, -- Thorns
 	7294, -- Retribution Aura
+	25506, -- Stoneskin Totem
+	465, -- Devotion Aura
 }
 
 -- Mana regen
@@ -347,7 +349,7 @@ function RB:UpdateDefaultIcons()
 		[6] = "Interface\\Icons\\spell_nature_lightningshield",
 		[7] = (isCaster and "Interface\\Icons\\Spell_Holy_MagicalSentry") or "Interface\\Icons\\spell_holy_fistofjustice",
 		[8] = "Interface\\Icons\\ability_warrior_rallyingcry",
-		[9] = (isCaster and "Interface\\Icons\\spell_holy_mindsooth") or "Interface\\Icons\\spell_nature_thorns",
+		[9] = (isCaster and "Interface\\Icons\\spell_holy_mindsooth") or "Interface\\Icons\\spell_holy_devotionaura",
 		[10] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom",
 		[11] = (isCaster and "Interface\\Icons\\spell_nature_moonglow") or "Interface\\Icons\\spell_nature_unyeildingstamina",
 		[12] = (isCaster and "Interface\\Icons\\spell_nature_forceofnature") or (isRanged and "Interface\\Icons\\Spell_Holy_MagicalSentry") or "Interface\\Icons\\spell_nature_windfury",
