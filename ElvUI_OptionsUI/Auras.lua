@@ -357,7 +357,7 @@ E.Options.args.auras = {
 							desc = L["When enabled active buff icons will light up instead of becoming darker, while inactive buff icons will become darker instead of being lit up."]
 						},
 						position = {
-							order = 3,
+							order = 4,
 							type = "select",
 							name = L["Position"],
 							set = function(info, value) E.db.general.reminder[info[#info]] = value RB:UpdatePosition() end,
@@ -366,15 +366,23 @@ E.Options.args.auras = {
 								["RIGHT"] = L["Right"]
 							}
 						},
+						wide = {
+							order = 3,
+							type = "toggle",
+							name = "Two Rows",
+							desc = "Show all available buff reminders",
+							set = function(info, value) E.db.general.reminder[info[#info]] = value RB:UpdateSettings() M:UpdateSettings() end,
+						},		
 						classtype = {
-							order = 4,
+							order = 5,
 							type = "select",
 							name = L["Class Type"],
 							get = function(info) return E.private.general.reminder[info[#info]] end,
 							set = function(info, value) E.private.general.reminder[info[#info]] = value RB:UpdateSettings() end,
 							values = {
 								["Caster"] = L["Caster"],
-								["Attack"] = L["Attack"]
+								["Melee"] = L["Melee"],
+								["Ranged"] = L["Ranged"]
 							}
 						}
 					}
