@@ -264,147 +264,189 @@ G.unitframe = {
 			},
 		},
 		NECROMANCER = {
-			enemySpells = {},        -- Damage Spells
+			enemySpells = {          -- Damage Spells
+				[804558] = true, -- Putrefy
+			},
 			longEnemySpells = {},    -- Dots
 			friendlySpells = {},     -- Heals
 			resSpells = {},          -- Rez Spells
 			petSpells = {},          -- Pet Abilities
 		},
 		PYROMANCER = {
-			enemySpells = {},        -- Damage Spells
+			enemySpells = {          -- Damage Spells
+				[800790] = true, -- Scorching Ray
+			},
 			longEnemySpells = {},    -- Dots
 			friendlySpells = {},     -- Heals
 			resSpells = {},          -- Rez Spells
 			petSpells = {},          -- Pet Abilities
 		},
 		CULTIST = {
-			enemySpells = {},        -- Damage Spells
+			enemySpells = {          -- Damage Spells
+				[801964] = true, -- Eldritch Strike
+			},
 			longEnemySpells = {},    -- Dots
 			friendlySpells = {},     -- Heals
 			resSpells = {},          -- Rez Spells
 			petSpells = {},          -- Pet Abilities
 		},
 		STARCALLER = {
-			enemySpells = {},        -- Damage Spells
+			enemySpells = {          -- Damage Spells
+				[801127] = true, --Starsunder
+			},
 			longEnemySpells = {},    -- Dots
 			friendlySpells = {},     -- Heals
 			resSpells = {},          -- Rez Spells
 			petSpells = {},          -- Pet Abilities
 		},
 		SUNCLERIC = {
-			enemySpells = {},        -- Damage Spells
+			enemySpells = {          -- Damage Spells
+				[800611] = true, -- Gavel of Atonement
+			},
 			longEnemySpells = {},    -- Dots
 			friendlySpells = {},     -- Heals
 			resSpells = {},          -- Rez Spells
 			petSpells = {},          -- Pet Abilities
 		},
 		TINKER = {
-			enemySpells = {},        -- Damage Spells
+			enemySpells = {          -- Damage Spells
+				[500234] = true, -- Blackpowder Shot
+			},
 			longEnemySpells = {},    -- Dots
 			friendlySpells = {},     -- Heals
 			resSpells = {},          -- Rez Spells
 			petSpells = {},          -- Pet Abilities
 		},
 		SPIRITMAGE = {
-			enemySpells = {},        -- Damage Spells
+			enemySpells = {          -- Damage Spells
+				[802202] = true, -- Spellsling
+			},
 			longEnemySpells = {},    -- Dots
 			friendlySpells = {},     -- Heals
 			resSpells = {},          -- Rez Spells
 			petSpells = {},          -- Pet Abilities
 		},
 		WILDWALKER = {
-			enemySpells = {},        -- Damage Spells
+			enemySpells = {          -- Damage Spells
+				[800093] = true, -- Stoneslam
+			},
 			longEnemySpells = {},    -- Dots
 			friendlySpells = {},     -- Heals
 			resSpells = {},          -- Rez Spells
 			petSpells = {},          -- Pet Abilities
 		},
 		REAPER = {
-			enemySpells = {},        -- Damage Spells
+			enemySpells = {          -- Damage Spells
+				[500357] = true, -- Reap
+			},
 			longEnemySpells = {},    -- Dots
 			friendlySpells = {},     -- Heals
 			resSpells = {},          -- Rez Spells
 			petSpells = {},          -- Pet Abilities
 		},
 		PROPHET = {
-			enemySpells = {},        -- Damage Spells
+			enemySpells = {          -- Damage Spells
+				[800869] = true, -- Venom Bolt
+			},
 			longEnemySpells = {},    -- Dots
 			friendlySpells = {},     -- Heals
 			resSpells = {},          -- Rez Spells
 			petSpells = {},          -- Pet Abilities
 		},
 		CHRONOMANCER = {
-			enemySpells = {},        -- Damage Spells
+			enemySpells = {          -- Damage Spells
+				[804464] = true, -- Sandblast
+			},
 			longEnemySpells = {},    -- Dots
 			friendlySpells = {},     -- Heals
 			resSpells = {},          -- Rez Spells
 			petSpells = {},          -- Pet Abilities
 		},
 		SONOFARUGAL = {
-			enemySpells = {},        -- Damage Spells
+			enemySpells = {          -- Damage Spells
+				[500125] = true, -- Bloodmoon Blast
+			},
 			longEnemySpells = {},    -- Dots
 			friendlySpells = {},     -- Heals
 			resSpells = {},          -- Rez Spells
 			petSpells = {},          -- Pet Abilities
 		},
 		GUARDIAN = {
-			enemySpells = {},        -- Damage Spells
+			enemySpells = {          -- Damage Spells
+				[500155] = true, -- Arcing Strike
+			},
 			longEnemySpells = {},    -- Dots
 			friendlySpells = {},     -- Heals
 			resSpells = {},          -- Rez Spells
 			petSpells = {},          -- Pet Abilities
 		},
 		STORMBRINGER = {
-			enemySpells = {},        -- Damage Spells
+			enemySpells = {          -- Damage Spells
+				[804020] = true, -- Voltaic Burst
+			},
 			longEnemySpells = {},    -- Dots
 			friendlySpells = {},     -- Heals
 			resSpells = {},          -- Rez Spells
 			petSpells = {},          -- Pet Abilities
 		},
 		DEMONHUNTER = {
-			enemySpells = {},        -- Damage Spells
+			enemySpells = {          -- Damage Spells
+				[801901] = true, -- Twin Slice
+			},
 			longEnemySpells = {},    -- Dots
 			friendlySpells = {},     -- Heals
 			resSpells = {},          -- Rez Spells
 			petSpells = {},          -- Pet Abilities
 		},
 		BARBARIAN = {
-			enemySpells = {},        -- Damage Spells
+			enemySpells = {          -- Damage Spells
+				[801576] = true, -- Ancestral Strike
+			},
 			longEnemySpells = {},    -- Dots
 			friendlySpells = {},     -- Heals
 			resSpells = {},          -- Rez Spells
 			petSpells = {},          -- Pet Abilities
 		},
 		WITCHDOCTOR = {
-			enemySpells = {},        -- Damage Spells
+			enemySpells = {          -- Damage Spells
+				[500017] = true, -- Voodoo Serpent Beam
+			},
 			longEnemySpells = {},    -- Dots
 			friendlySpells = {},     -- Heals
 			resSpells = {},          -- Rez Spells
 			petSpells = {},          -- Pet Abilities
 		},
 		WITCHHUNTER = {
-			enemySpells = {},        -- Damage Spells
+			enemySpells = {          -- Damage Spells
+				[500082] = true, -- Coiling Shot
+			},
 			longEnemySpells = {},    -- Dots
 			friendlySpells = {},     -- Heals
 			resSpells = {},          -- Rez Spells
 			petSpells = {},          -- Pet Abilities
 		},
 		FLESHWARDEN = {
-			enemySpells = {},        -- Damage Spells
+			enemySpells = {          -- Damage Spells
+				[500904] = true, -- Demonstrike
+			},
 			longEnemySpells = {},    -- Dots
 			friendlySpells = {},     -- Heals
 			resSpells = {},          -- Rez Spells
 			petSpells = {},          -- Pet Abilities
 		},
 		MONK = {
-			enemySpells = {},        -- Damage Spells
+			enemySpells = {          -- Damage Spells
+				[704572] = true, -- Jab
+			},
 			longEnemySpells = {},    -- Dots
 			friendlySpells = {},     -- Heals
 			resSpells = {},          -- Rez Spells
 			petSpells = {},          -- Pet Abilities
 		},
 		RANGER = {
-			enemySpells = {},        -- Damage Spells
+			enemySpells = {          -- Damage Spells
+				[500074] = true, -- Quick Shot
+			},
 			longEnemySpells = {},    -- Dots
 			friendlySpells = {},     -- Heals
 			resSpells = {},          -- Rez Spells
@@ -412,7 +454,6 @@ G.unitframe = {
 		},
 	}
 }
-
 
 G.profileCopy = {
 	--Specific values
