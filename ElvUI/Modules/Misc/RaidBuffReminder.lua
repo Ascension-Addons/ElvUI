@@ -39,6 +39,54 @@ RB.Spell1Buffs = {
 	60347, -- Elixir of Mighty Thoughts
 	53763, -- Elixir of Protection
 	53747, -- Elixir of Spirit
+	
+	968451,  -- Distilled Flask of Unrelenting Power (60)
+	968439,  -- Distilled Flask of the Warsong (60)
+	968448,  -- Distilled Flask of the Unyielding (60)
+	968442,  -- Dilluted Flask of the Kirin Tor (60)
+	968460,  -- Distilled Flask of the Executioner (60)
+	968457,  -- Distilled Flask of Shattering Thunder (60)
+	968454,  -- Distilled Flask of Savage Assault (60)
+	968436,  -- Distilled Flask of Manifesting Power (60)
+	968463,  -- Distilled Flask of Deep Meditation (60)
+	968445,  -- Distilled Flask of Butchery (60)
+	968466,  -- Distilled Flask of Adept Striking (60)
+
+	968452,  -- Concentrated Flask of Unrelenting Power (60)
+	968440,  -- Concentrated Flask of the Warsong (60)
+	968449,  -- Concentrated Flask of the Unyielding (60)
+	968443,  -- Concentrated Flask of the Kirin Tor (60)
+	968461,  -- Concentrated Flask of the Executioner (60)
+	968458,  -- Concentrated Flask of Shattering Thunder (60)
+	968455,  -- Concentrated Flask of Savage Assault (60)
+	968437,  -- Concentrated Flask of Manifesting Power (60)
+	968464,  -- Concentrated Flask of Deep Meditation (60)
+	968446,  -- Concentrated Flask of Butchery (60)
+	968467,  -- Concentrated Flask of Adept Striking (60)
+
+	1968451, -- Impure Flask of Unrelenting Power (70)
+	1968439, -- Impure Flask of the Warsong (70)
+	1968448, -- Impure Flask of Unyielding (70)
+	1968442, -- Impure Flask of the Kirin Tor (70)
+	1968460, -- Impure Flask of Executioner (70)
+	1968457, -- Impure Flask of Shattering Thunder (70)
+	1968454, -- Impure Flask of Savage Assault (70)
+	1968436, -- Impure Flask of Manifesting Power (70)
+	1968463, -- Impure Flask of Deep Meditation (70)
+	1968445, -- Impure Flask of Butchery (70)
+	1968466, -- Impure Flask of Adept Striking (70)
+
+	1968452, -- Pure Flask of Unrelenting Power (70)
+	1968440, -- Pure Flask of the Warsong (70)
+	1968449, -- Pure Flask of Unyielding (70)
+	1968443, -- Pure Flask of the Kirin Tor (70)
+	1968461, -- Pure Flask of Executioner (70)
+	1968458, -- Pure Flask of Shattering Thunder (70)
+	1968455, -- Pure Flask of Savage Assault (70)
+	1968437, -- Pure Flask of Manifesting Power (70)
+	1968464, -- Pure Flask of Deep Meditation (70)
+	1968446, -- Pure Flask of Butchery (70)
+	1968467, -- Pure Flask of Adept Striking (70)
 }
 
 RB.Spell2Buffs = {
@@ -58,6 +106,83 @@ RB.Spell2Buffs = {
 	57399, -- 80 AP, 46 SP
 	59230, -- 40 Dodge Rating
 	65247, -- 20 STR
+
+	968220, -- Well Fed - Fused Wizard Wontons
+	968166, -- Well Fed - Fused Air Fried Chops
+	968160, -- Well Fed - Fused Charred Steak
+	968214, -- Well Fed - Fused Chunky Stew
+	968157, -- Well Fed - Fused Living Soup
+	968169, -- Well Fed - Fused Rock's Stew
+	968190, -- Well Fed - Fused Seared Chops
+	968187, -- Well Fed - Fused Seared Wontons
+	968163, -- Well Fed - Fused Steamed Wontons
+	968223, -- Well Fed - Fused Wizard Soup
+
+	968221, -- Well Fed - Imbued Wizard Wontons
+	968259, -- Well Fed - Fused Mana Imbued Roast
+	968167, -- Well Fed - Imbued Air Fried Chops
+	968272, -- Well Fed - Imbued Blackened Roast
+	968161, -- Well Fed - Imbued Charred Steak
+	968215, -- Well Fed - Imbued Chunky Stew
+	968173, -- Well Fed - Imbued Clear-Cut Chops
+	968179, -- Well Fed - Imbued Clear-Cut Steak
+	968212, -- Well Fed - Imbued Duck Stew
+	968233, -- Well Fed - Imbued Hearty Air Fried Chops
+	968236, -- Well Fed - Imbued Hearty Charred Steak
+	968239, -- Well Fed - Imbued Hearty Steamed Wontons
+	968158, -- Well Fed - Imbued Living Soup
+	968170, -- Well Fed - Imbued Rock's Stew
+	968200, -- Well Fed - Imbued Savory Steak
+	968188, -- Well Fed - Imbued Seared Wontons
+	968218, -- Well Fed - Imbued Simmered Stew
+	968263, -- Well Fed - Imbued Sizzling Roast
+	968164, -- Well Fed - Imbued Steamed Wontons
+	968266, -- Well Fed - Imbued Wild Roast
+	968269, -- Well Fed - Imbued Winter Roast
+	968224, -- Well Fed - Imbued Wizard Soup
+
+	1968166, -- Well Fed - Tasty Air Fried Chops
+	1968160, -- Well Fed - Tasty Charred Steak
+	1968214, -- Well Fed - Tasty Chunky Stew
+	1968178, -- Well Fed - Tasty Clear-Cut Steak
+	1968172, -- Well Fed - Tasty Clear-Cut Chops
+	1968211, -- Well Fed - Tasty Duck Stew
+	1968238, -- Well Fed - Tasty Hearty Steamed Wontons
+	1968169, -- Well Fed - Tasty Rock's Stew
+	1968196, -- Well Fed - Tasty Savory Chops
+	1968199, -- Well Fed - Tasty Savory Steak
+	1968187, -- Well Fed - Tasty Seared Wontons
+	1968217, -- Well Fed - Tasty Simmered Stew
+	1968163, -- Well Fed - Tasty Steamed Wontons
+	1968223, -- Well Fed - Tasty Wizard Soup
+	1968220, -- Well Fed - Tasty Wizard Wontons
+
+	1968167, -- Well Fed - Delicious Air Fried Chops
+	1968272, -- Well Fed - Delicious Blackened Roast
+	1968161, -- Well Fed - Delicious Charred Steak
+	1968215, -- Well Fed - Delicious Chunky Stew
+	1968173, -- Well Fed - Delicious Clear-Cut Chops
+	1968179, -- Well Fed - Delicious Clear-Cut Steak
+	1968176, -- Well Fed - Delicious Clear-Cut Wontons
+	1968212, -- Well Fed - Delicious Duck Stew
+	1968233, -- Well Fed - Delicious Hearty Air Fried Chops
+	1968236, -- Well Fed - Delicious Hearty Charred Steak
+	1968239, -- Well Fed - Delicious Hearty Steamed Wontons
+	1968158, -- Well Fed - Delicious Living Soup
+	1968260, -- Well Fed - Delicious Mana Charged Roast
+	1968170, -- Well Fed - Delicious Rock's Stew
+	1968197, -- Well Fed - Delicious Savory Chops
+	1968200, -- Well Fed - Delicious Savory Steak
+	1968194, -- Well Fed - Delicious Savory Stew
+	1968203, -- Well Fed - Delicious Savory Wontons
+	1968188, -- Well Fed - Delicious Seared Wontons
+	1968218, -- Well Fed - Delicious Simmered Stew
+	1968263, -- Well Fed - Delicious Sizzling Roast
+	1968164, -- Well Fed - Delicious Steamed Wontons
+	1968266, -- Well Fed - Delicious Wild Roast
+	1968269, -- Well Fed - Delicious Winter Roast
+	1968224, -- Well Fed - Delicious Wizard Soup
+	1968221, -- Well Fed - Delicious Wizard Wontons
 }
 
 RB.Spell3Buffs = {
@@ -89,6 +214,7 @@ RB.CasterSpell7Buffs = {
 	30706, -- Totem of Wrath
 	8227, -- Flametongue Totem
 	47236, -- Demonic Pact
+	54424, -- Fel Intelligence
 }
 
 RB.AttackSpell7Buffs = {
