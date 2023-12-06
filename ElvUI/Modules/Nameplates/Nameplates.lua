@@ -232,16 +232,6 @@ function NP:ScalePlate(nameplate, scale, targetPlate)
 	if not nameplate then return end
 	nameplate:SetScale(scale * E.mult)
 
-	if nameplate ~= NP.currentTarget then
-		if scale > 1 then
-			nameplate:SetFrameLevel(30)
-		elseif scale < 1 then
-			nameplate:SetFrameLevel(10)
-		else
-			nameplate:SetFrameLevel(20)
-		end
-	end
-
 	if targetPlate then
 		NP.targetPlate = nameplate
 	end
@@ -417,16 +407,11 @@ function NP:SetupTarget(nameplate, removed)
 	local cp = NP.db.units.TARGET.classpower or {}
 
 	if removed and nameplate then
-		nameplate:SetFrameLevel(20)
 		if NP.currentTarget == nameplate then
 			NP.currentTarget = nil
 		end
 	elseif nameplate then
-		if NP.currentTarget and NP.currentTarget ~= nameplate then
-			NP.currentTarget:SetFrameLevel(20)
-		end
 		NP.currentTarget = nameplate
-		nameplate:SetFrameLevel(100)
 	end
 
 	if removed or not nameplate or not cp.enable then
@@ -645,10 +630,6 @@ function NP:NamePlateCallBack(nameplate, event, unit)
 
 		NP:StyleFilterEventWatch(nameplate) -- fire up the watcher
 		NP:StyleFilterSetVariables(nameplate) -- sets: isTarget, isTargetingMe, isFocused
-
-		if (NP.db.fadeIn and not NP.SkipFading) and nameplate.frameType ~= 'PLAYER' then
-			NP:PlateFade(nameplate, 0.5, 0, 1)
-		end
 	elseif event == 'NAME_PLATE_UNIT_REMOVED' then
 		if nameplate.isTarget then
 			NP:ScalePlate(nameplate, 1, true)

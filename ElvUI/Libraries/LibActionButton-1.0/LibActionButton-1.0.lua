@@ -1089,7 +1089,7 @@ function UpdateCount(self)
 		end
 	else
 		local charges, maxCharges = self:GetCharges()
-		if charges and maxCharges and maxCharges > 1 then
+		if charges and maxCharges and maxCharges > 0 then
 			self.count:SetText(charges)
 		else
 			self.count:SetText("")
@@ -1101,7 +1101,7 @@ function UpdateCooldown(self)
 	local start, duration, enable = self:GetCooldown()
 	local charges, maxCharges, chargeStart, chargeDuration = self:GetCharges()
 	local hasCharges = false
-	if charges and maxCharges and maxCharges > 1 and charges < maxCharges then
+	if charges and maxCharges and maxCharges > 0 and charges < maxCharges then
 		hasCharges = charges > 0
 		start, duration, enable = chargeStart, chargeDuration, 1
 	end
