@@ -27,11 +27,12 @@ local SLOT_EMPTY_TCOORDS = {
 	[AIR_TOTEM_SLOT]	= {left = 66/128, right = 96/128, top = 36/256,  bottom = 66/256}
 }
 
-local oldMultiCastRecallSpellButton_Update = MultiCastRecallSpellButton_Update
-function MultiCastRecallSpellButton_Update(self)
-	if InCombatLockdown() then AB.NeedRecallButtonUpdate = true; AB:RegisterEvent("PLAYER_REGEN_ENABLED") return end
 
-	oldMultiCastRecallSpellButton_Update(self)
+function AB:MultiCastRecallSpellButton_Update()
+	if InCombatLockdown() then
+		AB.NeedsRecallButtonUpdate = true
+		AB:RegisterEvent('PLAYER_REGEN_ENABLED')
+	end
 end
 
 function AB:MultiCastFlyoutFrameOpenButton_Show(button, type, parent)
@@ -54,9 +55,13 @@ function AB:MultiCastActionButton_Update(button, _, _, slot)
 		button:SetBackdropBorderColor(color.r, color.g, color.b)
 	end
 
-	if InCombatLockdown() then bar.eventFrame:RegisterEvent("PLAYER_REGEN_ENABLED") return end
-	button:ClearAllPoints()
-	button:SetAllPoints(button.slotButton)
+	if InCombatLockdown() then
+		AB.NeedsPositionAndSizeBarTotem = true
+		AB:RegisterEvent('PLAYER_REGEN_ENABLED')
+	elseif button.slotButton then
+		button:ClearAllPoints()
+		button:SetAllPoints(button.slotButton)
+	end
 end
 
 function AB:StyleTotemSlotButton(button, slot)
@@ -168,10 +173,6 @@ function AB:TotemOnLeave()
 	end
 end
 
-function AB:ShowMultiCastActionBar()
-	self:PositionAndSizeBarTotem()
-end
-
 function AB:PositionAndSizeBarTotem()
 	if InCombatLockdown() then
 		AB.NeedsPositionAndSizeBarTotem = true
@@ -189,6 +190,13 @@ function AB:PositionAndSizeBarTotem()
 	MultiCastActionBarFrame:Height(size + 2)
 	bar.db = self.db.barTotem
 
+	local _, barAnchor = MultiCastActionBarFrame:GetPoint()
+	if barAnchor ~= bar then
+		MultiCastActionBarFrame:SetPoint('TOP', bar)
+		MultiCastActionBarFrame:SetPoint('BOTTOMLEFT', bar)
+		MultiCastActionBarFrame:SetPoint('BOTTOM', barAnchor)
+	end
+
 	bar.mouseover = self.db.barTotem.mouseover
 	if bar.mouseover then
 		bar:SetAlpha(0)
@@ -203,26 +211,31 @@ function AB:PositionAndSizeBarTotem()
 
 	RegisterStateDriver(bar, "visibility", visibility)
 
-	MultiCastSummonSpellButton:ClearAllPoints()
-	MultiCastSummonSpellButton:Size(size)
-	MultiCastSummonSpellButton:Point("BOTTOMLEFT", E.Border*2, E.Border*2)
+	local summonButton = _G.MultiCastSummonSpellButton
+	summonButton:ClearAllPoints()
+	summonButton:Size(size)
+	summonButton:Point("BOTTOMLEFT", E.Border*2, E.Border*2)
 
 	for i = 1, numActiveSlots do
-		local button = _G["MultiCastSlotButton"..i]
-		local lastButton = _G["MultiCastSlotButton"..i - 1]
+		local button = _G['MultiCastSlotButton'..i]
+		local actionButton = _G['MultiCastActionButton'..i]
+		local lastButton = _G['MultiCastSlotButton'..i - 1]
 
-		button:ClearAllPoints()
 		button:Size(size)
+		button:ClearAllPoints()
+
+		actionButton:SetSize(size, size) -- these need to match for icon trim setting
+		actionButton:ClearAllPoints()
+		actionButton:SetAllPoints(actionButton.slotButton)
 
 		if i == 1 then
-			button:Point("LEFT", MultiCastSummonSpellButton, "RIGHT", buttonSpacing, 0)
+			button:Point('LEFT', summonButton, 'RIGHT', buttonSpacing, 0)
 		else
-			button:Point("LEFT", lastButton, "RIGHT", buttonSpacing, 0)
+			button:Point('LEFT', lastButton, 'RIGHT', buttonSpacing, 0)
 		end
 	end
 
 	MultiCastRecallSpellButton:Size(size)
-	MultiCastRecallSpellButton_Update(MultiCastRecallSpellButton)
 
 	MultiCastFlyoutFrameCloseButton:Width(size)
 	MultiCastFlyoutFrameOpenButton:Width(size)
@@ -239,20 +252,11 @@ function AB:CreateTotemBar()
 		self:UnregisterEvent("PLAYER_REGEN_ENABLED")
 	end)
 
-	MultiCastActionBarFrame:SetParent(bar)
-	MultiCastActionBarFrame:ClearAllPoints()
-	MultiCastActionBarFrame:SetPoint("BOTTOMLEFT", bar, "BOTTOMLEFT", -E.Border, -E.Border)
-	MultiCastActionBarFrame:SetScript("OnUpdate", nil)
-	MultiCastActionBarFrame:SetScript("OnShow", nil)
-	MultiCastActionBarFrame:SetScript("OnHide", nil)
-	MultiCastActionBarFrame.SetParent = E.noop
-	MultiCastActionBarFrame.SetPoint = E.noop
-
-	self:HookScript(MultiCastActionBarFrame, "OnEnter", "TotemOnEnter")
-	self:HookScript(MultiCastActionBarFrame, "OnLeave", "TotemOnLeave")
-
-	self:HookScript(MultiCastFlyoutFrame, "OnEnter", "TotemOnEnter")
-	self:HookScript(MultiCastFlyoutFrame, "OnLeave", "TotemOnLeave")
+	local barFrame = _G.MultiCastActionBarFrame
+	barFrame:SetScript("OnUpdate", nil)
+	barFrame:SetScript("OnShow", nil)
+	barFrame:SetScript("OnHide", nil)
+	barFrame:SetParent(bar)
 
 	local closeButton = MultiCastFlyoutFrameCloseButton
 	closeButton:CreateBackdrop("Default", true, true)
@@ -337,11 +341,17 @@ function AB:CreateTotemBar()
 		button:HookScript("OnLeave", AB.TotemOnLeave)
 	end
 
+	self:SecureHook('MultiCastRecallSpellButton_Update')
 	self:SecureHook("MultiCastFlyoutFrameOpenButton_Show")
 	self:SecureHook("MultiCastActionButton_Update")
 	self:SecureHook("MultiCastSlotButton_Update", "StyleTotemSlotButton")
 	self:SecureHook("MultiCastFlyoutFrame_ToggleFlyout")
-	self:SecureHook("ShowMultiCastActionBar")
+
+	self:HookScript(_G.MultiCastActionBarFrame, "OnEnter", "TotemOnEnter")
+	self:HookScript(_G.MultiCastActionBarFrame, "OnLeave", "TotemOnLeave")
+
+	self:HookScript(MultiCastFlyoutFrame, "OnEnter", "TotemOnEnter")
+	self:HookScript(MultiCastFlyoutFrame, "OnLeave", "TotemOnLeave")
 
 	E:CreateMover(bar, "ElvBar_Totem", TUTORIAL_TITLE47, nil, nil, nil,"ALL,ACTIONBARS", nil, "actionbar,barTotem")
 end
