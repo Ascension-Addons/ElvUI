@@ -164,7 +164,7 @@ local function CreateBackdrop(frame, template, glossTex, ignoreUpdates, forcePix
 	if not frame.backdrop then frame.backdrop = backdrop end
 
 	if frame.forcePixelMode or forcePixelMode then
-		backdrop:SetOutside(frame, E.twoPixelsPlease and 2 or 1, E.twoPixelsPlease and 2 or 1)
+		backdrop:SetOutside(frame, E.mult, E.mult)
 	else
 		local border = isNamePlateElement and NP.BORDER or nil
 		backdrop:SetOutside(frame, border, border)

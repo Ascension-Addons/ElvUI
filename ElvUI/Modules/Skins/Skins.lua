@@ -60,6 +60,7 @@ function S:HandleButton(button, strip, isDeclineButton, useCreateBackdrop, noSet
 	if button.Left then button.Left:SetAlpha(0) end
 	if button.Middle then button.Middle:SetAlpha(0) end
 	if button.Right then button.Right:SetAlpha(0) end
+	if button.Center then button.Center:SetAlpha(0) end
 
 	if button.SetNormalTexture then button:SetNormalTexture("") end
 	if button.SetHighlightTexture then button:SetHighlightTexture("") end
@@ -76,6 +77,14 @@ function S:HandleButton(button, strip, isDeclineButton, useCreateBackdrop, noSet
 
 	button:HookScript("OnEnter", S.SetModifiedBackdrop)
 	button:HookScript("OnLeave", S.SetOriginalBackdrop)
+
+	if button.UpdateButton then
+		hooksecurefunc(button, "UpdateButton", function(self)
+			self.Left:SetAlpha(0)
+			self.Right:SetAlpha(0)
+			self.Center:SetAlpha(0)
+		end)
+	end
 
 	button.isSkinned = true
 end
@@ -178,6 +187,90 @@ function S:HandleScrollBar(frame, horizontal)
 	end
 end
 
+-- Proportional Scroll Bars
+local function ReskinScrollBarArrow(frame, direction)
+	S:HandleNextPrevButton(frame, direction)
+
+	if frame.Texture then
+		frame.Texture:SetAlpha(0)
+
+		if frame.Overlay then
+			frame.Overlay:SetAlpha(0)
+		end
+	else
+		frame:StripTextures()
+	end
+end
+
+local function ThumbOnEnter(frame)
+	local r, g, b = unpack(E.media.rgbvaluecolor)
+	local thumb = frame.Thumb or frame
+	if thumb.backdrop then
+		thumb.backdrop:SetBackdropColor(r, g, b, .75)
+	end
+end
+
+local function ThumbOnLeave(frame)
+	local r, g, b = unpack(E.media.rgbvaluecolor)
+	local thumb = frame.Thumb or frame
+
+	if thumb.backdrop and not thumb.__isActive then
+		thumb.backdrop:SetBackdropColor(r, g, b, .25)
+	end
+end
+
+local function ThumbOnMouseDown(frame)
+	local r, g, b = unpack(E.media.rgbvaluecolor)
+	local thumb = frame.Thumb or frame
+	thumb.__isActive = true
+
+	if thumb.backdrop then
+		thumb.backdrop:SetBackdropColor(r, g, b, .75)
+	end
+end
+
+local function ThumbOnMouseUp(frame)
+	local r, g, b = unpack(E.media.rgbvaluecolor)
+	local thumb = frame.Thumb or frame
+	thumb.__isActive = nil
+
+	if thumb.backdrop then
+		thumb.backdrop:SetBackdropColor(r, g, b, .25)
+	end
+end
+
+function S:HandleProportionalScroll(frame)
+	assert(frame, 'doesn\'t exist.')
+
+	frame:StripTextures()
+
+	ReskinScrollBarArrow(frame.scrollUp, 'up')
+	ReskinScrollBarArrow(frame.scrollDown, 'down')
+
+	local scrollBar = frame.scrollBar
+	scrollBar:StripTextures()
+
+
+	local thumb = scrollBar:GetThumbTexture()
+	if thumb then
+		thumb.Begin:SetAlpha(0)
+		thumb.End:SetAlpha(0)
+		thumb.Middle:SetAlpha(0)
+		thumb:CreateBackdrop('Transparent')
+		thumb.backdrop:SetFrameLevel(thumb:GetFrameLevel()+1)
+
+		local r, g, b = unpack(E.media.rgbvaluecolor)
+		thumb.backdrop:SetBackdropColor(r, g, b, .25)
+		thumb.backdrop:SetPoint("TOPLEFT", thumb.Begin)
+		thumb.backdrop:SetPoint("BOTTOMRIGHT", thumb.End)
+
+		thumb:HookScript('OnEnter', ThumbOnEnter)
+		thumb:HookScript('OnLeave', ThumbOnLeave)
+		thumb:HookScript('OnMouseUp', ThumbOnMouseUp)
+		thumb:HookScript('OnMouseDown', ThumbOnMouseDown)
+	end
+end
+
 local tabs = {
 	"LeftDisabled",
 	"MiddleDisabled",
@@ -210,6 +303,46 @@ function S:HandleTab(tab, noBackdrop)
 		tab.backdrop:Point("BOTTOMRIGHT", -10, 3)
 
 		tab:SetHitRectInsets(10, 10, E.PixelMode and 1 or 3, 3)
+	end
+end
+
+function S:HandleTabSystem(tabSystem)
+	if not tabSystem.tabs then return end
+	for _, tab in pairs(tabSystem.tabs) do
+		S:HandleButton(tab)
+	end
+end
+
+local function HandleScrollListButton(button)
+	if button.scrollListButtonsSkinned then
+		return
+	end
+	button.scrollListButtonsSkinned = true
+
+	local callback = button:GetScrollList().elvSkinCallback
+	if callback then
+		callback(button)
+	end
+end
+
+function S:HandleScrollList(scrollList, skinCallback)
+	if not scrollList.ScrollFrame then return end
+	if not scrollList.elvSkinCallback then
+		S:HandleProportionalScroll(scrollList.ScrollFrame)
+		scrollList.elvSkinCallback = skinCallback
+
+		if scrollList.isInitialized then
+			for _, button in ipairs(scrollList.ScrollFrame.buttons) do
+				HandleScrollListButton(button)
+			end
+		elseif not scrollList.elvInitHook then
+			scrollList.elvInitHook = true
+			hooksecurefunc(scrollList, "RefreshScrollFrame", function(self)
+				for _, button in ipairs(self.ScrollFrame.buttons) do
+					HandleScrollListButton(button)
+				end
+			end)
+		end
 	end
 end
 
@@ -421,6 +554,21 @@ function S:HandleIcon(icon, parent)
 	parent = parent or icon:GetParent()
 
 	icon:SetTexCoord(unpack(E.TexCoords))
+	parent:CreateBackdrop("Default")
+	icon:SetParent(parent.backdrop)
+	parent.backdrop:SetOutside(icon)
+end
+
+function S:HandleBorderIcon(icon, parent)
+	if not icon.Icon then return end
+	parent = parent or icon:GetParent()
+
+	icon:SetBorderTexture(nil)
+	icon.SetBorderTexture = E.noop
+	icon:SetOverlayTexture(nil)
+	icon.SetOverlayTexture = E.noop
+
+	icon.Icon:SetTexCoord(unpack(E.TexCoords))
 	parent:CreateBackdrop("Default")
 	icon:SetParent(parent.backdrop)
 	parent.backdrop:SetOutside(icon)
