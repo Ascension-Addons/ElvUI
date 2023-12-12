@@ -64,6 +64,7 @@ S:AddCallback("Skin_Character", function()
 		slotFrame:StripTextures()
 		slotFrame:StyleButton(false)
 		slotFrame:SetTemplate("Default", true, true)
+		slotFrame.IconBorder:SetAlpha(0)
 
 		icon:SetInside()
 		icon:SetTexCoord(unpack(E.TexCoords))
@@ -145,7 +146,7 @@ S:AddCallback("Skin_Character", function()
 		for button in self.ButtonPool:EnumerateActive() do
 			if not button.isSkinned then
 				button.icon = _G[button:GetName().."IconTexture"]
-	
+				button.IconBorder:SetAlpha(0)
 				button:GetNormalTexture():SetTexture(nil)
 				button:SetTemplate("Default")
 				button:StyleButton()
