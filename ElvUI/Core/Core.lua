@@ -681,42 +681,11 @@ do
 	local SendRecieveGroupSize = 0
 
 	function E:SendMessage()
-		if GetNumRaidMembers() > 1 then
-			local _, instanceType = IsInInstance()
-			if instanceType == "pvp" then
-				SendAddonMessage("ELVUI_VERSIONCHK", E.version, "BATTLEGROUND")
-			else
-				SendAddonMessage("ELVUI_VERSIONCHK", E.version, "RAID")
-			end
-		elseif GetNumPartyMembers() > 0 then
-			SendAddonMessage("ELVUI_VERSIONCHK", E.version, "PARTY")
-		elseif IsInGuild() then
-			SendAddonMessage("ELVUI_VERSIONCHK", E.version, "GUILD")
-		end
-
 		SendMessageWaiting = nil
 	end
 
 	local function SendRecieve(_, event, prefix, message, _, sender)
-		if event == "CHAT_MSG_ADDON" then
-			if prefix ~= "ELVUI_VERSIONCHK" then return end
-			if not sender or sender == E.myname then return end
-
-			local ver = tonumber(E.version)
-			message = tonumber(message)
-
-			if message and (message > ver) then
-				if not E.recievedOutOfDateMessage then
-					E:Print(L["ElvUI is out of date. You can download the newest version from the Ascension Launcher, or https://github.com/Ascension-Addons/ElvUI"])
-
-					if message and ((message - ver) >= 0.01) and not InCombatLockdown() then
-						E:StaticPopup_Show("ELVUI_UPDATE_AVAILABLE")
-					end
-
-					E.recievedOutOfDateMessage = true
-				end
-			end
-		elseif event == "PARTY_MEMBERS_CHANGED" or event == "RAID_ROSTER_UPDATE" then
+		if event == "PARTY_MEMBERS_CHANGED" or event == "RAID_ROSTER_UPDATE" then
 			local numRaid = GetNumRaidMembers()
 			local num = numRaid > 0 and numRaid or (GetNumPartyMembers() + 1)
 			if num ~= SendRecieveGroupSize then
