@@ -164,7 +164,7 @@ S:AddCallback("Skin_Merchant", function()
 			MerchantRepairAllButton:Point("BOTTOMRIGHT", MerchantFrame, "BOTTOMLEFT", 100, 105)
 		else
 			MerchantRepairText:SetPoint("BOTTOMLEFT", MerchantFrame, "BOTTOMLEFT", 11, 125)
-			MerchantRepairAllButton:Point("BOTTOMRIGHT", MerchantFrame, "BOTTOMLEFT", 157, 113)
+			MerchantRepairAllButton:Point("BOTTOMRIGHT", MerchantFrame, "BOTTOMLEFT", 157, extLoaded and 103 or 113)
 		end
 	end)
 
