@@ -539,9 +539,26 @@ function E:StaticPopup_CollapseTable()
 	end
 end
 
+function E:StaticPopup_GetLastVisible()
+	local lastFrame = E.StaticPopup_DisplayedFrames[#E.StaticPopup_DisplayedFrames]
+
+	-- wildcard and primary stat frame take same space as 1st popup window
+	if not(lastFrame) then
+		lastFrame = WildCardUtil.GetVisibleDice()
+	end
+
+	if not(lastFrame) then
+		if ForcedPrimaryStatFrame and ForcedPrimaryStatFrame:IsVisible() then
+			lastFrame = ForcedPrimaryStatFrame
+		end
+	end
+
+	return lastFrame
+end
+
 function E:StaticPopup_SetUpPosition(dialog)
 	if not tContains(E.StaticPopup_DisplayedFrames, dialog) then
-		local lastFrame = E.StaticPopup_DisplayedFrames[#E.StaticPopup_DisplayedFrames]
+		local lastFrame = E:StaticPopup_GetLastVisible()
 		if lastFrame then
 			dialog:Point("TOP", lastFrame, "BOTTOM", 0, -4)
 		else
