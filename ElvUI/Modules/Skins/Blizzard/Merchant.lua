@@ -12,7 +12,7 @@ local GetMerchantNumItems = GetMerchantNumItems
 
 S:AddCallback("Skin_Merchant", function()
 	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.merchant then return end
-
+	local extLoaded = IsAddOnLoaded("ExtVendor")
 	local MerchantFrame = _G.MerchantFrame
 	MerchantFrame:StripTextures(true)
 	MerchantFrame:CreateBackdrop("Transparent")
@@ -87,11 +87,15 @@ S:AddCallback("Skin_Merchant", function()
 		end
 	end
 
-	for i = 1, 12 do
-		skinMerchantButton("MerchantItem"..i)
+	for i = 1, 20 do
+		if _G["MerchantItem"..i] then
+			skinMerchantButton("MerchantItem"..i)
 
-		if i % 2 == 0 then
-			_G["MerchantItem"..i]:Point("TOPLEFT", _G["MerchantItem"..i-1], "TOPRIGHT", 13, 0)
+			if not extLoaded then
+				if i % 2 == 0 then
+					_G["MerchantItem"..i]:Point("TOPLEFT", _G["MerchantItem"..i-1], "TOPRIGHT", 13, 0)
+				end
+			end
 		end
 	end
 
@@ -103,6 +107,12 @@ S:AddCallback("Skin_Merchant", function()
 	S:HandleCheckBox(MerchantFrameSellJunkFrameAutoSellCheck)
 
 	S:HandleButton(MerchantRepairItemButton)
+
+	if extLoaded then
+		S:HandleEditBox(MerchantFrameSearchBox)
+		S:HandleButton(MerchantFrameFilterButton)
+	end
+
 	MerchantRepairItemButton:StyleButton(false)
 	-- texWidth, texHeight, cropWidth, cropHeight, offsetX, offsetY = 128, 64, 26, 26, 5, 6
 	MerchantRepairItemButton:GetRegions():SetTexCoord(0.0390625, 0.2421875, 0.09375, 0.5)
@@ -127,15 +137,16 @@ S:AddCallback("Skin_Merchant", function()
 
 	MerchantItem1:SetPoint("TOPLEFT", 21, -54)
 
-	MerchantPrevPageButton:Point("CENTER", MerchantFrame, "BOTTOMLEFT", 37, 172)
-	MerchantNextPageButton:Point("CENTER", MerchantFrame, "BOTTOMLEFT", 324, 172)
-
 	MerchantFrameSellJunkFrameAutoSellCheck:Point("BOTTOMLEFT", MerchantFrame, "BOTTOMLEFT", 18, 80)
 	MerchantRepairSettingsButton:Point("BOTTOM", MerchantFrame, "BOTTOM", -38, 112)
-
-	MerchantPageText:Point("BOTTOM", -14, 166)
-
-	MerchantBuyBackItem:Point("TOPLEFT", MerchantItem10, "BOTTOMLEFT", 0, -39)
+	if not extLoaded then
+		MerchantPrevPageButton:Point("CENTER", MerchantFrame, "BOTTOMLEFT", 37, 172)
+		MerchantNextPageButton:Point("CENTER", MerchantFrame, "BOTTOMLEFT", 324, 172)
+	
+		MerchantPageText:Point("BOTTOM", -14, 166)
+	
+		MerchantBuyBackItem:Point("TOPLEFT", MerchantItem10, "BOTTOMLEFT", 0, -39)
+	end
 
 	MerchantGuildBankRepairButton:Point("LEFT", MerchantRepairAllButton, "RIGHT", 5, 0)
 	MerchantRepairItemButton:Point("RIGHT", MerchantRepairAllButton, "LEFT", -5, 0)
@@ -153,7 +164,7 @@ S:AddCallback("Skin_Merchant", function()
 			MerchantRepairAllButton:Point("BOTTOMRIGHT", MerchantFrame, "BOTTOMLEFT", 100, 105)
 		else
 			MerchantRepairText:SetPoint("BOTTOMLEFT", MerchantFrame, "BOTTOMLEFT", 11, 125)
-			MerchantRepairAllButton:Point("BOTTOMRIGHT", MerchantFrame, "BOTTOMLEFT", 157, 113)
+			MerchantRepairAllButton:Point("BOTTOMRIGHT", MerchantFrame, "BOTTOMLEFT", 157, extLoaded and 103 or 113)
 		end
 	end)
 
@@ -162,7 +173,8 @@ S:AddCallback("Skin_Merchant", function()
 		local index = (MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE
 		local _, button, name, quality
 
-		for i = 1, BUYBACK_ITEMS_PER_PAGE do
+		-- for i = 1, BUYBACK_ITEMS_PER_PAGE do
+		for i = 1, MERCHANT_ITEMS_PER_PAGE do
 			index = index + 1
 
 			if index <= numMerchantItems then
@@ -202,11 +214,12 @@ S:AddCallback("Skin_Merchant", function()
 				MerchantBuyBackItemItemButton:SetBackdropBorderColor(unpack(E.media.bordercolor))
 			end
 		end
-
-		MerchantItem3:SetPoint("TOPLEFT", "MerchantItem1", "BOTTOMLEFT", 0, -11)
-		MerchantItem5:SetPoint("TOPLEFT", "MerchantItem3", "BOTTOMLEFT", 0, -11)
-		MerchantItem7:SetPoint("TOPLEFT", "MerchantItem5", "BOTTOMLEFT", 0, -11)
-		MerchantItem9:SetPoint("TOPLEFT", "MerchantItem7", "BOTTOMLEFT", 0, -11)
+		if not extLoaded then
+			MerchantItem3:SetPoint("TOPLEFT", "MerchantItem1", "BOTTOMLEFT", 0, -11)
+			MerchantItem5:SetPoint("TOPLEFT", "MerchantItem3", "BOTTOMLEFT", 0, -11)
+			MerchantItem7:SetPoint("TOPLEFT", "MerchantItem5", "BOTTOMLEFT", 0, -11)
+			MerchantItem9:SetPoint("TOPLEFT", "MerchantItem7", "BOTTOMLEFT", 0, -11)
+		end
 	end)
 
 	hooksecurefunc("MerchantFrame_UpdateBuybackInfo", function()
@@ -234,9 +247,11 @@ S:AddCallback("Skin_Merchant", function()
 			end
 		end
 
-		MerchantItem3:SetPoint("TOPLEFT", "MerchantItem1", "BOTTOMLEFT", 0, -15)
-		MerchantItem5:SetPoint("TOPLEFT", "MerchantItem3", "BOTTOMLEFT", 0, -15)
-		MerchantItem7:SetPoint("TOPLEFT", "MerchantItem5", "BOTTOMLEFT", 0, -15)
-		MerchantItem9:SetPoint("TOPLEFT", "MerchantItem7", "BOTTOMLEFT", 0, -15)
+		if not extLoaded then
+			MerchantItem3:SetPoint("TOPLEFT", "MerchantItem1", "BOTTOMLEFT", 0, -15)
+			MerchantItem5:SetPoint("TOPLEFT", "MerchantItem3", "BOTTOMLEFT", 0, -15)
+			MerchantItem7:SetPoint("TOPLEFT", "MerchantItem5", "BOTTOMLEFT", 0, -15)
+			MerchantItem9:SetPoint("TOPLEFT", "MerchantItem7", "BOTTOMLEFT", 0, -15)
+		end
 	end)
 end)
