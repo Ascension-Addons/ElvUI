@@ -173,6 +173,10 @@ function AB:TotemOnLeave()
 	end
 end
 
+function AB:ShowMultiCastActionBar()
+	self:PositionAndSizeBarTotem()
+end
+
 function AB:PositionAndSizeBarTotem()
 	if InCombatLockdown() then
 		AB.NeedsPositionAndSizeBarTotem = true
@@ -190,11 +194,9 @@ function AB:PositionAndSizeBarTotem()
 	MultiCastActionBarFrame:Height(size + 2)
 	bar.db = self.db.barTotem
 
-	local _, barAnchor = MultiCastActionBarFrame:GetPoint()
-	if barAnchor ~= bar then
-		MultiCastActionBarFrame:SetPoint('TOP', bar)
-		MultiCastActionBarFrame:SetPoint('BOTTOMLEFT', bar)
-		MultiCastActionBarFrame:SetPoint('BOTTOM', barAnchor)
+	local point, barAnchor, relativePoint = MultiCastActionBarFrame:GetPoint()
+	if barAnchor ~= bar or point ~= "BOTTOMLEFT" or relativePoint ~= "BOTTOMLEFT" then
+		MultiCastActionBarFrame:SetPoint('BOTTOMLEFT', bar, 'BOTTOMLEFT', 0, 0)
 	end
 
 	bar.mouseover = self.db.barTotem.mouseover
@@ -352,6 +354,8 @@ function AB:CreateTotemBar()
 
 	self:HookScript(MultiCastFlyoutFrame, "OnEnter", "TotemOnEnter")
 	self:HookScript(MultiCastFlyoutFrame, "OnLeave", "TotemOnLeave")
+
+	self:SecureHook("ShowMultiCastActionBar")
 
 	E:CreateMover(bar, "ElvBar_Totem", TUTORIAL_TITLE47, nil, nil, nil,"ALL,ACTIONBARS", nil, "actionbar,barTotem")
 end
