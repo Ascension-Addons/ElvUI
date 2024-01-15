@@ -9,7 +9,7 @@ Dependencies: LibStub, CallbackHandler-1.0
 License: LGPL v2.1
 ]]
 
-local MAJOR, MINOR = "LibSharedMedia-3.0", 3030001 -- 3.3.5 / increase manually on changes
+local MAJOR, MINOR = "LibSharedMedia-3.0", 3030002 -- 3.3.5 / increase manually on changes
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not lib then return end
@@ -99,9 +99,9 @@ if locale == "koKR" then
 elseif locale == "zhCN" then
 	LOCALE_MASK = lib.LOCALE_BIT_zhCN
 --
-	SML_MT_font["伤害数字"]		= [[Fonts\ZYKai_C.ttf]]
-	SML_MT_font["默认"]			= [[Fonts\ZYKai_T.ttf]]
-	SML_MT_font["聊天"]			= [[Fonts\ZYHei.ttf]]
+	SML_MT_font["伤害数字"]		= [[Fonts\ARKai_C.ttf]]
+	SML_MT_font["默认"]			= [[Fonts\ARKai_T.ttf]]
+	SML_MT_font["聊天"]			= [[Fonts\ARHei.ttf]]
 --
 	lib.DefaultMedia["font"] = "默认" -- someone from zhCN please adjust if needed
 --
@@ -118,22 +118,35 @@ elseif locale == "zhTW" then
 elseif locale == "ruRU" then
 	LOCALE_MASK = lib.LOCALE_BIT_ruRU
 --
-	SML_MT_font["Arial Narrow"]			= [[Fonts\ARIALN.TTF]]
-	SML_MT_font["Friz Quadrata TT"]		= [[Fonts\FRIZQT__.TTF]]
-	SML_MT_font["Morpheus"]				= [[Fonts\MORPHEUS.TTF]]
-	SML_MT_font["Nimrod MT"]			= [[Fonts\NIM_____.ttf]]
-	SML_MT_font["Skurri"]				= [[Fonts\SKURRI.TTF]]
+	SML_MT_font["2002"]								= [[Fonts\2002.TTF]]
+	SML_MT_font["2002 Bold"]						= [[Fonts\2002B.TTF]]
+	SML_MT_font["AR CrystalzcuheiGBK Demibold"]		= [[Fonts\ARHei.TTF]]
+	SML_MT_font["AR ZhongkaiGBK Medium (Combat)"]	= [[Fonts\ARKai_C.TTF]]
+	SML_MT_font["AR ZhongkaiGBK Medium"]			= [[Fonts\ARKai_T.TTF]]
+	SML_MT_font["Arial Narrow"]						= [[Fonts\ARIALN.TTF]]
+	SML_MT_font["Friz Quadrata TT"]					= [[Fonts\FRIZQT___CYR.TTF]]
+	SML_MT_font["MoK"]								= [[Fonts\K_Pagetext.TTF]]
+	SML_MT_font["Morpheus"]							= [[Fonts\MORPHEUS_CYR.TTF]]
+	SML_MT_font["Nimrod MT"]						= [[Fonts\NIM_____.ttf]]
+	SML_MT_font["Skurri"]							= [[Fonts\SKURRI_CYR.TTF]]
 --
-	lib.DefaultMedia.font = "Arial Narrow"
+	lib.DefaultMedia.font = "Friz Quadrata TT"
 --
 else
 	LOCALE_MASK = lib.LOCALE_BIT_western
 	locale_is_western = true
 --
+	SML_MT_font["2002"]								= [[Fonts\2002.TTF]]
+	SML_MT_font["2002 Bold"]						= [[Fonts\2002B.TTF]]
+	SML_MT_font["AR CrystalzcuheiGBK Demibold"]		= [[Fonts\ARHei.TTF]]
+	SML_MT_font["AR ZhongkaiGBK Medium (Combat)"]	= [[Fonts\ARKai_C.TTF]]
+	SML_MT_font["AR ZhongkaiGBK Medium"]			= [[Fonts\ARKai_T.TTF]]
 	SML_MT_font["Arial Narrow"]						= [[Fonts\ARIALN.TTF]]
 	SML_MT_font["Friz Quadrata TT"]					= [[Fonts\FRIZQT__.TTF]]
-	SML_MT_font["Morpheus"]							= [[Fonts\MORPHEUS.TTF]]
-	SML_MT_font["Skurri"]							= [[Fonts\SKURRI.TTF]]
+	SML_MT_font["MoK"]								= [[Fonts\K_Pagetext.TTF]]
+	SML_MT_font["Morpheus"]							= [[Fonts\MORPHEUS_CYR.TTF]]
+	SML_MT_font["Nimrod MT"]						= [[Fonts\NIM_____.ttf]]
+	SML_MT_font["Skurri"]							= [[Fonts\SKURRI_CYR.TTF]]
 --
 	lib.DefaultMedia.font = "Friz Quadrata TT"
 --
@@ -143,6 +156,7 @@ end
 if not lib.MediaTable.statusbar then lib.MediaTable.statusbar = {} end
 lib.MediaTable.statusbar["Blizzard"]						= [[Interface\TargetingFrame\UI-StatusBar]]
 lib.MediaTable.statusbar["Blizzard Character Skills Bar"]	= [[Interface\PaperDollInfoFrame\UI-Character-Skills-Bar]]
+lib.MediaTable.statusbar["Solid"]							= [[Interface\Buttons\WHITE8X8]]
 lib.DefaultMedia.statusbar = "Blizzard"
 
 -- SOUND
