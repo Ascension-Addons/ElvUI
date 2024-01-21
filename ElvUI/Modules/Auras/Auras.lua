@@ -18,6 +18,7 @@ local CancelUnitBuff = CancelUnitBuff
 local GetInventoryItemQuality = GetInventoryItemQuality
 local GetItemQualityColor = GetItemQualityColor
 local GetWeaponEnchantInfo = GetWeaponEnchantInfo
+local GetRangedWeaponEnchantInfo = GetRangedWeaponEnchantInfo
 local GetInventoryItemTexture = GetInventoryItemTexture
 local DebuffTypeColor = DebuffTypeColor
 
@@ -63,7 +64,8 @@ local IS_HORIZONTAL_GROWTH = {
 
 local enchantableSlots = {
 	[1] = 16,
-	[2] = 17
+	[2] = 17,
+	[3] = 18,
 }
 
 local weaponEnchantTime = {}
@@ -349,7 +351,7 @@ function A:ConfigureAuras(header, auraTable, weaponPosition)
 	end
 
 	if weaponPosition then
-		for weapon = 2, 1, -1 do
+		for weapon = 3, 1, -1 do
 			button = _G["ElvUIPlayerBuffsTempEnchant"..weapon]
 			if weaponEnchantTime[weapon] then
 				if not button then
@@ -644,7 +646,11 @@ function A:Initialize()
 		bf.nextUpdate = 1
 
 		local hasMainHandEnchant, mainHandExpiration, _, hasOffHandEnchant, offHandExpiration = GetWeaponEnchantInfo()
-		if A:HasEnchant(1, hasMainHandEnchant, mainHandExpiration) or A:HasEnchant(2, hasOffHandEnchant, offHandExpiration) then
+		local hasRangedEnchant, rangedExpiration
+		if GetRangedWeaponEnchantInfo then
+			hasRangedEnchant, rangedExpiration = GetRangedWeaponEnchantInfo()
+		end
+		if A:HasEnchant(1, hasMainHandEnchant, mainHandExpiration) or A:HasEnchant(2, hasOffHandEnchant, offHandExpiration) or A:HasEnchant(3, hasRangedEnchant, rangedExpiration) then
 			A:UpdateHeader(bf)
 		end
 	end)
