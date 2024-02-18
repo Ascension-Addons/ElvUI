@@ -4026,6 +4026,11 @@ E.Options.args.unitframe = {
 							order = 7,
 							type = "toggle",
 							name = L["PARTY"]
+						},
+						raid = {
+							order = 8,
+							type = "toggle",
+							name = L["RAID"]
 						}
 					}
 				},

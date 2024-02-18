@@ -1034,6 +1034,10 @@ function UF:UpdateAllHeaders(event)
 		ElvUF:DisableBlizzard("party")
 	end
 
+	if E.private.unitframe.disabledBlizzardFrames.raid then
+		ElvUF:DisableBlizzard("raid")
+	end
+
 	self:RegisterRaidDebuffIndicator()
 
 	local smartRaidFilterEnabled = self.db.smartRaidFilter
@@ -1052,6 +1056,33 @@ function UF:UpdateAllHeaders(event)
 			--Update BuffIndicators on profile change as they might be using profile specific data
 			self:UpdateAuraWatchFromHeader(group)
 		end
+	end
+end
+
+local SetFrameUp = {}
+local SetFrameUnit = {}
+local AllowedFuncs = {}
+if _G.DefaultCompactUnitFrameSetup then
+	AllowedFuncs[_G.DefaultCompactUnitFrameSetup] = true
+end
+
+function UF:DisableBlizzard_SetUpFrame(func)
+	if not AllowedFuncs[func] then return end
+
+	local name = (not self.IsForbidden or not self:IsForbidden()) and self:GetName()
+	if not name then return end
+
+	for _, pattern in next, SetFrameUp do
+		if strmatch(name, pattern) then
+			SetFrameUnit[self] = name
+		end
+	end
+end
+
+function UF:DisableBlizzard_SetUnit(token)
+	if SetFrameUnit[self] and token ~= nil then
+		self:SetScript('OnEvent', nil)
+		self:SetScript('OnUpdate', nil)
 	end
 end
 
@@ -1090,6 +1121,13 @@ local HandleFrame = function(baseName)
 	end
 end
 
+local HandleCompactUnitFrame = function(frame, pattern)
+	if SetFrameUp[frame] ~= pattern then
+		SetFrameUp[frame] = pattern
+	end
+	HandleFrame(frame)
+end
+
 function ElvUF:DisableBlizzard(unit)
 	if (not unit) or InCombatLockdown() then return end
 
@@ -1125,6 +1163,7 @@ function ElvUF:DisableBlizzard(unit)
 		end
 	elseif (unit:match"(party)%d?$" == "party") and E.private.unitframe.disabledBlizzardFrames.party then
 		local id = unit:match"party(%d)"
+		HandleCompactUnitFrame("CompactPartyFrame", '^CompactPartyFrameMember%d+$')
 
 		if id then
 			HandleFrame("PartyMemberFrame"..id)
@@ -1145,6 +1184,14 @@ function ElvUF:DisableBlizzard(unit)
 				HandleFrame(format("ArenaEnemyFrame%d", i))
 				HandleFrame(format("ArenaEnemyFrame%dPetFrame", i))
 			end
+		end
+	elseif (unit:match("(raid)%d?$") == "raid") and E.private.unitframe.disabledBlizzardFrames.raid then
+		HandleCompactUnitFrame("CompactPartyFrame", '^CompactRaidGroup%d+Member%d+$')
+
+		if CompactRaidFrameManager then
+			CompactRaidFrameManager:UnregisterAllEvents()
+			CompactRaidFrameManager:SetParent(E.HiddenFrame)
+			CompactRaidFrameManager:SetSetting('IsShown', '0')
 		end
 	end
 end
@@ -1375,6 +1422,11 @@ function UF:Initialize()
 				tremove(UnitPopupMenus[k], x)
 			end
 		end
+	end
+
+	if CompactUnitMixin then
+		hooksecurefunc(CompactUnitMixin, "SetUpFrame", UF.DisableBlizzard_SetUpFrame)
+		hooksecurefunc(CompactUnitMixin, "SetUnit", UF.DisableBlizzard_SetUnit)
 	end
 
 	if E.private.unitframe.disabledBlizzardFrames.arena and E.private.unitframe.disabledBlizzardFrames.focus and E.private.unitframe.disabledBlizzardFrames.party then

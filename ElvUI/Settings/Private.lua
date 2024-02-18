@@ -129,6 +129,7 @@ V.unitframe = {
 		boss = true,
 		arena = true,
 		party = true,
+		raid = true,
 	}
 }
 
