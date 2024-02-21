@@ -1109,10 +1109,10 @@ function CH:ChatFrame_MessageEventHandler(frame, event, arg1, arg2, arg3, arg4, 
 						return
 					end
 					--Add Blizzard Icon, this was sent by a GM
-					pflag = "|TInterface\\ChatFrame\\UI-ChatIcon-Blizz.blp:0:3:0:-2|t "
+					pflag = "|TInterface\\ChatFrame\\UI-ChatIcon-Blizz.blp:0:4:4:-3|t "
 				elseif arg6 == "DEV" then
 					--Add Blizzard Icon, this was sent by a Dev
-					pflag = "|TInterface\\ChatFrame\\UI-ChatIcon-Blizz.blp:0:3:0:-2|t "
+					pflag = "|TInterface\\ChatFrame\\UI-ChatIcon-Blizz.blp:0:4:4:-3|t "
 				elseif arg6 == "DND" or arg6 == "AFK" then
 					pflag = (pflag or "").._G["CHAT_FLAG_"..arg6]
 				else
