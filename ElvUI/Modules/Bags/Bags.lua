@@ -330,6 +330,7 @@ function B:UpdateSlot(frame, bagID, slotID)
 	slot.JunkIcon:Hide()
 	slot.unlearnedVanityIcon:Hide()
 	slot.unlearnedWardrobeIcon:Hide()
+	slot.unlearnedVanityAndWardrobeIcon:Hide()
 	slot.itemLevel:SetText("")
 	slot.bindType:SetText("")
 
@@ -391,11 +392,18 @@ function B:UpdateSlot(frame, bagID, slotID)
 		slot.isJunk = (slot.rarity and slot.rarity == 0) and (itemPrice and itemPrice > 0) and (iType and iType ~= "Quest")
 		slot.junkDesaturate = slot.isJunk and E.db.bags.junkDesaturate
 
+		local showVanity = slot.unlearnedVanityIcon and E.db.bags.unlearnedVanityIcon and slot.isUnlearnedVanity
+		local showWardrobe = slot.unlearnedWardrobeIcon and E.db.bags.unlearnedWardrobeIcon and slot.isUnlearnedWardrobe
+
+
+		-- Both Vanity and Wardrobe Unlock
+		if showVanity and showWardrobe then
+			slot.unlearnedVanityAndWardrobeIcon:Show()
 		-- Vanity Unlock Icon
-		if slot.unlearnedVanityIcon and E.db.bags.unlearnedVanityIcon and slot.isUnlearnedVanity then
+		elseif showVanity then
 			slot.unlearnedVanityIcon:Show()
 		-- Wardrobe Unlock Icon
-		elseif slot.unlearnedWardrobeIcon and E.db.bags.unlearnedWardrobeIcon and slot.isUnlearnedWardrobe then
+		elseif showWardrobe then
 			slot.unlearnedWardrobeIcon:Show()
 		-- Junk Icon
 		elseif slot.JunkIcon and E.db.bags.junkIcon and slot.isJunk then
@@ -679,6 +687,14 @@ function B:Layout(isBank)
 						f.Bags[bagID][slotID].questIcon:Hide()
 					end
 
+					if not f.Bags[bagID][slotID].unlearnedVanityAndWardrobeIcon then
+						local unlearnedVanityAndWardrobeIcon = f.Bags[bagID][slotID]:CreateTexture(nil, "OVERLAY")
+						unlearnedVanityAndWardrobeIcon:SetTexture(E.Media.Textures.BagVanityAndWardrobe)
+						unlearnedVanityAndWardrobeIcon:Point("BOTTOMLEFT", 1, 1)
+						unlearnedVanityAndWardrobeIcon:Hide()
+						f.Bags[bagID][slotID].unlearnedVanityAndWardrobeIcon = unlearnedVanityAndWardrobeIcon
+					end
+
 					if not f.Bags[bagID][slotID].unlearnedVanityIcon then
 						local unlearnedVanityIcon = f.Bags[bagID][slotID]:CreateTexture(nil, "OVERLAY")
 						unlearnedVanityIcon:SetTexture(E.Media.Textures.BagVanityIcon)
@@ -733,6 +749,10 @@ function B:Layout(isBank)
 
 				f.Bags[bagID][slotID]:SetID(slotID)
 				f.Bags[bagID][slotID]:Size(buttonSize)
+
+				if f.Bags[bagID][slotID].unlearnedVanityAndWardrobeIcon then
+					f.Bags[bagID][slotID].unlearnedVanityAndWardrobeIcon:Size(buttonSize/2)
+				end
 
 				if f.Bags[bagID][slotID].unlearnedVanityIcon then
 					f.Bags[bagID][slotID].unlearnedVanityIcon:Size(buttonSize/2)
