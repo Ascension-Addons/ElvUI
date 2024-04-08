@@ -149,8 +149,22 @@ E.Options.args.bags = {
 					name = L["Disable Bank Sort"],
 					set = function(info, value) E.db.bags[info[#info]] = value B:ToggleSortButtonState(true) end
 				},
-				countGroup = {
+				unlearnedVanityIcon = {
 					order = 16,
+					type = "toggle",
+					name = L["Unlearned Vanity"],
+					desc = L["Unlearned Vanity Desc"],
+					set = function(info, value) E.db.bags[info[#info]] = value B:UpdateAllBagSlots() end
+				},
+				unlearnedWardrobeIcon = {
+					order = 17,
+					type = "toggle",
+					name = L["Unlearned Wardrobe"],
+					desc = L["Unlearned Wardrobe Desc"],
+					set = function(info, value) E.db.bags[info[#info]] = value B:UpdateAllBagSlots() end
+				},
+				countGroup = {
+					order = 18,
 					type = "group",
 					name = L["Item Count Font"],
 					guiInline = true,
@@ -195,7 +209,7 @@ E.Options.args.bags = {
 					}
 				},
 				itemLevelGroup = {
-					order = 17,
+					order = 19,
 					type = "group",
 					name = L["Item Level"],
 					guiInline = true,

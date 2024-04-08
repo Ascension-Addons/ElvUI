@@ -7,6 +7,9 @@ function E:TextureString(texString, dataString)
 end
 
 E.Media = {
+	Atlases = {
+		BagWardrobeIcon = [[poi-transmogrifier]], -- not elvui
+	},
 	Fonts = {
 		ActionMan = M..[[Fonts\ActionMan.ttf]],
 		ContinuumMedium = M..[[Fonts\ContinuumMedium.ttf]],
@@ -89,6 +92,7 @@ E.Media = {
 		ArrowUp = M..[[Textures\ArrowUp.tga]],
 		BagJunkIcon = M..[[Textures\BagJunkIcon.blp]],
 		BagQuestIcon = M..[[Textures\BagQuestIcon.tga]],
+		BagVanityIcon = [[Interface\Icons\INV_Chest_Awakening]], -- not elvui
 		Black8x8 = M..[[Textures\Black8x8.tga]],
 		White8x8 = [[Interface\BUTTONS\WHITE8X8]], -- not elvui
 		Broom = M..[[Textures\Broom.blp]],
