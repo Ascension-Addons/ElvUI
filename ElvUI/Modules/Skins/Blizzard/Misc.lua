@@ -11,30 +11,14 @@ S:AddCallback("Skin_Misc", function()
 	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.misc then return end
 
 	-- ESC/Menu Buttons
-	GameMenuFrame:StripTextures()
-	GameMenuFrame:CreateBackdrop("Transparent")
+	EscapeMenu:StripTextures()
+	EscapeMenu:CreateBackdrop("Transparent")
 
-	GameMenuFrameHeader:Point("TOP", 0, 7)
+	EscapeMenuHeader:Point("TOP", 0, 7)
 
-	local menuButtons = {
-		GameMenuButtonOptions,
-		GameMenuButtonSoundOptions,
-		GameMenuButtonUIOptions,
-	--	GameMenuButtonMacOptions,
-		GameMenuButtonKeybindings,
-		GameMenuButtonMacros,
-	--	GameMenuButtonRatings,
-		GameMenuButtonLogout,
-		GameMenuButtonQuit,
-		GameMenuButtonContinue,
-
-		ElvUI_MenuButton
-	}
-
-	for i = 1, #menuButtons do
-		local button = menuButtons[i]
-		if button then
-			S:HandleButton(menuButtons[i])
+	for _, section in ipairs(EscapeMenu.sections) do
+		for _, button in ipairs(section) do
+			S:HandleButton(button)
 		end
 	end
 

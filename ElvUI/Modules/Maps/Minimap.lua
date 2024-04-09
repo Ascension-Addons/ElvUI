@@ -99,12 +99,10 @@ local menuList = {
 		text = MAINMENU_BUTTON,
 		notCheckable = 1,
 		func = function()
-			if GameMenuFrame:IsShown() then
-				PlaySound("igMainMenuQuit")
-				HideUIPanel(GameMenuFrame)
+			if EscapeMenu:IsShown() then
+				HideUIPanel(EscapeMenu)
 			else
-				PlaySound("igMainMenuOpen")
-				ShowUIPanel(GameMenuFrame)
+				ShowUIPanel(EscapeMenu)
 			end
 		end
 	},
