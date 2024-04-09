@@ -70,6 +70,13 @@ local SEARCH = SEARCH
 
 local SEARCH_STRING = ""
 
+-- item types that will show they have a wardrobe unlock but cannot be unlocked
+local BAD_WARDROBE_SUBTYPES = {
+	["Thrown"] = true,
+	["Fishing Poles"] = true,
+	["Miscellaneous"] = true,
+}
+
 function B:GetContainerFrame(arg)
 	if type(arg) == "boolean" and arg == true then
 		return B.BankFrame
@@ -321,6 +328,9 @@ function B:UpdateSlot(frame, bagID, slotID)
 	slot:Show()
 	slot.questIcon:Hide()
 	slot.JunkIcon:Hide()
+	slot.unlearnedVanityIcon:Hide()
+	slot.unlearnedWardrobeIcon:Hide()
+	slot.unlearnedVanityAndWardrobeIcon:Hide()
 	slot.itemLevel:SetText("")
 	slot.bindType:SetText("")
 
@@ -338,8 +348,9 @@ function B:UpdateSlot(frame, bagID, slotID)
 		slot:SetBackdropBorderColor(unpack(B.ProfessionColors[bagType]))
 		slot.ignoreBorderColors = true
 	elseif clink then
-		local iLvl, iType, itemEquipLoc, itemPrice
-		slot.name, _, slot.rarity, iLvl, _, iType, _, _, itemEquipLoc, _, itemPrice = GetItemInfo(clink)
+		slot.id = GetItemInfoFromHyperlink(clink)
+		local iLvl, iType, iSubtype, itemEquipLoc, itemPrice
+		slot.name, _, slot.rarity, iLvl, _, iType, iSubtype, _, itemEquipLoc, _, itemPrice = GetItemInfo(clink)
 
 		local isQuestItem, questId, isActiveQuest = GetContainerItemQuestInfo(bagID, slotID)
 		local r, g, b
@@ -376,14 +387,27 @@ function B:UpdateSlot(frame, bagID, slotID)
 			end
 		end
 
+		slot.isUnlearnedVanity = VANITY_ITEMS[slot.id] and not C_VanityCollection.IsCollectionItemOwned(slot.id)
+		slot.isUnlearnedWardrobe = not (BAD_WARDROBE_SUBTYPES[iSubtype] and iType == "Weapon") and APPEARANCE_ITEM_INFO[slot.id] and not APPEARANCE_ITEM_INFO[slot.id]:GetCollectedID()
 		slot.isJunk = (slot.rarity and slot.rarity == 0) and (itemPrice and itemPrice > 0) and (iType and iType ~= "Quest")
 		slot.junkDesaturate = slot.isJunk and E.db.bags.junkDesaturate
 
+		local showVanity = slot.unlearnedVanityIcon and E.db.bags.unlearnedVanityIcon and slot.isUnlearnedVanity
+		local showWardrobe = slot.unlearnedWardrobeIcon and E.db.bags.unlearnedWardrobeIcon and slot.isUnlearnedWardrobe
+
+
+		-- Both Vanity and Wardrobe Unlock
+		if showVanity and showWardrobe then
+			slot.unlearnedVanityAndWardrobeIcon:Show()
+		-- Vanity Unlock Icon
+		elseif showVanity then
+			slot.unlearnedVanityIcon:Show()
+		-- Wardrobe Unlock Icon
+		elseif showWardrobe then
+			slot.unlearnedWardrobeIcon:Show()
 		-- Junk Icon
-		if slot.JunkIcon then
-			if E.db.bags.junkIcon and slot.isJunk then
-				slot.JunkIcon:Show()
-			end
+		elseif slot.JunkIcon and E.db.bags.junkIcon and slot.isJunk then
+			slot.JunkIcon:Show()
 		end
 
 		if B.db.questIcon and (questId and not isActiveQuest) then
@@ -663,10 +687,34 @@ function B:Layout(isBank)
 						f.Bags[bagID][slotID].questIcon:Hide()
 					end
 
+					if not f.Bags[bagID][slotID].unlearnedVanityAndWardrobeIcon then
+						local unlearnedVanityAndWardrobeIcon = f.Bags[bagID][slotID]:CreateTexture(nil, "OVERLAY")
+						unlearnedVanityAndWardrobeIcon:SetTexture(E.Media.Textures.BagVanityAndWardrobe)
+						unlearnedVanityAndWardrobeIcon:Point("BOTTOMLEFT", 1, 1)
+						unlearnedVanityAndWardrobeIcon:Hide()
+						f.Bags[bagID][slotID].unlearnedVanityAndWardrobeIcon = unlearnedVanityAndWardrobeIcon
+					end
+
+					if not f.Bags[bagID][slotID].unlearnedVanityIcon then
+						local unlearnedVanityIcon = f.Bags[bagID][slotID]:CreateTexture(nil, "OVERLAY")
+						unlearnedVanityIcon:SetTexture(E.Media.Textures.BagVanityIcon)
+						unlearnedVanityIcon:Point("BOTTOMLEFT", 1, 1)
+						unlearnedVanityIcon:Hide()
+						f.Bags[bagID][slotID].unlearnedVanityIcon = unlearnedVanityIcon
+					end
+
+					if not f.Bags[bagID][slotID].unlearnedWardrobeIcon then
+						local unlearnedWardrobeIcon = f.Bags[bagID][slotID]:CreateTexture(nil, "OVERLAY")
+						unlearnedWardrobeIcon:SetAtlas(E.Media.Atlases.BagWardrobeIcon)
+						unlearnedWardrobeIcon:Point("BOTTOMLEFT", 1, 1)
+						unlearnedWardrobeIcon:Hide()
+						f.Bags[bagID][slotID].unlearnedWardrobeIcon = unlearnedWardrobeIcon
+					end
+
 					if not f.Bags[bagID][slotID].JunkIcon then
 						local JunkIcon = f.Bags[bagID][slotID]:CreateTexture(nil, "OVERLAY")
 						JunkIcon:SetTexture(E.Media.Textures.BagJunkIcon)
-						JunkIcon:Point("TOPLEFT", 1, 0)
+						JunkIcon:Point("BOTTOMLEFT", 1, 1)
 						JunkIcon:Hide()
 						f.Bags[bagID][slotID].JunkIcon = JunkIcon
 					end
@@ -701,6 +749,18 @@ function B:Layout(isBank)
 
 				f.Bags[bagID][slotID]:SetID(slotID)
 				f.Bags[bagID][slotID]:Size(buttonSize)
+
+				if f.Bags[bagID][slotID].unlearnedVanityAndWardrobeIcon then
+					f.Bags[bagID][slotID].unlearnedVanityAndWardrobeIcon:Size(buttonSize/2)
+				end
+
+				if f.Bags[bagID][slotID].unlearnedVanityIcon then
+					f.Bags[bagID][slotID].unlearnedVanityIcon:Size(buttonSize/2)
+				end
+
+				if f.Bags[bagID][slotID].unlearnedWardrobeIcon then
+					f.Bags[bagID][slotID].unlearnedWardrobeIcon:Size(buttonSize/2)
+				end
 
 				if f.Bags[bagID][slotID].JunkIcon then
 					f.Bags[bagID][slotID].JunkIcon:Size(buttonSize/2)
@@ -1106,7 +1166,7 @@ end
 
 local function BagUpdate(self, bagIDs)
 	for bagID in pairs(bagIDs) do
-		B.OnEvent(self, "BAG_UPDATE", bagID) 
+		B.OnEvent(self, "BAG_UPDATE", bagID)
 	end
 end
 
@@ -1459,6 +1519,7 @@ function B:ToggleBags(id)
 	if id and (GetContainerNumSlots(id) == 0) then return end --Closes a bag when inserting a new container..
 
 	if not B.BagFrame:IsShown() then
+		B:UpdateAllBagSlots()
 		B:OpenBags()
 --	else
 --		B:CloseBags()
@@ -1469,6 +1530,7 @@ function B:ToggleBackpack()
 	if IsOptionFrameOpen() then return end
 
 	if IsBagOpen(0) then
+		B:UpdateAllBagSlots()
 		B:OpenBags()
 		PlaySound("igBackPackOpen")
 	else

@@ -1185,6 +1185,10 @@ L["You need to hold this modifier down in order to blacklist an aura by right-cl
 L["Your Auras First"] = true
 L["xOffset"] = true
 L["yOffset"] = true
+L["Unlearned Vanity"] = true
+L["Unlearned Vanity Desc"] = "Adds an Icon to Unlearned Vanity Items.  This has a higher priority than Wardrobe or Junk Icons"
+L["Unlearned Wardrobe"] = true
+L["Unlearned Wardrobe Desc"] = "Adds an Icon to Unlearned Wardrobe Items.  This has a higher priority than Junk Icons and a lower priority than Vanity."
 
 L["ACTIONBARS_DESC"] = "Modify the actionbar settings."
 L["AURAS_DESC"] = "Configure the aura icons that appear near the minimap."
