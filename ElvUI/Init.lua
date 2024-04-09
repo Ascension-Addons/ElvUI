@@ -19,10 +19,9 @@ local InCombatLockdown = InCombatLockdown
 local IsAddOnLoaded = IsAddOnLoaded
 local LoadAddOn = LoadAddOn
 local ReloadUI = ReloadUI
+local EscapeMenu = EscapeMenu
 
 local ERR_NOT_IN_COMBAT = ERR_NOT_IN_COMBAT
-local GameMenuButtonLogout = GameMenuButtonLogout
-local GameMenuFrame = GameMenuFrame
 
 BINDING_HEADER_ELVUI = GetAddOnMetadata(..., "Title")
 
@@ -178,34 +177,9 @@ function AddOn:OnInitialize()
 		self:StaticPopup_Show("TUKUI_ELVUI_INCOMPATIBLE")
 	end
 
-	local GameMenuButton = CreateFrame("Button", "ElvUI_MenuButton", GameMenuFrame, "GameMenuButtonTemplate")
-	GameMenuButton:SetText(self.title)
-	GameMenuButton:SetScript("OnClick", function()
+	local GameMenuButton = EscapeMenu:AddButton(self.title, EscapeMenuSection.AddOns, function()
 		AddOn:ToggleOptionsUI()
-		HideUIPanel(GameMenuFrame)
-	end)
-	GameMenuFrame[AddOnName] = GameMenuButton
-
-	GameMenuButton:Size(GameMenuButtonLogout:GetWidth(), GameMenuButtonLogout:GetHeight())
-	GameMenuButtonRatings:HookScript("OnShow", function(self)
-		GameMenuFrame:SetHeight(GameMenuFrame:GetHeight() + self:GetHeight())
-	end)
-	GameMenuButtonRatings:HookScript("OnHide", function(self)
-		GameMenuFrame:SetHeight(GameMenuFrame:GetHeight() - self:GetHeight())
-	end)
-
-	GameMenuFrame:HookScript("OnShow", function()
-		if not GameMenuFrame.isElvUI then
-			GameMenuFrame:SetHeight(GameMenuFrame:GetHeight() + GameMenuButtonLogout:GetHeight() + 1)
-			GameMenuFrame.isElvUI = true
-		end
-		local _, relTo = GameMenuButtonLogout:GetPoint()
-		if relTo ~= GameMenuFrame[AddOnName] then
-			GameMenuFrame[AddOnName]:ClearAllPoints()
-			GameMenuFrame[AddOnName]:Point("TOPLEFT", relTo, "BOTTOMLEFT", 0, -1)
-			GameMenuButtonLogout:ClearAllPoints()
-			GameMenuButtonLogout:Point("TOPLEFT", GameMenuFrame[AddOnName], "BOTTOMLEFT", 0, -16)
-		end
+		return true
 	end)
 
 	self.loadedtime = GetTime()
