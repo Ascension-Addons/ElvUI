@@ -1118,14 +1118,14 @@ function E:DBConversions()
 		E:CopyTable(self.db.nameplates, P.nameplates)
 	end
 
-	if E.db.version and E.db.version < 7.13 then
-		if E.db.nameplates.plateSize.enemyWidth then
-			E.db.nameplates.plateSize.width = E.db.nameplates.plateSize.enemyWidth
+	if not E.db.version or E.db.version < 7.13 then
+		if not E.db.nameplates.plateSize.width then
+			E.db.nameplates.plateSize.width = P.nameplates.plateSize.width
 			E.db.nameplates.plateSize.enemyWidth = nil
 		end
 
-		if E.db.nameplates.plateSize.enemyHeight then
-			E.db.nameplates.plateSize.width = E.db.nameplates.plateSize.enemyHeight
+		if not E.db.nameplates.plateSize.height then
+			E.db.nameplates.plateSize.height = P.nameplates.plateSize.height
 			E.db.nameplates.plateSize.enemyHeight = nil
 		end
 	end
