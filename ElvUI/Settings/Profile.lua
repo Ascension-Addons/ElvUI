@@ -496,10 +496,8 @@ P.nameplates = {
 	plateSize = {
 		personalWidth = 150,
 		personalHeight = 30,
-		friendlyWidth = 150,
-		friendlyHeight = 30,
-		enemyWidth = 150,
-		enemyHeight = 30,
+		width = 150,
+		height = 30,
 	},
 	threat = {
 		enable = true,

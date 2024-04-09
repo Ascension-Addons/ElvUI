@@ -166,7 +166,14 @@ E.PopupDialogs.DISABLE_INCOMPATIBLE_ADDON = {
 
 E.PopupDialogs.INCOMPATIBLE_ADDON = {
 	text = L["INCOMPATIBLE_ADDON"],
-	OnAccept = function() DisableAddOn(E.PopupDialogs.INCOMPATIBLE_ADDON.addon) ReloadUI() end,
+	OnAccept = function()
+		if E.PopupDialogs.INCOMPATIBLE_ADDON.addon == "Ascension_NamePlates" then
+			C_CVar.Set("useNewNamePlates", "0")
+		else
+			DisableAddOn(E.PopupDialogs.INCOMPATIBLE_ADDON.addon)
+		end
+		ReloadUI()
+	end,
 	OnCancel = function() E.private[strlower(E.PopupDialogs.INCOMPATIBLE_ADDON.module)].enable = false ReloadUI() end,
 	button3 = L["Disable Warning"],
 	OnAlt = function ()

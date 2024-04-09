@@ -33,8 +33,15 @@ local UnitIsUnit = UnitIsUnit
 local UnitName = UnitName
 local UnitReaction = UnitReaction
 local UnitThreatSituation = UnitThreatSituation
-local C_NamePlate_SetNamePlateEnemySize = C_NamePlateManager.SetNamePlateEnemySize
-local C_NamePlate_SetNamePlateFriendlySize = C_NamePlateManager.SetNamePlateFriendlySize
+local C_NamePlateManager_SetNamePlateSize
+if not C_NamePlateManager.GetNamePlateSize then -- if this function isnt set, we are on old version still
+	C_NamePlateManager_SetNamePlateSize = function(width, height)
+		C_NamePlateManager.SetNamePlateFriendlySize(width, height)
+		C_NamePlateManager.SetNamePlateEnemySize(width, height)
+	end
+else
+	C_NamePlateManager_SetNamePlateSize = C_NamePlateManager.SetNamePlateSize
+end
 local hooksecurefunc = hooksecurefunc
 
 do	-- credit: oUF/private.lua
@@ -487,11 +494,7 @@ function NP:ConfigurePlates(init)
 	NP.SkipFading = true
 	if not init then -- these only need to happen when changing options
 		for nameplate in pairs(NP.Plates) do
-			if nameplate.frameType == 'FRIENDLY_PLAYER' or nameplate.frameType == 'FRIENDLY_NPC' then
-				nameplate:Size(NP.db.plateSize.friendlyWidth, NP.db.plateSize.friendlyHeight)
-			else
-				nameplate:Size(NP.db.plateSize.enemyWidth, NP.db.plateSize.enemyHeight)
-			end
+			nameplate:Size(NP.db.plateSize.width, NP.db.plateSize.height)
 
 			nameplate.previousType = nil -- keep over the callback, we still need a full update
 			NP:NamePlateCallBack(nameplate, 'NAME_PLATE_UNIT_ADDED')
@@ -557,14 +560,8 @@ function NP:UpdatePlateType(nameplate)
 end
 
 function NP:UpdatePlateSize(nameplate)
-	if nameplate.frameType == 'FRIENDLY_PLAYER' or nameplate.frameType == 'FRIENDLY_NPC' then
-		nameplate.width, nameplate.height = NP.db.plateSize.friendlyWidth, NP.db.plateSize.friendlyHeight
-		C_NamePlate_SetNamePlateFriendlySize(nameplate.width, nameplate.height)
-	else
-		nameplate.width, nameplate.height = NP.db.plateSize.enemyWidth, NP.db.plateSize.enemyHeight
-		C_NamePlate_SetNamePlateEnemySize(nameplate.width, nameplate.height)
-	end
-
+	nameplate.width, nameplate.height = NP.db.plateSize.width, NP.db.plateSize.height
+	C_NamePlateManager_SetNamePlateSize(nameplate.width, nameplate.height)
 	nameplate:Size(nameplate.width, nameplate.height)
 end
 
@@ -681,8 +678,7 @@ end
 
 function NP:SetNamePlateSizes()
 	--if InCombatLockdown() then return end
-	C_NamePlate_SetNamePlateEnemySize(NP.db.plateSize.enemyWidth, NP.db.plateSize.enemyHeight)
-	C_NamePlate_SetNamePlateFriendlySize(NP.db.plateSize.friendlyWidth, NP.db.plateSize.friendlyHeight)
+	C_NamePlateManager_SetNamePlateSize(NP.db.plateSize.width, NP.db.plateSize.height)
 end
 
 function NP:Initialize()

@@ -430,15 +430,8 @@ NamePlates.generalGroup.args.bossMods.args.settings.args.growthDirection = ACH:S
 
 NamePlates.generalGroup.args.clickableRange = ACH:Group(L["Clickable Size"], nil, 70, nil, function(info) return E.db.nameplates.plateSize[info[#info]] end, function(info, value) E.db.nameplates.plateSize[info[#info]] = value NP:ConfigureAll() end)
 
-NamePlates.generalGroup.args.clickableRange.args.friendly = ACH:Group(L["Friendly"], nil, 2)
-NamePlates.generalGroup.args.clickableRange.args.friendly.inline = true
-NamePlates.generalGroup.args.clickableRange.args.friendly.args.friendlyWidth = ACH:Range(L["Clickable Width / Width"], L["Change the width and controls how big of an area on the screen will accept clicks to target unit."], 1, { min = 50, max = 250, step = 1 })
-NamePlates.generalGroup.args.clickableRange.args.friendly.args.friendlyHeight = ACH:Range(L["Clickable Height"], L["Controls how big of an area on the screen will accept clicks to target unit."], 2, { min = 10, max = 75, step = 1 })
-
-NamePlates.generalGroup.args.clickableRange.args.enemy = ACH:Group(L["Enemy"], nil, 3)
-NamePlates.generalGroup.args.clickableRange.args.enemy.inline = true
-NamePlates.generalGroup.args.clickableRange.args.enemy.args.enemyWidth = ACH:Range(L["Clickable Width / Width"], L["Change the width and controls how big of an area on the screen will accept clicks to target unit."], 1, { min = 50, max = 250, step = 1 })
-NamePlates.generalGroup.args.clickableRange.args.enemy.args.enemyHeight = ACH:Range(L["Clickable Height"], L["Controls how big of an area on the screen will accept clicks to target unit."], 2, { min = 10, max = 75, step = 1 })
+NamePlates.generalGroup.args.clickableRange.args.width = ACH:Range(L["Clickable Width / Width"], L["Change the width and controls how big of an area on the screen will accept clicks to target unit."], 1, { min = 50, max = 250, step = 1 })
+NamePlates.generalGroup.args.clickableRange.args.height = ACH:Range(L["Clickable Height"], L["Controls how big of an area on the screen will accept clicks to target unit."], 2, { min = 10, max = 75, step = 1 })
 
 NamePlates.generalGroup.args.cutaway = ACH:Group(L["Cutaway Bars"], nil, 75)
 NamePlates.generalGroup.args.cutaway.args.health = ACH:Group(L["Health"], nil, 1, nil, function(info) return E.db.nameplates.cutaway.health[info[#info]] end, function(info, value) E.db.nameplates.cutaway.health[info[#info]] = value NP:ConfigureAll() end)

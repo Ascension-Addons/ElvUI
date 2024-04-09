@@ -396,6 +396,9 @@ function E:IncompatibleAddOn(addon, module)
 end
 
 function E:IsAddOnEnabled(addon)
+	if addon == "Ascension_NamePlates" then
+		return C_CVar.GetBool("useNewNamePlates")
+	end
 	local _, _, _, enabled, _, reason = GetAddOnInfo(addon)
 	if reason ~= "MISSING" and enabled then
 		return true
@@ -420,6 +423,10 @@ function E:CheckIncompatible()
 			self:IncompatibleAddOn("Healers-Have-To-Die", "NamePlates")
 		elseif self:IsAddOnEnabled("TidyPlates") then
 			self:IncompatibleAddOn("TidyPlates", "NamePlates")
+		elseif self:IsAddOnEnabled("Ascension_NamePlates") then
+			self:IncompatibleAddOn("Ascension_NamePlates", "NamePlates")
+		elseif self:IsAddOnEnabled("Kui_Nameplates") then
+			self:IncompatibleAddOn("Kui_Nameplates", "NamePlates")
 		end
 	end
 
@@ -1109,6 +1116,18 @@ function E:DBConversions()
 	if not E.db.version or E.db.version < 7 then
 		-- wipe nameplates
 		E:CopyTable(self.db.nameplates, P.nameplates)
+	end
+
+	if E.db.version and E.db.version < 7.13 then
+		if E.db.nameplates.plateSize.enemyWidth then
+			E.db.nameplates.plateSize.width = E.db.nameplates.plateSize.enemyWidth
+			E.db.nameplates.plateSize.enemyWidth = nil
+		end
+
+		if E.db.nameplates.plateSize.enemyHeight then
+			E.db.nameplates.plateSize.width = E.db.nameplates.plateSize.enemyHeight
+			E.db.nameplates.plateSize.enemyHeight = nil
+		end
 	end
 
 	E.db.version = E.versionNum
