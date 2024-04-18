@@ -387,7 +387,7 @@ function B:UpdateSlot(frame, bagID, slotID)
 			end
 		end
 
-		slot.isUnlearnedVanity = VANITY_ITEMS[slot.id] and not C_VanityCollection.IsCollectionItemOwned(slot.id)
+		slot.isUnlearnedVanity = VANITY_ITEMS[slot.id] and not C_VanityCollection.IsCollectionItemOwned(slot.id) and iType ~= "Consumable"
 		slot.isUnlearnedWardrobe = not (BAD_WARDROBE_SUBTYPES[iSubtype] and iType == "Weapon") and APPEARANCE_ITEM_INFO[slot.id] and not APPEARANCE_ITEM_INFO[slot.id]:GetCollectedID()
 		slot.isJunk = (slot.rarity and slot.rarity == 0) and (itemPrice and itemPrice > 0) and (iType and iType ~= "Quest")
 		slot.junkDesaturate = slot.isJunk and E.db.bags.junkDesaturate
