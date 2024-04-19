@@ -96,22 +96,7 @@ local function Path(self, ...)
 	* event - the event triggering the update (string)
 	* ...   - the arguments accompanying the event
 	--]]
-	local _, unit = ...
-	local args
-	if unit and self.isNamePlate then
-		if unit:sub(1, 9) ~= "nameplate" then
-			local isUnit = self.unit and UnitIsUnit(self.unit, unit)
-			if isUnit then
-				args = { ... }
-				args[2] = self.unit
-			end
-		end
-	end
-	if args then
-		return (self.ThreatIndicator.Override or Update) (self, unpack(args))
-	else
-		return (self.ThreatIndicator.Override or Update) (self, ...)
-	end
+	return (self.ThreatIndicator.Override or Update) (self, ...)
 end
 
 local function ForceUpdate(element)

@@ -1512,13 +1512,6 @@ do -- oUF style filter inject watch functions without actually registering any e
 
 	local update = function(frame, event, arg1, arg2, arg3, ...)
 		local eventFunc = mod.StyleFilterEventFunctions[event]
-		if arg1 and frame.isNamePlate and arg1:sub(1, 9) ~= "nameplate" then
-			local isUnit = frame.unit and UnitIsUnit(frame.unit, arg1)
-			if isUnit then
-				arg1 = frame.unit
-			end
-		end
-
 		if eventFunc then
 			eventFunc(frame, event, arg1, arg2, arg3, ...)
 		end

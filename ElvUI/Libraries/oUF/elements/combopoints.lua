@@ -37,12 +37,6 @@ local UnitHasVehicleUI = UnitHasVehicleUI
 local MAX_COMBO_POINTS = MAX_COMBO_POINTS
 
 local function Update(self, event, unit)
-	if self.isNamePlate then
-		local isUnit = self.unit and UnitIsUnit(self.unit, unit)
-		if isUnit then
-			unit = self.unit
-		end
-	end
 	if(unit == 'pet') then return end
 
 	local element = self.ComboPoints
