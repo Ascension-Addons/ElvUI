@@ -390,3 +390,11 @@ function AB:LoadKeyBinder()
 	Skins:HandleButton(save)
 	Skins:HandleButton(discard)
 end
+
+function ToggleQuickKeybindMode(characterSpecific)
+	if ElvUIBindPopupWindow and ElvUIBindPopupWindow:IsVisible() then
+		AB:DeactivateBindMode(false)
+	else
+		AB:ActivateBindMode()
+	end
+end
