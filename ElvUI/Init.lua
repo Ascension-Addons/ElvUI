@@ -179,8 +179,7 @@ function AddOn:OnInitialize()
 
 	local GameMenuButton = EscapeMenu:AddButton(self.title, EscapeMenuSection.AddOns, function()
 		AddOn:ToggleOptionsUI()
-		return true
-	end)
+	end, nil, true)
 
 	self.loadedtime = GetTime()
 end
