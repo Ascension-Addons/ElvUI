@@ -574,6 +574,9 @@ function NP:UpdatePlateBase(nameplate)
 end
 
 function NP:NamePlateCallBack(nameplate, event, unit)
+	if not nameplate then
+		return
+	end
 	if event == 'UNIT_FACTION' or event == 'UNIT_FLAGS' then
 		nameplate.reaction = UnitReaction('player', unit) -- Player Reaction
 		nameplate.repReaction = UnitReaction(unit, 'player') -- Reaction to Player
