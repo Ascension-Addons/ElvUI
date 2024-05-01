@@ -95,6 +95,10 @@ end
 function NP:SetCVar(cvar, value)
 	if GetCVar(cvar) ~= tostring(value) then
 		SetCVar(cvar, value)
+		if cvar == "nameplateSmoothStacking" then
+			C_NamePlateManager.CheckNamePlateMotion()
+			StaticPopup_Show("RELOAD_UI_NEEDED")
+		end
 	end
 end
 
@@ -131,7 +135,7 @@ function NP:CVarReset()
 end
 
 function NP:SetCVars()
-	NP:SetCVar('nameplateAllowOverlap', NP.db.motionType == 'STACKED' and 1 or 0)
+	NP:SetCVar('nameplateSmoothStacking', NP.db.motionType == 'STACKED' and 1 or 0)
 	NP:SetCVar('nameplateDistance', NP.db.loadDistance)
 
 	-- the order of these is important !!
