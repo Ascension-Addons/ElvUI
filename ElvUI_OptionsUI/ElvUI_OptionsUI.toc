@@ -5,6 +5,7 @@
 ## Notes: Options for ElvUI.
 ## RequiredDeps: ElvUI
 ## LoadOnDemand: 1
+## X-IconTexture: Interface\AddOns\ElvUI\Media\ElvUILogo
 
 Libraries\Load_Libraries.xml
 Locales\Load_locales.xml

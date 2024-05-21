@@ -6,6 +6,7 @@
 ## SavedVariables: EnhancedDB
 ## RequiredDeps: ElvUI, AscensionUI
 ## DefaultState: Enabled
+## X-IconTexture: Interface\AddOns\ElvUI\Media\ElvUILogo
 
 Developer\Load_Developer.xml
 Libraries\Load_Libraries.xml

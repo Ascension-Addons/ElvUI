@@ -7,6 +7,7 @@
 ## SavedVariablesPerCharacter: ElvCharacterDB
 ## OptionalDeps: Blizzard_DebugTools, SharedMedia, Tukui, ButtonFacade
 ## X-oUF: ElvUF
+## X-IconTexture: Interface\AddOns\ElvUI\Media\ElvUILogo
 
 Developer\Load_Developer.xml
 Libraries\Load_Libraries.xml
