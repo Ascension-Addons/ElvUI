@@ -73,7 +73,6 @@ local SEARCH_STRING = ""
 -- item types that will show they have a wardrobe unlock but cannot be unlocked
 local BAD_WARDROBE_SUBTYPES = {
 	["Thrown"] = true,
-	["Fishing Poles"] = true,
 	["Miscellaneous"] = true,
 }
 
@@ -390,7 +389,7 @@ function B:UpdateSlot(frame, bagID, slotID)
 		slot.isUnlearnedVanity = VANITY_ITEMS[slot.id] and not C_VanityCollection.IsCollectionItemOwned(slot.id) and iType ~= "Consumable"
 		if C_Appearance then
 			local appearanceID = C_Appearance.GetItemAppearanceID(slot.id)
-			slot.isUnlearnedWardrobe = appearanceID and not C_AppearanceCollection.IsAppearanceCollected(appearanceID)
+			slot.isUnlearnedWardrobe = not (BAD_WARDROBE_SUBTYPES[iSubtype] and iType == "Weapon") and appearanceID and not C_AppearanceCollection.IsAppearanceCollected(appearanceID)
 		else
 			slot.isUnlearnedWardrobe = not (BAD_WARDROBE_SUBTYPES[iSubtype] and iType == "Weapon") and APPEARANCE_ITEM_INFO[slot.id] and not APPEARANCE_ITEM_INFO[slot.id]:GetCollectedID()
 		end
