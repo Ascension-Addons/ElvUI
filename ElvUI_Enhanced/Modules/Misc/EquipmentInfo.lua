@@ -43,8 +43,8 @@ function EI:UpdatePaperDoll(unit)
 		self:RegisterEvent("PLAYER_REGEN_ENABLED", "OnEvent")
 		return
 	elseif unit ~= "player" then
-		if InspectFrame then
-			unit = InspectFrame.unit
+		if AscensionInspectFrame then
+			unit = AscensionInspectFrame.unit
 
 			if not unit then return end
 		else
@@ -52,7 +52,7 @@ function EI:UpdatePaperDoll(unit)
 		end
 	end
 
-	local baseName = unit == "player" and "Character" or "Inspect"
+	local baseName = unit == "player" and "AscensionCharacter" or "AscensionInspect"
 	local frame, slotID, itemID
 	local _, rarity, itemLevel
 	local current, maximum, r, g, b
@@ -112,7 +112,7 @@ function EI:BuildInfoText(name)
 
 		frame.ItemLevel = frame:CreateFontString(nil, "OVERLAY")
 
-		if name == "Character" and durability then
+		if name == "AscensionCharacter" and durability then
 			frame.DurabilityInfo = frame:CreateFontString(nil, "OVERLAY")
 		end
 	end
@@ -132,7 +132,7 @@ function EI:UpdateInfoText(name)
 			frame.ItemLevel:Point(db.itemlevel.position, frame, db.itemlevel.xOffset, db.itemlevel.yOffset)
 			frame.ItemLevel:FontTemplate(E.LSM:Fetch("font", db.font), db.fontSize, db.fontOutline)
 
-			if name == "Character" and durability then
+			if name == "AscensionCharacter" and durability then
 				frame.DurabilityInfo:ClearAllPoints()
 				frame.DurabilityInfo:Point(db.durability.position, frame, db.durability.xOffset, db.durability.yOffset)
 				frame.DurabilityInfo:FontTemplate(E.LSM:Fetch("font", db.font), db.fontSize, db.fontOutline)
@@ -149,18 +149,18 @@ function EI:OnEvent(event, unit)
 	if event == "UPDATE_INVENTORY_DURABILITY" then
 		self:UpdatePaperDoll("player")
 	elseif event == "UNIT_INVENTORY_CHANGED" then
-		if unit ~= "player" and InspectFrame and unit == InspectFrame.unit then
+		if unit ~= "player" and AscensionInspectFrame and unit == AscensionInspectFrame.unit then
 			self:UpdatePaperDoll(unit)
 		end
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		self:UnregisterEvent("PLAYER_REGEN_ENABLED")
 		self:UpdatePaperDoll("player")
-	elseif event == "ADDON_LOADED" and unit == "Blizzard_InspectUI" then
+	elseif event == "ADDON_LOADED" and unit == "Ascension_InspectUI" then
 		self.initializedInspect = true
 		self:UnregisterEvent("ADDON_LOADED")
-		self:BuildInfoText("Inspect")
-		self:HookScript(InspectFrame, "OnShow", InspectFrameUpdate)
-		self:SecureHook("InspectFrame_UnitChanged", InspectFrameUpdate)
+		self:BuildInfoText("AscensionInspect")
+		self:HookScript(AscensionInspectFrame, "OnShow", InspectFrameUpdate)
+		self:SecureHook(AscensionInspectFrame,"UpdateCharacterInfo", InspectFrameUpdate)
 	end
 end
 
@@ -168,7 +168,7 @@ function EI:InitialUpdatePaperDoll()
 	if self.initialized then return end
 
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	self:BuildInfoText("Character")
+	self:BuildInfoText("AscensionCharacter")
 
 	self.initialized = true
 end
@@ -176,16 +176,16 @@ end
 function EI:UpdateText()
 	self:UpdatePaperDoll("player")
 
-	if self.initializedInspect and InspectFrame.unit then
+	if self.initializedInspect and AscensionInspectFrame.unit then
 		self:UpdatePaperDoll()
 	end
 end
 
 function EI:UpdateTextSettings()
-	self:UpdateInfoText("Character")
+	self:UpdateInfoText("AscensionCharacter")
 
 	if self.initializedInspect then
-		self:UpdateInfoText("Inspect")
+		self:UpdateInfoText("AscensionInspect")
 	end
 end
 
@@ -198,8 +198,8 @@ function EI:ToggleState(init)
 				self:InitialUpdatePaperDoll()
 			end
 
-			if IsAddOnLoaded("Blizzard_InspectUI") or InspectFrame then
-				self:OnEvent("ADDON_LOADED", "Blizzard_InspectUI")
+			if IsAddOnLoaded("Ascension_InspectUI") or AscensionInspectFrame then
+				self:OnEvent("ADDON_LOADED", "Ascension_InspectUI")
 			else
 				self:RegisterEvent("ADDON_LOADED", "OnEvent")
 			end
@@ -218,15 +218,15 @@ function EI:ToggleState(init)
 		self:UnregisterAllEvents()
 
 		for slotName, durability in pairs(slots) do
-			_G["Character"..slotName].ItemLevel:SetText()
+			_G["AscensionCharacter"..slotName].ItemLevel:SetText()
 
 			if durability then
-				_G["Character"..slotName].DurabilityInfo:SetText()
+				_G["AscensionCharacter"..slotName].DurabilityInfo:SetText()
 			end
 
 			if self.initializedInspect then
-				if _G["Inspect"..slotName].ItemLevel then
-					_G["Inspect"..slotName].ItemLevel:SetText()
+				if _G["AscensionInspect"..slotName].ItemLevel then
+					_G["AscensionInspect"..slotName].ItemLevel:SetText()
 				end
 			end
 		end
