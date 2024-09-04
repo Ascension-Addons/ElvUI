@@ -15,8 +15,8 @@ local MICRO_BUTTONS = {
 	"AchievementMicroButton",
 	"QuestLogMicroButton",
 	"SocialsMicroButton",
-	"PVPMicroButton",
 	"LFDMicroButton",
+	"PathToAscensionMicroButton",
 	"ChallengesMicroButton",
 	"MainMenuMicroButton",
 	"HelpMicroButton"
