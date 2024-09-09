@@ -15,6 +15,37 @@ local IsInInstance = IsInInstance
 
 E.Role = "Melee" -- TODO: Save per specialization?
 
+function E:ClassColor(class, usePriestColor)
+	if not class then return end
+
+	local color = (_G.CUSTOM_CLASS_COLORS and _G.CUSTOM_CLASS_COLORS[class]) or _G.RAID_CLASS_COLORS[class]
+	if type(color) ~= 'table' then return end
+
+	if not color.colorStr then
+		color.colorStr = E:RGBToHex(color.r, color.g, color.b, 'ff')
+	elseif strlen(color.colorStr) == 6 then
+		color.colorStr = 'ff'..color.colorStr
+	end
+
+	if usePriestColor and class == 'PRIEST' and tonumber(color.colorStr, 16) > tonumber(E.PriestColors.colorStr, 16) then
+		return E.PriestColors
+	else
+		return color
+	end
+end
+
+function E:InverseClassColor(class, usePriestColor, forceCap)
+	local color = E:CopyTable({}, E:ClassColor(class, usePriestColor))
+	local capColor = class == 'PRIEST' or forceCap
+
+	color.r = capColor and max(1-color.r,0.35) or (1-color.r)
+	color.g = capColor and max(1-color.g,0.35) or (1-color.g)
+	color.b = capColor and max(1-color.b,0.35) or (1-color.b)
+	color.colorStr = E:RGBToHex(color.r, color.g, color.b, 'ff')
+
+	return color
+end
+
 do -- other non-english locales require this
 	E.UnlocalizedClasses = {}
 	for k, v in pairs(_G.LOCALIZED_CLASS_NAMES_MALE) do E.UnlocalizedClasses[v] = k end
@@ -24,6 +55,7 @@ do -- other non-english locales require this
 		return (className and className ~= "") and E.UnlocalizedClasses[className]
 	end
 end
+
 
 function E:ScanTooltipTextures(clean, grabTextures)
 	local textures

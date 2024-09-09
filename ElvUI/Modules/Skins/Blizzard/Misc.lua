@@ -258,29 +258,4 @@ S:AddCallback("Skin_Misc", function()
 		_G["LanguageMenuButton"..i]:StyleButton()
 		_G["VoiceMacroMenuButton"..i]:StyleButton()
 	end
-
-	local locale = GetLocale()
-	if locale == "koKR" then
-		S:HandleButton(GameMenuButtonRatings)
-
-		RatingMenuFrame:SetTemplate("Transparent")
-		RatingMenuFrameHeader:Kill()
-		S:HandleButton(RatingMenuButtonOkay)
-	elseif locale == "ruRU" then
-		-- Declension Frame
-		DeclensionFrame:SetTemplate("Transparent")
-
-		S:HandleNextPrevButton(DeclensionFrameSetPrev)
-		S:HandleNextPrevButton(DeclensionFrameSetNext)
-		S:HandleButton(DeclensionFrameOkayButton)
-		S:HandleButton(DeclensionFrameCancelButton)
-
-		for i = 1, RUSSIAN_DECLENSION_PATTERNS do
-			local editBox = _G["DeclensionFrameDeclension"..i.."Edit"]
-			if editBox then
-				editBox:StripTextures()
-				S:HandleEditBox(editBox)
-			end
-		end
-	end
 end)

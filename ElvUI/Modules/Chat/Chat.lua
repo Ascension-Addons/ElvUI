@@ -1924,6 +1924,44 @@ function CH:FCFTab_UpdateColors(tab, selected)
 	tab:GetFontString():SetTextColor(unpack(E.media.rgbvaluecolor))
 end
 
+function CH:GetPlayerInfoByGUID(guid)
+	local data = CH.GuidCache[guid]
+	if not data then
+		local ok, localizedClass, englishClass, localizedRace, englishRace, sex, name, realm = pcall(GetPlayerInfoByGUID, guid)
+		if not (ok and englishClass) then return end
+
+		local nameWithRealm = name..'-'..GetRealmName()
+
+		-- move em into a table
+		data = {
+			localizedClass = localizedClass,
+			englishClass = englishClass,
+			localizedRace = localizedRace,
+			englishRace = englishRace,
+			sex = sex,
+			name = name,
+			realm = realm,
+			nameWithRealm = nameWithRealm -- we use this to correct mobile to link with the realm as well
+		}
+
+		-- add it to ClassNames
+		if name then
+			CH.ClassNames[strlower(name)] = englishClass
+		end
+		if nameWithRealm then
+			CH.ClassNames[strlower(nameWithRealm)] = englishClass
+		end
+
+		-- push into the cache
+		CH.GuidCache[guid] = data
+	end
+
+	-- we still need to recheck this each time because CUSTOM_CLASS_COLORS can change
+	if data then data.classColor = E:ClassColor(data.englishClass) end
+
+	return data
+end
+
 function CH:ResetEditboxHistory()
 	wipe(ElvCharacterDB.ChatEditHistory)
 end
