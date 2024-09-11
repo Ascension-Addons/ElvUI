@@ -70,6 +70,7 @@ local RAID_WARNING = RAID_WARNING
 
 local throttle = {}
 
+CH.GuidCache = {}
 CH.ClassNames = {}
 CH.Keywords = {}
 CH.Smileys = {}
