@@ -554,7 +554,11 @@ function E:StaticPopup_GetLastVisible()
 
 	-- wildcard and primary stat frame take same space as 1st popup window
 	if not(lastFrame) then
-		lastFrame = WildCardUtil.GetVisibleDice()
+		if WildCardUtil.IsRapidRolling then
+			lastFrame = not WildCardUtil.IsRapidRolling() and WildCardUtil.GetVisibleDice()
+		else
+			lastFrame = WildCardUtil.GetVisibleDice()
+		end
 	end
 
 	if not(lastFrame) then
