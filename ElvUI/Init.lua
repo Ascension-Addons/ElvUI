@@ -61,7 +61,7 @@ do
 	AddOn:AddLib("LSM", "LibSharedMedia-3.0")
 	AddOn:AddLib("ACL", "AceLocale-3.0-ElvUI")
 	AddOn:AddLib('ACH', 'LibAceConfigHelper')
-	AddOn:AddLib("LAB", "LibActionButton-1.0-ElvUI")
+	AddOn:AddLib("LAB", "LibActionButton-1.0")
 	AddOn:AddLib("LAI", "LibAuraInfo-1.0-ElvUI", true)
 	AddOn:AddLib("LBF", "LibButtonFacade", true)
 	AddOn:AddLib("LDB", "LibDataBroker-1.1")
