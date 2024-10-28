@@ -1084,13 +1084,17 @@ function CH:ChatFrame_MessageEventHandler(frame, event, arg1, arg2, arg3, arg4, 
 				frame:AddMessage(format(globalstring, arg8, arg4, arg2), info.r, info.g, info.b, info.id, false, nil, nil, isHistory, historyTime)
 			end
 		elseif chatType == "CHANNEL_NOTICE" then
-			if arg1 == "NOT_IN_LFG" then return end
+			if arg1 == "NOT_IN_LFG" or string.isNilOrEmpty(arg1) then return end
 			local globalstring = _G["CHAT_"..arg1.."_NOTICE_BN"]
 			if not globalstring then
 				globalstring = _G["CHAT_"..arg1.."_NOTICE"]
 			end
 			if arg10 > 0 then
 				arg4 = arg4.." "..arg10
+			end
+
+			if not globalstring then
+				return
 			end
 
 			local accessID = ChatHistory_GetAccessID(Chat_GetChatCategory(chatType), arg8)
