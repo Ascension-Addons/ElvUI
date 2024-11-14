@@ -501,10 +501,6 @@ function TT:GameTooltip_OnTooltipSetItem(tt)
 	local numall = GetItemCount(link, true)
 	local left, right, bankCount
 
-	if self.db.spellID then
-		left = format("|cFFCA3C3C%s|r %d", ID, tonumber(match(link, ":(%d+)")))
-	end
-
 	if self.db.itemCount == "BAGS_ONLY" then
 		right = format("|cFFCA3C3C%s|r %d", L["Count"], num)
 	elseif self.db.itemCount == "BANK_ONLY" then
@@ -559,46 +555,6 @@ function TT:MODIFIER_STATE_CHANGED(_, key)
 		if notOnAuras and UnitExists("mouseover") then
 			GameTooltip:SetUnit("mouseover")
 		end
-	end
-end
-
-function TT:SetUnitAura(tt, ...)
-	local caster, _, _, id = select(8, UnitAura(...))
-	if id and self.db.spellID then
-		if caster then
-			local name = UnitName(caster)
-			local _, class = UnitClass(caster)
-			local color = UnitIsUnit("player", caster) and E.media.herocolor or RAID_CLASS_COLORS[class]
-			tt:AddDoubleLine(format("|cFFCA3C3C%s|r %d", ID, id), format("%s%s", E:RGBToHex(color.r, color.g, color.b), name))
-		else
-			tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
-		end
-
-		tt:Show()
-	end
-end
-
-function TT:GameTooltip_OnTooltipSetSpell(tt)
-	local id = select(3, tt:GetSpell())
-	if not id or not self.db.spellID then return end
-
-	local displayString = format("|cFFCA3C3C%s|r %d", ID, id)
-
-	for i = 1, tt:NumLines() do
-		local line = _G[format("GameTooltipTextLeft%d", i)]
-		if line and line:GetText() and find(line:GetText(), displayString) then
-			return
-		end
-	end
-
-	tt:AddLine(displayString)
-	tt:Show()
-end
-
-function TT:SetHyperlink(refTooltip, link)
-	if self.db.spellID and (find(link, "^spell:") or find(link, "^item:")) then
-		refTooltip:AddLine(format("|cFFCA3C3C%s|r %d", ID, tonumber(match(link, "(%d+)"))))
-		refTooltip:Show()
 	end
 end
 
@@ -696,12 +652,7 @@ function TT:Initialize()
 	GameTooltipAnchor:SetFrameLevel(GameTooltipAnchor:GetFrameLevel() + 400)
 	E:CreateMover(GameTooltipAnchor, "TooltipMover", L["Tooltip"], nil, nil, nil, nil, nil, "tooltip,general")
 
-	self:SecureHook(ItemRefTooltip, "SetHyperlink")
 	self:SecureHook("GameTooltip_SetDefaultAnchor")
-	self:SecureHook(GameTooltip, "SetUnitAura")
-	self:SecureHook(GameTooltip, "SetUnitBuff", "SetUnitAura")
-	self:SecureHook(GameTooltip, "SetUnitDebuff", "SetUnitAura")
-	self:HookScript(GameTooltip, "OnTooltipSetSpell", "GameTooltip_OnTooltipSetSpell")
 	self:HookScript(GameTooltip, "OnTooltipCleared", "GameTooltip_OnTooltipCleared")
 	self:HookScript(GameTooltip, "OnTooltipSetItem", "GameTooltip_OnTooltipSetItem")
 	self:HookScript(GameTooltip, "OnTooltipSetUnit", "GameTooltip_OnTooltipSetUnit")
