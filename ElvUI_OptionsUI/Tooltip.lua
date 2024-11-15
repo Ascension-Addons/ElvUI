@@ -90,18 +90,6 @@ E.Options.args.tooltip = {
 					name = L["Guild Ranks"],
 					desc = L["Display guild ranks if a unit is guilded."]
 				},
-				spellID = {
-					order = 10,
-					type = "toggle",
-					name = L["Spell/Item IDs"],
-					desc = L["Display the spell or item ID when mousing over a spell or item tooltip."]
-				},
-				npcID = {
-					order = 11,
-					type = "toggle",
-					name = L["NPC IDs"],
-					desc = L["Display the npc ID when mousing over a npc tooltip."],
-				},
 				itemCount = {
 					order = 12,
 					type = "select",
