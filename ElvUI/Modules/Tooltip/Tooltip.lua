@@ -54,7 +54,6 @@ local FACTION_ALLIANCE = FACTION_ALLIANCE
 local FACTION_HORDE = FACTION_HORDE
 local LEVEL = LEVEL
 local FACTION_BAR_COLORS = FACTION_BAR_COLORS
-local ID = ID
 
 local GameTooltip, GameTooltipStatusBar = GameTooltip, GameTooltipStatusBar
 local targetList, inspectCache = {}, {}
@@ -426,16 +425,6 @@ function TT:GameTooltip_OnTooltipSetUnit(tt)
 
 	if isShiftKeyDown and isPlayerUnit then
 		self:ShowInspectInfo(tt, unit, color.r, color.g, color.b)
-	end
-
-	if unit and self.db.npcID and not isPlayerUnit then
-		local guid = UnitGUID(unit)
-		if guid then
-			local id = tonumber(sub(guid, 8, 12), 16)
-			if id then
-				tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
-			end
-		end
 	end
 
 	if color then
