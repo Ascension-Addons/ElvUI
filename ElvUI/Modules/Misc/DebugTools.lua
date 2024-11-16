@@ -159,8 +159,6 @@ function D:Initialize()
 	self:SecureHook("StaticPopup_Show")
 	self:RegisterEvent("PLAYER_REGEN_DISABLED")
 	self:RegisterEvent("PLAYER_REGEN_ENABLED")
-	self:RegisterEvent("ADDON_ACTION_BLOCKED", "TaintError")
-	self:RegisterEvent("ADDON_ACTION_FORBIDDEN", "TaintError")
 end
 
 local function InitializeCallback()
