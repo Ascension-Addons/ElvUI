@@ -167,7 +167,7 @@ end
 
 function E:CreateCooldownTimer(parent, displayParent)
 	local timer = CreateFrame("Frame", parent:GetName() and parent:GetName().."Timer" or nil, displayParent)
-	parent:HookScript("OnHide", function(self) if self:GetParent().isNamePlate then return end timer:Hide() end)
+	parent:HookScript("OnHide", function(self) local parent = self:GetParent() if parent and parent.isNamePlate then return end timer:Hide() end)
 	parent:HookScript("OnShow", function(self) timer:Show() end)
 	timer:SetFrameLevel(parent:GetFrameLevel() + 1)
 	timer:Hide()
@@ -221,7 +221,7 @@ end
 function E:RegisterCooldown(cooldown, module)
 	if not cooldown.isHooked then
 		hooksecurefunc(cooldown, "SetCooldown", E.OnSetCooldown)
-		if cooldown:GetParent().isNamePlate then
+		if cooldown:GetParent() and cooldown:GetParent().isNamePlate then
 			cooldown.Show = cooldown.Hide
 			cooldown:Hide()
 		end
