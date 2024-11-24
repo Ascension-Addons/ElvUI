@@ -70,12 +70,6 @@ local SEARCH = SEARCH
 
 local SEARCH_STRING = ""
 
--- item types that will show they have a wardrobe unlock but cannot be unlocked
-local BAD_WARDROBE_SUBTYPES = {
-	["Thrown"] = true,
-	["Miscellaneous"] = true,
-}
-
 function B:GetContainerFrame(arg)
 	if type(arg) == "boolean" and arg == true then
 		return B.BankFrame
@@ -387,12 +381,8 @@ function B:UpdateSlot(frame, bagID, slotID)
 		end
 
 		slot.isUnlearnedVanity = VANITY_ITEMS[slot.id] and not C_VanityCollection.IsCollectionItemOwned(slot.id) and iType ~= "Consumable"
-		if C_Appearance then
-			local appearanceID = C_Appearance.GetItemAppearanceID(slot.id)
-			slot.isUnlearnedWardrobe = not (BAD_WARDROBE_SUBTYPES[iSubtype] and iType == "Weapon") and appearanceID and not C_AppearanceCollection.IsAppearanceCollected(appearanceID)
-		else
-			slot.isUnlearnedWardrobe = not (BAD_WARDROBE_SUBTYPES[iSubtype] and iType == "Weapon") and APPEARANCE_ITEM_INFO[slot.id] and not APPEARANCE_ITEM_INFO[slot.id]:GetCollectedID()
-		end
+		local appearanceID = C_Appearance.GetItemAppearanceID(slot.id)
+		slot.isUnlearnedWardrobe = appearanceID and not C_AppearanceCollection.IsAppearanceCollected(appearanceID)
 		slot.isJunk = (slot.rarity and slot.rarity == 0) and (itemPrice and itemPrice > 0) and (iType and iType ~= "Quest")
 		slot.junkDesaturate = slot.isJunk and E.db.bags.junkDesaturate
 
@@ -997,7 +987,7 @@ function B:OnEvent(event, ...)
 		B:UpdateCooldowns(self)
 	elseif event == "PLAYERBANKSLOTS_CHANGED" then
 		B:UpdateBagSlots(self, -1)
-	elseif (event == "QUEST_ACCEPTED" or event == "QUEST_REMOVED" or event == "QUEST_LOG_UPDATE") and self:IsShown() then
+	elseif (event == "QUEST_ACCEPTED" or event == "QUEST_REMOVED" or event == "QUEST_LOG_UPDATE" or event == "APPEARANCE_COLLECTED") and self:IsShown() then
 		B:UpdateAllSlots(self)
 		for slotID = 1, GetKeyRingSize() do
 			B:UpdateKeySlot(slotID)
@@ -1184,7 +1174,7 @@ function B:ContructContainerFrame(name, isBank)
 	f.BagUpdate = BagUpdate
 	f:RegisterBucketEvent("BAG_UPDATE", 0.2, "BagUpdate") -- Has to be on both frames
 	f:RegisterEvent("BAG_UPDATE_COOLDOWN") -- Has to be on both frames
-	f.events = isBank and {"PLAYERBANKSLOTS_CHANGED"} or {"ITEM_LOCK_CHANGED", "ITEM_UNLOCKED", "QUEST_ACCEPTED", "QUEST_REMOVED", "QUEST_LOG_UPDATE"}
+	f.events = isBank and {"PLAYERBANKSLOTS_CHANGED"} or {"ITEM_LOCK_CHANGED", "ITEM_UNLOCKED", "QUEST_ACCEPTED", "QUEST_REMOVED", "QUEST_LOG_UPDATE", "APPEARANCE_COLLECTED"}
 
 	for _, event in ipairs(f.events) do
 		f:RegisterEvent(event)
