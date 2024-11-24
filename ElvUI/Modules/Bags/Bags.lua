@@ -70,12 +70,6 @@ local SEARCH = SEARCH
 
 local SEARCH_STRING = ""
 
--- item types that will show they have a wardrobe unlock but cannot be unlocked
-local BAD_WARDROBE_SUBTYPES = {
-	["Thrown"] = true,
-	["Miscellaneous"] = true,
-}
-
 function B:GetContainerFrame(arg)
 	if type(arg) == "boolean" and arg == true then
 		return B.BankFrame
@@ -387,12 +381,8 @@ function B:UpdateSlot(frame, bagID, slotID)
 		end
 
 		slot.isUnlearnedVanity = VANITY_ITEMS[slot.id] and not C_VanityCollection.IsCollectionItemOwned(slot.id) and iType ~= "Consumable"
-		if C_Appearance then
-			local appearanceID = C_Appearance.GetItemAppearanceID(slot.id)
-			slot.isUnlearnedWardrobe = not (BAD_WARDROBE_SUBTYPES[iSubtype] and iType == "Weapon") and appearanceID and not C_AppearanceCollection.IsAppearanceCollected(appearanceID)
-		else
-			slot.isUnlearnedWardrobe = not (BAD_WARDROBE_SUBTYPES[iSubtype] and iType == "Weapon") and APPEARANCE_ITEM_INFO[slot.id] and not APPEARANCE_ITEM_INFO[slot.id]:GetCollectedID()
-		end
+		local appearanceID = C_Appearance.GetItemAppearanceID(slot.id)
+		slot.isUnlearnedWardrobe = appearanceID and not C_AppearanceCollection.IsAppearanceCollected(appearanceID)
 		slot.isJunk = (slot.rarity and slot.rarity == 0) and (itemPrice and itemPrice > 0) and (iType and iType ~= "Quest")
 		slot.junkDesaturate = slot.isJunk and E.db.bags.junkDesaturate
 
