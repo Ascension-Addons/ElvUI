@@ -997,7 +997,7 @@ function B:OnEvent(event, ...)
 		B:UpdateCooldowns(self)
 	elseif event == "PLAYERBANKSLOTS_CHANGED" then
 		B:UpdateBagSlots(self, -1)
-	elseif (event == "QUEST_ACCEPTED" or event == "QUEST_REMOVED" or event == "QUEST_LOG_UPDATE") and self:IsShown() then
+	elseif (event == "QUEST_ACCEPTED" or event == "QUEST_REMOVED" or event == "QUEST_LOG_UPDATE" or event == "APPEARANCE_COLLECTED") and self:IsShown() then
 		B:UpdateAllSlots(self)
 		for slotID = 1, GetKeyRingSize() do
 			B:UpdateKeySlot(slotID)
@@ -1184,7 +1184,7 @@ function B:ContructContainerFrame(name, isBank)
 	f.BagUpdate = BagUpdate
 	f:RegisterBucketEvent("BAG_UPDATE", 0.2, "BagUpdate") -- Has to be on both frames
 	f:RegisterEvent("BAG_UPDATE_COOLDOWN") -- Has to be on both frames
-	f.events = isBank and {"PLAYERBANKSLOTS_CHANGED"} or {"ITEM_LOCK_CHANGED", "ITEM_UNLOCKED", "QUEST_ACCEPTED", "QUEST_REMOVED", "QUEST_LOG_UPDATE"}
+	f.events = isBank and {"PLAYERBANKSLOTS_CHANGED"} or {"ITEM_LOCK_CHANGED", "ITEM_UNLOCKED", "QUEST_ACCEPTED", "QUEST_REMOVED", "QUEST_LOG_UPDATE", "APPEARANCE_COLLECTED"}
 
 	for _, event in ipairs(f.events) do
 		f:RegisterEvent(event)
