@@ -440,6 +440,20 @@ function UF:SortAuras()
 		sort(self, SortAurasByCaster)
 	end
 
+	if self.db.noDurationLast and self[1] then
+		local tempAuras = {}
+		for i = 1, #self do
+			if self[i].duration == 0 then
+				table.insert(tempAuras, self[i])
+			else
+				table.insert(tempAuras, 1, self[i])
+			end
+		end
+		for i = 1, #tempAuras do
+			self[i] = tempAuras[i]
+		end
+	end
+
 	--Look into possibly applying filter priorities for auras here.
 
 	return 1, #self --from/to range needed for the :SetPosition call in oUF aura element. Without this aura icon position gets all whacky when not sorted by index
@@ -510,7 +524,7 @@ function UF:AuraFilter(unit, button, name, _, _, _, debuffType, duration, expira
 	else
 		db = parent.db and parent.db[self.type]
 	end
-	
+
 	if not db then
 		return true
 	end
