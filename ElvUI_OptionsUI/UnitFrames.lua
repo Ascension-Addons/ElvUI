@@ -498,8 +498,14 @@ local function GetOptionsTable_Auras(auraType, updateFunc, groupName, numUnits)
 					["DESCENDING"] = L["Descending"]
 				}
 			},
-			stacks = {
+			noDurationLast = {
 				order = 12,
+				type = "toggle",
+				name = L["No Duration Last"],
+				desc = L["Show buffs with no duration last."],
+			},
+			stacks = {
+				order = 13,
 				type = "group",
 				name = L["Stack Counter"],
 				guiInline = true,
@@ -528,7 +534,7 @@ local function GetOptionsTable_Auras(auraType, updateFunc, groupName, numUnits)
 				}
 			},
 			duration = {
-				order = 13,
+				order = 14,
 				type = "group",
 				name = L["Duration"],
 				guiInline = true,

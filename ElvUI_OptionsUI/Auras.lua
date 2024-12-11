@@ -105,6 +105,12 @@ local function GetAuraOptions(headerName)
 				[0] = L["No Sorting"],
 				[1] = L["Your Auras First"]
 			}
+		},
+		noDurationLast = {
+			order = 13,
+			type = "toggle",
+			name = L["No Duration Last"],
+			desc = L["Show buffs with no duration last."],
 		}
 	}
 
