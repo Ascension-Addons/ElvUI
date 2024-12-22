@@ -584,6 +584,18 @@ function A:UpdateHeader(header)
 	local sortMethod = (sorters[db.sortMethod] or sorters.INDEX)[db.sortDir == "-"][db.seperateOwn]
 	tsort(sortingTable, sortMethod)
 
+	if db.noDurationLast then
+		local tempAuras = {}
+		for i = 1, #sortingTable do
+			if sortingTable[i].duration == 0 then
+				table.insert(tempAuras, 1, sortingTable[i])
+			else
+				table.insert(tempAuras, sortingTable[i])
+			end
+		end
+		sortingTable = tempAuras
+	end
+
 	self:ConfigureAuras(header, sortingTable, weaponPosition)
 	while sortingTable[1] do
 		releaseTable(tremove(sortingTable))
