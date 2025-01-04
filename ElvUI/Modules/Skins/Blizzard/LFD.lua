@@ -87,7 +87,7 @@ S:AddCallback("Skin_LFD", function()
 	end
 
 	--Tabs
-	for i = 1, 5 do
+	for i = 1, 4 do
 		local tab = _G["AscensionLFGFrameTab"..i]
 		tab:Size(122, 32)
 		tab:GetRegions():SetPoint("CENTER", 0, 2)
