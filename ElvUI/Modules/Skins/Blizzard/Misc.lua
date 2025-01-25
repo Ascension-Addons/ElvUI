@@ -90,7 +90,6 @@ S:AddCallback("Skin_Misc", function()
 	end
 
 	-- Other Frames
-	TicketStatusFrameButton:SetTemplate("Transparent")
 	AutoCompleteBox:SetTemplate("Transparent")
 	ConsolidatedBuffsTooltip:SetTemplate("Transparent")
 	--ResInSafeZoneButton

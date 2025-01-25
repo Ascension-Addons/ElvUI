@@ -563,10 +563,13 @@ function S:HandleBorderIcon(icon, parent)
 	if not icon.Icon then return end
 	parent = parent or icon:GetParent()
 
+	icon:SetRounded(false)
 	icon:SetBorderTexture(nil)
 	icon.SetBorderTexture = E.noop
+	icon.SetBorderAtlas = E.noop
 	icon:SetOverlayTexture(nil)
 	icon.SetOverlayTexture = E.noop
+	icon.SetOverlayAtlas = E.noop
 
 	icon.Icon:SetTexCoord(unpack(E.TexCoords))
 	parent:CreateBackdrop("Default")
