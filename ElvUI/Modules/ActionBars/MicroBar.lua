@@ -54,21 +54,13 @@ function AB:HandleMicroButton(button)
 	button.backdrop = f
 
 	button:SetParent(ElvUI_MicroBar)
-	button:GetHighlightTexture():Kill()
 	button:HookScript("OnEnter", onEnter)
 	button:HookScript("OnLeave", onLeave)
 	button:SetHitRectInsets(0, 0, 0, 0)
 	button:Show()
 
-	pushed:SetTexCoord(0.17, 0.87, 0.5, 0.908)
-	pushed:SetInside(f)
-
-	normal:SetTexCoord(0.17, 0.87, 0.5, 0.908)
-	normal:SetInside(f)
-
-	if disabled then
-		disabled:SetTexCoord(0.17, 0.87, 0.5, 0.908)
-		disabled:SetInside(f)
+	if button.textureName then
+		button:GetHighlightTexture():Kill()
 	end
 end
 
@@ -177,19 +169,9 @@ function AB:SetupMicroBar()
 		self:HandleMicroButton(_G[MICRO_BUTTONS[i]])
 	end
 
-	MicroButtonPortrait:SetInside(CharacterMicroButton.backdrop)
-
-	if E.myfaction == "Alliance" then
-		PVPMicroButtonTexture:SetTexCoord(0.545, 0.935, 0.070, 0.940)
-	else
-		PVPMicroButtonTexture:SetTexCoord(0.100, 0.475, 0.070, 0.940)
-	end
-
-	self:SecureHook("VehicleMenuBar_MoveMicroButtons", "UpdateMicroButtonsParent")
 	self:SecureHook("UpdateMicroButtons")
 
 	self:UpdateMicroPositionDimensions()
-	MainMenuBarPerformanceBar:Kill()
 
 	E:CreateMover(microBar, "MicrobarMover", L["Micro Bar"], nil, nil, nil, "ALL,ACTIONBARS", nil, "actionbar,microbar")
 end

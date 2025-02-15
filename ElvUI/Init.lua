@@ -41,6 +41,8 @@ Engine[4] = AddOn.DF.profile
 Engine[5] = AddOn.DF.global
 _G[AddOnName] = Engine
 
+EditMode.Disable()
+
 do
 	AddOn.Libs = {}
 	AddOn.LibsMinor = {}
@@ -180,6 +182,8 @@ function AddOn:OnInitialize()
 	local GameMenuButton = EscapeMenu:AddButton(self.title, EscapeMenuSection.AddOns, function()
 		AddOn:ToggleOptionsUI()
 	end, nil, true)
+
+	EscapeMenu:RemoveButton(EDIT_MODE)
 
 	self.loadedtime = GetTime()
 end
