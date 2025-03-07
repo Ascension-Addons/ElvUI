@@ -208,6 +208,11 @@ E.Options.args.skins = {
 					name = L["Mirror Timers"],
 					desc = L["TOGGLESKIN_DESC"]
 				},
+				pathtoascension = {
+					type = "toggle",
+					name = L["Path To Ascension"],
+					desc = L["TOGGLESKIN_DESC"]
+				},
 				petition = {
 					type = "toggle",
 					name = L["Petition Frame"],
