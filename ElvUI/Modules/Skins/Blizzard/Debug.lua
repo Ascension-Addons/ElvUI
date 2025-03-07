@@ -8,6 +8,25 @@ local unpack = unpack
 S:AddCallbackForAddon("Blizzard_DebugTools", "Skin_Blizzard_DebugTools", function()
 	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.debug then return end
 
+	-- Error Handler Frame (AKA BugSack)
+	ErrorHandler:StripTextures()
+	ErrorHandler.NineSlice:StripTextures()
+	ErrorHandler:CreateBackdrop("Transparent")
+	ErrorHandler.backdrop:Point("TOPLEFT", 0, 0)
+	ErrorHandler.backdrop:Point("BOTTOMRIGHT", 0, 0)
+	S:HandleScrollBar(ErrorHandlerErrorScrollBar)
+	ErrorHandlerErrorScrollBarScrollDownButton:Point("TOP", ErrorHandlerErrorScrollBar, "BOTTOM", 0, 2)
+
+	S:HandleTabSystem(ErrorHandler)
+	S:HandleButton(ErrorHandlerPreviousButton)
+	S:HandleButton(ErrorHandlerCopyButton)
+	S:HandleButton(ErrorHandlerNextButton)
+
+	S:HandleCloseButton(ErrorHandlerCloseButton)
+
+	ErrorHandlerErrorInset:StripTextures()
+
+	-- Script Error Frame
 	ScriptErrorsFrame:SetParent(E.UIParent)
 	ScriptErrorsFrame:StripTextures()
 	ScriptErrorsFrame:SetTemplate("Transparent")
