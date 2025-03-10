@@ -93,6 +93,7 @@ V.skins = {
 		mail = true,
 		merchant = true,
 		misc = true,
+		pathtoascension = true,
 		petition = true,
 		pvp = true,
 		quest = true,
