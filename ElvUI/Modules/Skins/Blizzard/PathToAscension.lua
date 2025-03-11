@@ -71,7 +71,7 @@ S:AddCallbackForAddon("Ascension_PathToAscension", "Skin_PathToAscension", funct
 	PathToAscensionFrameObjectivesScrollFrameArtOverlay:StripTextures(true)
 
 	-- Reskin the objectives list
-	for i = 1, 12 do
+	for i = 1, 13 do
 		local objectiveButton = _G["PathToAscensionFrameObjectivesScrollFrameButton"..i]
 		S:HandleButton(objectiveButton, true)
 	end
