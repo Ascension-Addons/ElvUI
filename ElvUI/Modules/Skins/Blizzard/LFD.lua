@@ -131,41 +131,51 @@ S:AddCallback("Skin_LFD", function()
 			--Arena
 			S:HandleStatusBar(AscensionPVPFrameArenaBar)
 
-		-- Quick Match
-		AscensionPVPFrame:StripTextures(true)
-		AscensionPVPFrame:CreateBackdrop("Transparent")
-		AscensionPVPFrameCasualFrame:StripTextures(true)
-		AscensionPVPFrameCasualFrame:CreateBackdrop("Transparent")
-		AscensionPVPFrameCasualFrameInset:StripTextures(true)
-		AscensionPVPFrameCasualFrameInset:CreateBackdrop("Transparent")
-		AscensionPVPFrameCasualFrameInsetNineSlice:StripTextures(true)
-			-- Buttons (Queues)
-			S:HandleButton(AscensionPVPFrameCasualFrameRandomBGButton)
-			S:HandleButton(AscensionPVPFrameCasualFrameCallToArmsButton1)
-			S:HandleButton(AscensionPVPFrameCasualFrameSkirmish1v1Button)
-			S:HandleButton(AscensionPVPFrameCasualFrameSkirmish2v2Button)
-			S:HandleButton(AscensionPVPFrameCasualFrameSkirmish3v3Button)
-		-- Honor Section
-		AscensionPVPFrameHonorInset:StripTextures(true)
-		AscensionPVPFrameHonorInset:CreateBackdrop("Transparent")
-		AscensionPVPFrameHonorInsetNineSlice:StripTextures(true)
+			-- Quick Match
+	AscensionPVPFrame:StripTextures(true)
+	AscensionPVPFrame:CreateBackdrop("Transparent")
+	AscensionPVPFrameCasualFrame:StripTextures(true)
+	AscensionPVPFrameCasualFrame:CreateBackdrop("Transparent")
+	AscensionPVPFrameCasualFrameInset:StripTextures(true)
+	AscensionPVPFrameCasualFrameInset:CreateBackdrop("Transparent")
+	AscensionPVPFrameCasualFrameInsetNineSlice:StripTextures(true)
+	-- Fix inset textures on the casual frame
+	local casualFrame = {AscensionPVPFrameCasualFrame:GetChildren()}
+	casualFrame[2]:StripTextures()
+	AscensionPVPFrameStatsInset:StripTextures()
+	AscensionPVPFrameStatsInsetNineSlice:StripTextures(true)
+	-- Buttons (Queues)
+	S:HandleButton(AscensionPVPFrameCasualFrameRandomBGButton)
+	S:HandleButton(AscensionPVPFrameCasualFrameCallToArmsButton1)
+	S:HandleButton(AscensionPVPFrameCasualFrameSkirmish1v1Button)
+	S:HandleButton(AscensionPVPFrameCasualFrameSkirmish2v2Button)
+	S:HandleButton(AscensionPVPFrameCasualFrameSkirmish3v3Button)
+	-- Honor Section
+	AscensionPVPFrameHonorInset:StripTextures(true)
+	AscensionPVPFrameHonorInset:CreateBackdrop("Transparent")
+	AscensionPVPFrameHonorInsetNineSlice:StripTextures(true)
 
-		-- Buttons
-		S:HandleButton(AscensionPVPFrameCasualFrameQueueButton)
-		S:HandleButton(AscensionPVPFrameCasualFrameSoloQueueButton)
+	-- Buttons
+	S:HandleButton(AscensionPVPFrameCasualFrameQueueButton)
+	AscensionPVPFrameCasualFrameQueueButton:SetSize(150, 28)
+	S:HandleButton(AscensionPVPFrameCasualFrameSoloQueueButton)
+	AscensionPVPFrameCasualFrameSoloQueueButton:SetSize(150, 28)
+	S:HandleButton(AscensionPVPFrameCasualFrameLeaveQueueButton)
+	AscensionPVPFrameCasualFrameLeaveQueueButton:SetSize(150, 28)
 
-		--Rated Tab
-		AscensionPVPFrameRatedFrame:StripTextures(true)
-		AscensionPVPFrameRatedFrame:CreateBackdrop("Transparent")
-		AscensionPVPFrameRatedFrameInset:StripTextures(true)
-		AscensionPVPFrameRatedFrameInset:CreateBackdrop("Transparent")
-		AscensionPVPFrameRatedFrameInsetNineSlice:StripTextures(true)
-			-- Buttons (Rated)
-			S:HandleButton(AscensionPVPFrameRatedFrameArena1v1)
-			S:HandleButton(AscensionPVPFrameRatedFrameArena2v2)
-			S:HandleButton(AscensionPVPFrameRatedFrameArena3v3)
-			S:HandleButton(AscensionPVPFrameRatedFrameSoloQueueButton)
-			S:HandleButton(AscensionPVPFrameRatedFrameQueueButton)
+	--Rated Tab
+	AscensionPVPFrameRatedFrame:StripTextures(true)
+	AscensionPVPFrameRatedFrame:CreateBackdrop("Transparent")
+	AscensionPVPFrameRatedFrameInset:StripTextures(true)
+	AscensionPVPFrameRatedFrameInset:CreateBackdrop("Transparent")
+	AscensionPVPFrameRatedFrameInsetNineSlice:StripTextures(true)
+
+	-- Buttons (Rated)
+	S:HandleButton(AscensionPVPFrameRatedFrameArena1v1)
+	S:HandleButton(AscensionPVPFrameRatedFrameArena2v2)
+	S:HandleButton(AscensionPVPFrameRatedFrameArena3v3)
+	S:HandleButton(AscensionPVPFrameRatedFrameSoloQueueButton)
+	S:HandleButton(AscensionPVPFrameRatedFrameQueueButton)
 
 	-- PvP Ruleset
 	AscensionRulesetFrame:StripTextures(true)
