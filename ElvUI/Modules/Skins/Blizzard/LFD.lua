@@ -12,6 +12,25 @@ local GetLFGDungeonRewardLink = GetLFGDungeonRewardLink
 local GetLFGDungeonRewards = GetLFGDungeonRewards
 local hooksecurefunc = hooksecurefunc
 
+-- Manastorm is injected into Blizz frames from a separate addon
+S:AddCallbackForAddon("Ascension_Manastorm", "Skin_Manastorm", function()
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.lfd then return end
+
+	ManastormQueueFrameInset:StripTextures()
+	ManastormQueueFrameCurrencyBar:StripTextures()
+	ManastormQueueFrameRightPanelLevelSelect:StripTextures()
+	ManastormQueueFrameRightPanelLevelSelect:CreateBackdrop("Transparent")
+	S:HandleButton(ManastormQueueFrameRightPanelEnterButton)
+	S:HandleButton(ManastormQueueFrameRightPanelLevelDropDown)
+	ManastormQueueFrameRightPanelLevelDropDown:SetSize(120, 24)
+	ManastormQueueFrameRightPanelLevelDropDown:SetPoint("BOTTOMRIGHT", ManastormQueueFrameRightPanelEnterButton, "TOPRIGHT")
+	S:HandleNextPrevButton(ManastormQueueFrameRightPanelLevelDropDown.Button, "down")
+	ManastormQueueFrameRightPanelLevelDropDown.Button:SetPoint("RIGHT", ManastormQueueFrameRightPanelLevelDropDown, "RIGHT", -2, 0)
+	S:HandleScrollList(ManastormQueueFrameRightPanelLevelSelectScrollList)
+	ManastormQueueFrameRightPanelLevelSelect:SetPoint("BOTTOMRIGHT", ManastormQueueFrameRightPanelLevelDropDown, "TOPRIGHT", -1, 0)
+	ManastormQueueFrameRightPanelLevelSelectScrollList:CreateBackdrop("Default")
+end)
+
 S:AddCallback("Skin_LFD", function()
 	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.lfd then return end
 
