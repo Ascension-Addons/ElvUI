@@ -37,6 +37,9 @@ S:AddCallback("Skin_LFD", function()
 	AscensionLFGFrame:StripTextures(true)
 	AscensionLFGFrame.PortraitFrame:StripTextures(true)
 	AscensionLFGFrame:CreateBackdrop("Transparent")
+	-- Remove the Vertical Gold bar between menu frame and content frame
+	local childFrames={AscensionLFGFrame:GetChildren()}
+	childFrames[13]:StripTextures()
 	AscensionLFGFrameContent:StripTextures(true)
 	AscensionLFGFrameMenu:StripTextures(true)
 	AscensionLFGFrameInset:StripTextures(true)
