@@ -12,12 +12,34 @@ local GetLFGDungeonRewardLink = GetLFGDungeonRewardLink
 local GetLFGDungeonRewards = GetLFGDungeonRewards
 local hooksecurefunc = hooksecurefunc
 
+-- Manastorm is injected into Blizz frames from a separate addon
+S:AddCallbackForAddon("Ascension_Manastorm", "Skin_Manastorm", function()
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.lfd then return end
+
+	ManastormQueueFrameInset:StripTextures()
+	ManastormQueueFrameCurrencyBar:StripTextures()
+	ManastormQueueFrameRightPanelLevelSelect:StripTextures()
+	ManastormQueueFrameRightPanelLevelSelect:CreateBackdrop("Transparent")
+	S:HandleButton(ManastormQueueFrameRightPanelEnterButton)
+	S:HandleButton(ManastormQueueFrameRightPanelLevelDropDown)
+	ManastormQueueFrameRightPanelLevelDropDown:SetSize(120, 24)
+	ManastormQueueFrameRightPanelLevelDropDown:SetPoint("BOTTOMRIGHT", ManastormQueueFrameRightPanelEnterButton, "TOPRIGHT")
+	S:HandleNextPrevButton(ManastormQueueFrameRightPanelLevelDropDown.Button, "down")
+	ManastormQueueFrameRightPanelLevelDropDown.Button:SetPoint("RIGHT", ManastormQueueFrameRightPanelLevelDropDown, "RIGHT", -2, 0)
+	S:HandleScrollList(ManastormQueueFrameRightPanelLevelSelectScrollList)
+	ManastormQueueFrameRightPanelLevelSelect:SetPoint("BOTTOMRIGHT", ManastormQueueFrameRightPanelLevelDropDown, "TOPRIGHT", -1, 0)
+	ManastormQueueFrameRightPanelLevelSelectScrollList:CreateBackdrop("Default")
+end)
+
 S:AddCallback("Skin_LFD", function()
 	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.lfd then return end
 
 	AscensionLFGFrame:StripTextures(true)
 	AscensionLFGFrame.PortraitFrame:StripTextures(true)
 	AscensionLFGFrame:CreateBackdrop("Transparent")
+	-- Remove the Vertical Gold bar between menu frame and content frame
+	local childFrames={AscensionLFGFrame:GetChildren()}
+	childFrames[13]:StripTextures()
 	AscensionLFGFrameContent:StripTextures(true)
 	AscensionLFGFrameMenu:StripTextures(true)
 	AscensionLFGFrameInset:StripTextures(true)
@@ -131,41 +153,51 @@ S:AddCallback("Skin_LFD", function()
 			--Arena
 			S:HandleStatusBar(AscensionPVPFrameArenaBar)
 
-		-- Quick Match
-		AscensionPVPFrame:StripTextures(true)
-		AscensionPVPFrame:CreateBackdrop("Transparent")
-		AscensionPVPFrameCasualFrame:StripTextures(true)
-		AscensionPVPFrameCasualFrame:CreateBackdrop("Transparent")
-		AscensionPVPFrameCasualFrameInset:StripTextures(true)
-		AscensionPVPFrameCasualFrameInset:CreateBackdrop("Transparent")
-		AscensionPVPFrameCasualFrameInsetNineSlice:StripTextures(true)
-			-- Buttons (Queues)
-			S:HandleButton(AscensionPVPFrameCasualFrameRandomBGButton)
-			S:HandleButton(AscensionPVPFrameCasualFrameCallToArmsButton1)
-			S:HandleButton(AscensionPVPFrameCasualFrameSkirmish1v1Button)
-			S:HandleButton(AscensionPVPFrameCasualFrameSkirmish2v2Button)
-			S:HandleButton(AscensionPVPFrameCasualFrameSkirmish3v3Button)
-		-- Honor Section
-		AscensionPVPFrameHonorInset:StripTextures(true)
-		AscensionPVPFrameHonorInset:CreateBackdrop("Transparent")
-		AscensionPVPFrameHonorInsetNineSlice:StripTextures(true)
+			-- Quick Match
+	AscensionPVPFrame:StripTextures(true)
+	AscensionPVPFrame:CreateBackdrop("Transparent")
+	AscensionPVPFrameCasualFrame:StripTextures(true)
+	AscensionPVPFrameCasualFrame:CreateBackdrop("Transparent")
+	AscensionPVPFrameCasualFrameInset:StripTextures(true)
+	AscensionPVPFrameCasualFrameInset:CreateBackdrop("Transparent")
+	AscensionPVPFrameCasualFrameInsetNineSlice:StripTextures(true)
+	-- Fix inset textures on the casual frame
+	local casualFrame = {AscensionPVPFrameCasualFrame:GetChildren()}
+	casualFrame[2]:StripTextures()
+	AscensionPVPFrameStatsInset:StripTextures()
+	AscensionPVPFrameStatsInsetNineSlice:StripTextures(true)
+	-- Buttons (Queues)
+	S:HandleButton(AscensionPVPFrameCasualFrameRandomBGButton)
+	S:HandleButton(AscensionPVPFrameCasualFrameCallToArmsButton1)
+	S:HandleButton(AscensionPVPFrameCasualFrameSkirmish1v1Button)
+	S:HandleButton(AscensionPVPFrameCasualFrameSkirmish2v2Button)
+	S:HandleButton(AscensionPVPFrameCasualFrameSkirmish3v3Button)
+	-- Honor Section
+	AscensionPVPFrameHonorInset:StripTextures(true)
+	AscensionPVPFrameHonorInset:CreateBackdrop("Transparent")
+	AscensionPVPFrameHonorInsetNineSlice:StripTextures(true)
 
-		-- Buttons
-		S:HandleButton(AscensionPVPFrameCasualFrameQueueButton)
-		S:HandleButton(AscensionPVPFrameCasualFrameSoloQueueButton)
+	-- Buttons
+	S:HandleButton(AscensionPVPFrameCasualFrameQueueButton)
+	AscensionPVPFrameCasualFrameQueueButton:SetSize(150, 28)
+	S:HandleButton(AscensionPVPFrameCasualFrameSoloQueueButton)
+	AscensionPVPFrameCasualFrameSoloQueueButton:SetSize(150, 28)
+	S:HandleButton(AscensionPVPFrameCasualFrameLeaveQueueButton)
+	AscensionPVPFrameCasualFrameLeaveQueueButton:SetSize(150, 28)
 
-		--Rated Tab
-		AscensionPVPFrameRatedFrame:StripTextures(true)
-		AscensionPVPFrameRatedFrame:CreateBackdrop("Transparent")
-		AscensionPVPFrameRatedFrameInset:StripTextures(true)
-		AscensionPVPFrameRatedFrameInset:CreateBackdrop("Transparent")
-		AscensionPVPFrameRatedFrameInsetNineSlice:StripTextures(true)
-			-- Buttons (Rated)
-			S:HandleButton(AscensionPVPFrameRatedFrameArena1v1)
-			S:HandleButton(AscensionPVPFrameRatedFrameArena2v2)
-			S:HandleButton(AscensionPVPFrameRatedFrameArena3v3)
-			S:HandleButton(AscensionPVPFrameRatedFrameSoloQueueButton)
-			S:HandleButton(AscensionPVPFrameRatedFrameQueueButton)
+	--Rated Tab
+	AscensionPVPFrameRatedFrame:StripTextures(true)
+	AscensionPVPFrameRatedFrame:CreateBackdrop("Transparent")
+	AscensionPVPFrameRatedFrameInset:StripTextures(true)
+	AscensionPVPFrameRatedFrameInset:CreateBackdrop("Transparent")
+	AscensionPVPFrameRatedFrameInsetNineSlice:StripTextures(true)
+
+	-- Buttons (Rated)
+	S:HandleButton(AscensionPVPFrameRatedFrameArena1v1)
+	S:HandleButton(AscensionPVPFrameRatedFrameArena2v2)
+	S:HandleButton(AscensionPVPFrameRatedFrameArena3v3)
+	S:HandleButton(AscensionPVPFrameRatedFrameSoloQueueButton)
+	S:HandleButton(AscensionPVPFrameRatedFrameQueueButton)
 
 	-- PvP Ruleset
 	AscensionRulesetFrame:StripTextures(true)

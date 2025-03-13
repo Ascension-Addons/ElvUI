@@ -36,13 +36,17 @@ S:AddCallback("Skin_WorldMap", function()
 
 	WorldMapQuestDetailScrollFrameTrack:Kill()
 
-	WorldMapQuestRewardScrollFrame:Width(340)
-	WorldMapQuestRewardScrollFrame:Point("LEFT", WorldMapQuestDetailScrollFrame, "RIGHT", 8, 0)
+	WorldMapQuestRewardScrollFrame:Width(320)
+	WorldMapQuestRewardScrollFrame:Point("LEFT", WorldMapQuestDetailScrollFrame, "RIGHT", -2, 0)
 	WorldMapQuestRewardScrollFrame:CreateBackdrop("Transparent")
-	WorldMapQuestRewardScrollFrame.backdrop:Point("TOPLEFT", 20, 2)
-	WorldMapQuestRewardScrollFrame.backdrop:Point("BOTTOMRIGHT", 22, -4)
+	WorldMapQuestRewardScrollFrame.backdrop:Point("TOPLEFT", -3, 2)
+	WorldMapQuestRewardScrollFrame.backdrop:Point("BOTTOMRIGHT", 21, 0)
 	WorldMapQuestRewardScrollFrame.backdrop:SetFrameLevel(WorldMapQuestRewardScrollFrame:GetFrameLevel())
-	WorldMapQuestRewardScrollFrame:SetHitRectInsets(20, -22, 0, -2)
+	S:HandleButton(WorldMapQuestRewardScrollFrameShareButton)
+	WorldMapQuestRewardScrollFrameShareButton:Width(120)
+	S:HandleButton(WorldMapQuestRewardScrollFrameAbandonButton)
+	WorldMapQuestRewardScrollFrameAbandonButton:Width(120)
+	
 
 	WorldMapQuestRewardScrollChildFrame:SetScale(1)
 
