@@ -338,6 +338,9 @@ function S:HandleScrollList(scrollList, skinCallback)
 		elseif not scrollList.elvInitHook then
 			scrollList.elvInitHook = true
 			hooksecurefunc(scrollList, "RefreshScrollFrame", function(self)
+				if not self.ScrollFrame.buttons then
+					return
+				end
 				for _, button in ipairs(self.ScrollFrame.buttons) do
 					HandleScrollListButton(button)
 				end
