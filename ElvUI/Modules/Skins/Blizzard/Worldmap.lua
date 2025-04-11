@@ -46,6 +46,8 @@ S:AddCallback("Skin_WorldMap", function()
 	WorldMapQuestRewardScrollFrameShareButton:Width(120)
 	S:HandleButton(WorldMapQuestRewardScrollFrameAbandonButton)
 	WorldMapQuestRewardScrollFrameAbandonButton:Width(120)
+	S:HandleButton(WorldMapQuestRewardScrollFrameAbandonFrameYesButton)
+	S:HandleButton(WorldMapQuestRewardScrollFrameAbandonFrameNoButton)
 	
 
 	WorldMapQuestRewardScrollChildFrame:SetScale(1)

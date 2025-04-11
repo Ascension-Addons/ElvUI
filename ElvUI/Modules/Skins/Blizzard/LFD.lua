@@ -202,12 +202,26 @@ S:AddCallback("Skin_LFD", function()
 	-- PvP Ruleset
 	AscensionRulesetFrame:StripTextures(true)
 
-	--[[for i = 1, 3 do
+	for i = 1, 3 do
 		local pvpruleset = _G["AscensionRulesetFrameRuleset"..i]
-		--pvpruleset:StripTextures(true)
+		local inset = pvpruleset.NineSlice
+		pvpruleset:StripTextures()
+		inset:StripTextures()
+		pvpruleset:SetBackdrop({
+			bgFile = E.media.blankTex,
+			edgeFile = E.media.blankTex,
+			tile = false, tileSize = 0, edgeSize = 1,
+			insets = {left = -1, right = -1, top = -1, bottom = -1}
+		})
+		pvpruleset:SetBackdropColor(0, 0, 0, .5)
+
+		-- Set border color based on which element we're skinning (High Risk is elemenet 1)
+		local green = i > 1 and 1 or 0
+		local red = i <= 2 and 1 or 0
+		pvpruleset:SetBackdropBorderColor(green, red, 0)
+		
 		S:HandleButton(pvpruleset.Select)
 	end
-	]]--
 
 	local function skinLFDRandomDungeonLoot(frame)
 		if frame.isSkinned then return end

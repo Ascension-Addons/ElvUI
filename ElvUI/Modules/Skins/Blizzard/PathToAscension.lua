@@ -43,6 +43,7 @@ S:AddCallbackForAddon("Ascension_PathToAscension", "Skin_PathToAscension", funct
 
 	S:HandleButton(PathToAscensionFrameMentorPanelBecomeMentorBecomeMentorButton)
 	S:HandleButton(PathToAscensionFrameMentorPanelFindHelpRefreshButton)
+	S:HandleButton(PathToAscensionFrameMentorPanelBecomeMentorOverlayGoToFirstTab)
 	PathToAscensionFrameMentorPanelFindHelpRefreshButton:Size(22, 22)
 
 	S:HandleScrollList(PathToAscensionFrameMentorPanelFindHelpAvailableMentors)
