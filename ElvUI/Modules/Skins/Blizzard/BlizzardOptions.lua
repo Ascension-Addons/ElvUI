@@ -123,12 +123,15 @@ S:AddCallback("Skin_BlizzardOptions", function()
 		"InterfaceOptionsControlsPanelAutoDismount",
 		"InterfaceOptionsControlsPanelAutoClearAFK",
 		"InterfaceOptionsControlsPanelBlockTrades",
-		"InterfaceOptionsControlsPanelLootAtMouse",
-		"InterfaceOptionsControlsPanelAutoLootCorpse",
+		"InterfaceOptionsControlsPanelLootAtMouse", -- Old Name?
+		"InterfaceOptionsControlsPanelLootUnderMouse",
+		"InterfaceOptionsControlsPanelAutoLootCorpse", -- Old Name?
+		"InterfaceOptionsControlsPanelAutoLootDefault",
 		"InterfaceOptionsControlsPanelTabTargetFacing",
 		"InterfaceOptionsControlsPanelTabTargetCombat",
 		"InterfaceOptionsControlsPanelTabTargetPlayers",
-		"InterfaceOptionsControlsPanelHoldToCast",
+		"InterfaceOptionsControlsPanelHoldToCast", -- Moved to Combat panel?
+
 		"InterfaceOptionsCombatPanelAttackOnAssist",
 		"InterfaceOptionsCombatPanelAutoRange",
 		"InterfaceOptionsCombatPanelStopAutoAttack",
@@ -137,22 +140,36 @@ S:AddCallback("Skin_BlizzardOptions", function()
 		"InterfaceOptionsCombatPanelTargetOfTarget",
 		"InterfaceOptionsCombatPanelEnemyCastBarsOnPortrait",
 		"InterfaceOptionsCombatPanelEnemyCastBarsOnNameplates",
-		"InterfaceOptionsCombatPanelAoEIndicatorsSelf",
-		"InterfaceOptionsCombatPanelAoEIndicatorsEnemies",
-		"InterfaceOptionsCombatPanelAoEIndicatorsFriendly",
+		"InterfaceOptionsCombatPanelAoEIndicatorsSelf", -- Old Name?
+		"InterfaceOptionsCombatPanelSelf",
+		"InterfaceOptionsCombatPanelAoEIndicatorsEnemies", -- Old Name?
+		"InterfaceOptionsCombatPanelEnemies",
+		"InterfaceOptionsCombatPanelAoEIndicatorsFriendly", -- Old Name?
+		"InterfaceOptionsCombatPanelFriendly",
+		"InterfaceOptionsCombatPanelSpellActivationOverlayEnabled",
+		"InterfaceOptionsCombatPanelAutoAssistCast",
+		"InterfaceOptionsCombatPanelSpellShadowShowBad",
+		"InterfaceOptionsCombatPanelHoldToCast",
+
 		"InterfaceOptionsDisplayPanelShowCloak",
 		"InterfaceOptionsDisplayPanelShowHelm",
 		"InterfaceOptionsDisplayPanelShowAggroPercentage",
-		"InterfaceOptionsDisplayPanelPlayAggroSounds",
-		"InterfaceOptionsDisplayPanelDetailedLootInfo",
-		"InterfaceOptionsDisplayPanelShowFreeBagSpace",
-		"InterfaceOptionsDisplayPanelCinematicSubtitles",
+		"InterfaceOptionsDisplayPanelPlayAggroSounds", -- Old Name?
+		"InterfaceOptionsDisplayPanelThreatPlaySounds",
+		"InterfaceOptionsDisplayPanelDetailedLootInfo", -- Old Name?
+		"InterfaceOptionsDisplayPanelShowLootSpam",
+		"InterfaceOptionsDisplayPanelShowFreeBagSpace", -- Old Name?
+		"InterfaceOptionsDisplayPanelDisplayFreeBagSlots",
+		"InterfaceOptionsDisplayPanelCinematicSubtitles", -- Old Name?
+		"InterfaceOptionsDisplayPanelMovieSubtitle",
 		"InterfaceOptionsDisplayPanelRotateMinimap",
 		"InterfaceOptionsDisplayPanelScreenEdgeFlash",
 		"InterfaceOptionsDisplayPanelShowClock",
 		"InterfaceOptionsDisplayPanelColorblindMode",
 		"InterfaceOptionsDisplayPanelShowItemLevel",
 		"InterfaceOptionsDisplayPanelHighlightNewItems",
+		"InterfaceOptionsDisplayPanelSelectionCircleMode",
+
 		"InterfaceOptionsObjectivesPanelInstantQuestText",
 		"InterfaceOptionsObjectivesPanelAutoQuestTracking",
 		"InterfaceOptionsObjectivesPanelAutoQuestProgress",
@@ -160,15 +177,20 @@ S:AddCallback("Skin_BlizzardOptions", function()
 		"InterfaceOptionsObjectivesPanelAdvancedWorldMap",
 		"InterfaceOptionsObjectivesPanelWatchFrameWidth",
 		"InterfaceOptionsObjectivesPanelPTAQuests",
+		"InterfaceOptionsObjectivesPanelInGameNavigation",
+		"InterfaceOptionsObjectivesPanelShowQuestUnitCircles",
+
 		"InterfaceOptionsSocialPanelProfanityFilter",
 		"InterfaceOptionsSocialPanelSpamFilter",
 		"InterfaceOptionsSocialPanelChatBubbles",
+		"InterfaceOptionsSocialPanelNameplateChatBubbles",
 		"InterfaceOptionsSocialPanelPartyChat",
 		"InterfaceOptionsSocialPanelChatHoverDelay",
 		"InterfaceOptionsSocialPanelGuildMemberAlert",
 		"InterfaceOptionsSocialPanelGuildRecruitment",
 		"InterfaceOptionsSocialPanelChatMouseScroll",
 		"InterfaceOptionsSocialPanelWholeChatWindowClickable",
+
 		"InterfaceOptionsActionBarsPanelLockActionBars",
 		"InterfaceOptionsActionBarsPanelSecureAbilityToggle",
 		"InterfaceOptionsActionBarsPanelAlwaysShowActionBars",
@@ -176,6 +198,7 @@ S:AddCallback("Skin_BlizzardOptions", function()
 		"InterfaceOptionsActionBarsPanelBottomRight",
 		"InterfaceOptionsActionBarsPanelRight",
 		"InterfaceOptionsActionBarsPanelRightTwo",
+
 		"InterfaceOptionsNamesPanelMyName",
 		"InterfaceOptionsNamesPanelFriendlyPlayerNames",
 		"InterfaceOptionsNamesPanelFriendlyPets",
@@ -190,6 +213,25 @@ S:AddCallback("Skin_BlizzardOptions", function()
 		"InterfaceOptionsNamesPanelEnemyPets",
 		"InterfaceOptionsNamesPanelEnemyGuardians",
 		"InterfaceOptionsNamesPanelEnemyTotems",
+		
+		-- Ascension Nameplate options
+		"InterfaceOptionsNamePlatesPanelUseSmoothStacking",
+		"InterfaceOptionsNamePlatesPanelUseFriendlySmoothStacking",
+		"InterfaceOptionsNamePlatesPanelNameplateHighPrecision",
+		"InterfaceOptionsNamePlatesPanelNameplateClassColors",
+		"InterfaceOptionsNamePlatesPanelIntersectUseCamera",
+		"InterfaceOptionsNamePlatesPanelFixedVerticalOffset",
+		"InterfaceOptionsNamePlatesPanelNameplatePersonal",
+		"InterfaceOptionsNamePlatesPanelFriends",
+		"InterfaceOptionsNamePlatesPanelFriendlyPets",
+		"InterfaceOptionsNamePlatesPanelFriendlyGuardians",
+		"InterfaceOptionsNamePlatesPanelFriendlyTotems",
+		"InterfaceOptionsNamePlatesPanelUseNewNameplates",
+		"InterfaceOptionsNamePlatesPanelEnemies",
+		"InterfaceOptionsNamePlatesPanelEnemyPets",
+		"InterfaceOptionsNamePlatesPanelEnemyGuardians",
+		"InterfaceOptionsNamePlatesPanelEnemyTotems",
+
 		"InterfaceOptionsCombatTextPanelTargetDamage",
 		"InterfaceOptionsCombatTextPanelPeriodicDamage",
 		"InterfaceOptionsCombatTextPanelPetDamage",
@@ -209,29 +251,38 @@ S:AddCallback("Skin_BlizzardOptions", function()
 		"InterfaceOptionsCombatTextPanelPeriodicEnergyGains",
 		"InterfaceOptionsCombatTextPanelHonorGains",
 		"InterfaceOptionsCombatTextPanelAuras",
+
 		"InterfaceOptionsBuffsPanelBuffDurations",
 		"InterfaceOptionsBuffsPanelDispellableDebuffs",
 		"InterfaceOptionsBuffsPanelCastableBuffs",
 		"InterfaceOptionsBuffsPanelConsolidateBuffs",
 		"InterfaceOptionsBuffsPanelShowCastableDebuffs",
+
 		"InterfaceOptionsCameraPanelFollowTerrain",
 		"InterfaceOptionsCameraPanelHeadBob",
 		"InterfaceOptionsCameraPanelWaterCollision",
 		"InterfaceOptionsCameraPanelSmartPivot",
+		"InterfaceOptionsCameraPanelM2Collision",
+
 		"InterfaceOptionsMousePanelInvertMouse",
 		"InterfaceOptionsMousePanelClickToMove",
 		"InterfaceOptionsMousePanelWoWMouse",
-		"InterfaceOptionsHelpPanelShowTutorials",
+
+		"InterfaceOptionsHelpPanelShowTutorials", -- Old option?
 		"InterfaceOptionsHelpPanelLoadingScreenTips",
-		"InterfaceOptionsHelpPanelEnhancedTooltips",
-		"InterfaceOptionsHelpPanelBeginnerTooltips",
 		"InterfaceOptionsHelpPanelShowLuaErrors",
+		"InterfaceOptionsHelpPanelEnhancedTooltips", -- Old option?
+		"InterfaceOptionsHelpPanelExtendedTooltips",
+		"InterfaceOptionsHelpPanelBeginnerTooltips",
+		"InterfaceOptionsHelpPanelShowTooltipIDs",
+
 		"InterfaceOptionsStatusTextPanelPlayer",
 		"InterfaceOptionsStatusTextPanelPet",
 		"InterfaceOptionsStatusTextPanelParty",
 		"InterfaceOptionsStatusTextPanelTarget",
 		"InterfaceOptionsStatusTextPanelPercentages",
 		"InterfaceOptionsStatusTextPanelXP",
+
 		"InterfaceOptionsUnitFramePanelPartyBackground",
 		"InterfaceOptionsUnitFramePanelPartyPets",
 		"InterfaceOptionsUnitFramePanelArenaEnemyFrames",
@@ -240,9 +291,17 @@ S:AddCallback("Skin_BlizzardOptions", function()
 		"InterfaceOptionsUnitFramePanelPartyInRaid",
 		"InterfaceOptionsUnitFramePanelRaidRange",
 		"InterfaceOptionsUnitFramePanelFullSizeFocusFrame",
+
 		"InterfaceOptionsFeaturesPanelPreviewTalentChanges",
 		"InterfaceOptionsFeaturesPanelEquipmentManager",
+
 		"InterfaceOptionsAscensionNotificationPanelLootToast",
+		"InterfaceOptionsAscensionNotificationPanelEnableItems",
+		"InterfaceOptionsAscensionNotificationPanelEnableNewSpellRanks",
+		"InterfaceOptionsAscensionNotificationPanelFlashWindow",
+		"InterfaceOptionsAscensionNotificationPanelEnableLegendaryItems",
+		"InterfaceOptionsAscensionNotificationPanelEnableNewSpells",
+
 		"InterfaceOptionsAscensionLoseControlPanelEnabled",
 		"InterfaceOptionsAscensionLoseControlPanelEnableRoots",
 		"InterfaceOptionsAscensionLoseControlPanelEnableSilence",
@@ -252,11 +311,13 @@ S:AddCallback("Skin_BlizzardOptions", function()
 		"InterfaceOptionsAscensionLoseControlPanelEnableSlow",
 		"InterfaceOptionsAscensionLoseControlPanelEnableStun",
 		"InterfaceOptionsAscensionLoseControlPanelEnablePacify",
+
 		"InterfaceOptionsDraftPanelAutoPopupDraft",
 		"InterfaceOptionsDraftPanelAutoRevealDraft",
 		"InterfaceOptionsDraftPanelSkipDraftConfirmation",
 		"InterfaceOptionsDraftPanelSkipDraftSacrificeConfirmation",
 		"InterfaceOptionsDraftPanelShowBuildDraftSpellCards",
+
 		"InterfaceOptionsNamePlatePanelAllowOverlap",
 		"InterfaceOptionsNamePlatePanelFriends",
 		"InterfaceOptionsNamePlatePanelFriendlyPets",
@@ -267,12 +328,48 @@ S:AddCallback("Skin_BlizzardOptions", function()
 		"InterfaceOptionsNamePlatePanelEnemyGuardians",
 		"InterfaceOptionsNamePlatePanelEnemyTotems",
 		"InterfaceOptionsNamePlatePanelIntersectUseCamera",
+
 		"InterfaceOptionsActionCameraEnableActionCam",
 		"InterfaceOptionsActionCameraHeadBob",
-		"InterfaceOptionsActionCameraFocusInteractable",
+		"InterfaceOptionsActionCameraFocusInteractable", -- old name?
+		"InterfaceOptionsActionCameraFocusInteract",
 		"InterfaceOptionsActionCameraFocusTarget",
+
 		"InterfaceOptionsMouseoverCastPanelMouseoverCastFriendly",
 		"InterfaceOptionsMouseoverCastPanelMouseoverCastHarm",
+
+		"InterfaceOptionsLoseControlPanelEnabled",
+		"InterfaceOptionsLoseControlPanelEnableRoots",
+		"InterfaceOptionsLoseControlPanelEnableDisorient",
+		"InterfaceOptionsLoseControlPanelEnableSilence",
+		"InterfaceOptionsLoseControlPanelEnableSlow",
+		"InterfaceOptionsLoseControlPanelEnableIncap",
+		"InterfaceOptionsLoseControlPanelEnableStun",
+		"InterfaceOptionsLoseControlPanelEnableDisarm",
+		"InterfaceOptionsLoseControlPanelEnablePacify",
+
+		"CompactUnitFrameProfilesRaidStylePartyFrames",
+		"CompactUnitFrameProfilesGeneralOptionsFrameKeepGroupsTogether",
+		"CompactUnitFrameProfilesGeneralOptionsFrameDisplayIncomingHeals",
+		"CompactUnitFrameProfilesGeneralOptionsFrameDisplayPowerBar",
+		"CompactUnitFrameProfilesGeneralOptionsFrameDisplayAggroHighlight",
+		"CompactUnitFrameProfilesGeneralOptionsFrameUseClassColors",
+		"CompactUnitFrameProfilesGeneralOptionsFrameUsePrimaryStatColors",
+		"CompactUnitFrameProfilesGeneralOptionsFrameDisplayPets",
+		"CompactUnitFrameProfilesGeneralOptionsFrameDisplayMainTankAndAssist",
+		"CompactUnitFrameProfilesGeneralOptionsFrameDisplayBorder",
+		"CompactUnitFrameProfilesGeneralOptionsFrameShowDebuffs",
+		"CompactUnitFrameProfilesGeneralOptionsFrameDisplayOnlyDispellableDebuffs",
+
+		"CompactUnitFrameProfilesGeneralOptionsFrameAutoActivate2Players",
+		"CompactUnitFrameProfilesGeneralOptionsFrameAutoActivate3Players",
+		"CompactUnitFrameProfilesGeneralOptionsFrameAutoActivate5Players",
+		"CompactUnitFrameProfilesGeneralOptionsFrameAutoActivate10Players",
+		"CompactUnitFrameProfilesGeneralOptionsFrameAutoActivate15Players",
+		"CompactUnitFrameProfilesGeneralOptionsFrameAutoActivate25Players",
+		"CompactUnitFrameProfilesGeneralOptionsFrameAutoActivate40Players",
+		"CompactUnitFrameProfilesGeneralOptionsFrameAutoActivatePvP",
+		"CompactUnitFrameProfilesGeneralOptionsFrameAutoActivatePvE",
 
 		"AudioOptionsSoundPanelEnableSound",
 		"AudioOptionsSoundPanelSoundEffects",
@@ -304,6 +401,7 @@ S:AddCallback("Skin_BlizzardOptions", function()
 
 		"InterfaceOptionsAscensionHelpPanelNewPlayerExperience",
 		"InterfaceOptionsAscensionHelpPanelHelpTips"
+
 	}
 	for _, checkbox in ipairs(checkboxes) do
 		checkbox = _G[checkbox]
@@ -313,19 +411,33 @@ S:AddCallback("Skin_BlizzardOptions", function()
 	end
 
 	local sliders = {
+		"InterfaceOptionsControlsPanelTabTargetRange",
+		"InterfaceOptionsControlsPanelTabTargetAngle",
+
+		"InterfaceOptionsCombatPanelSpellActivationOverlayAlpha", -- Old Name?
+		"InterfaceOptionsCombatPanelSpellActivationOverlays",
+
+		"InterfaceOptionsObjectivesPanelLootArtScale",
+
+		"InterfaceOptionsMousePanelMouseLookSpeedSlider",
+		"InterfaceOptionsMousePanelMouseSensitivitySlider",
+
+		"InterfaceOptionsNamePlatesPanelOverlapV",
+		"InterfaceOptionsNamePlatePanelIntersectOpacity", -- Old Name?
+		"InterfaceOptionsNamePlatesPanelIntersectOpacity",
+		"InterfaceOptionsNamePlatePanelNameplateDistance", -- Old Name?
+		"InterfaceOptionsNamePlatesPanelNameplateDistance",
+		"InterfaceOptionsNamePlatePanelFadeInMin", -- Removed option?
+		"InterfaceOptionsNamePlatePanelNameplateZ", -- Old Name?
+		"InterfaceOptionsNamePlatesPanelNameplateZ",
+		"InterfaceOptionsNamePlatePanelFadeInMax", -- removed option?
+
+		"InterfaceOptionsCameraPanelZoomSpeed",
 		"InterfaceOptionsCameraPanelMaxDistanceSlider",
 		"InterfaceOptionsCameraPanelFollowSpeedSlider",
 		"InterfaceOptionsCameraPanelFoV",
-		"InterfaceOptionsControlsPanelTabTargetRange",
-		"InterfaceOptionsControlsPanelTabTargetAngle",
-		"InterfaceOptionsCombatPanelSpellActivationOverlayAlpha",
-		"InterfaceOptionsMousePanelMouseLookSpeedSlider",
-		"InterfaceOptionsMousePanelMouseSensitivitySlider",
-		"InterfaceOptionsNamePlatePanelIntersectOpacity",
-		"InterfaceOptionsNamePlatePanelNameplateDistance",
-		"InterfaceOptionsNamePlatePanelFadeInMin",
-		"InterfaceOptionsNamePlatePanelNameplateZ",
-		"InterfaceOptionsNamePlatePanelFadeInMax",
+		"InterfaceOptionsCameraPanelM2CollisionAlpha",
+
 		"InterfaceOptionsActionCameraAngle",
 		"InterfaceOptionsActionCameraHeight",
 		"InterfaceOptionsActionCameraMinPitch",
@@ -333,6 +445,11 @@ S:AddCallback("Skin_BlizzardOptions", function()
 		"InterfaceOptionsActionCameraTurnSpeed",
 		"InterfaceOptionsActionCameraMaxPitch",
 		
+		"InterfaceOptionsAscensionNotificationPanelLootToastMaximum",
+
+		"CompactUnitFrameProfilesGeneralOptionsFrameHeightSlider",
+		"CompactUnitFrameProfilesGeneralOptionsFrameWidthSlider", 
+
 		"AudioOptionsSoundPanelSoundQuality",
 		"AudioOptionsSoundPanelSoundChannels",
 		"AudioOptionsSoundPanelMasterVolume",
@@ -356,6 +473,7 @@ S:AddCallback("Skin_BlizzardOptions", function()
 		"VideoOptionsExtendedForegroundFPS",
 		"VideoOptionsExtendedBackgroundFPS",
 		"VideoOptionsResolutionPanelGammaSlider",
+
 	}
 	for _, slider in ipairs(sliders) do
 		S:HandleSliderFrame(_G[slider])
@@ -376,10 +494,19 @@ S:AddCallback("Skin_BlizzardOptions", function()
 		"VideoOptionsFrameCancel",
 		"VideoOptionsFrameApply",
 
-		"InterfaceOptionsAscensionLoseControlPanelMoveWindow",
-		"InterfaceOptionsAscensionLoseControlPanelResetWindow",
+		"InterfaceOptionsAscensionLoseControlPanelMoveWindow", -- old Name?
+		"InterfaceOptionsAscensionLoseControlPanelResetWindow", -- old Name?
+		"InterfaceOptionsLoseControlPanelMoveWindow",
+		"InterfaceOptionsLoseControlPanelResetWindow",
+
 		"InterfaceOptionsAscensionHelpPanelResetTutorials",
-		"InterfaceOptionsAscensionHelpPanelResetHelpTips"
+		"InterfaceOptionsAscensionHelpPanelResetHelpTips",
+
+		"CompactUnitFrameProfilesExportButton",
+		"CompactUnitFrameProfilesImportButton",
+		"CompactUnitFrameProfilesSaveButton",
+		"CompactUnitFrameProfilesDeleteButton",
+		"CompactUnitFrameProfilesGeneralOptionsFrameResetPositionButton",
 
 	}
 	for _, button in ipairs(buttons) do
@@ -391,9 +518,10 @@ S:AddCallback("Skin_BlizzardOptions", function()
 		"InterfaceOptionsCombatPanelTOTDropDown",
 		"InterfaceOptionsCombatPanelFocusCastKeyDropDown",
 		"InterfaceOptionsCombatPanelSelfCastKeyDropDown",
-		"InterfaceOptionsDisplayPanelAggroWarningDisplay",
-		"InterfaceOptionsDisplayPanelWorldPVPObjectiveDisplay",
-		"InterfaceOptionsDisplayPanelLocalization",
+		"InterfaceOptionsDisplayPanelAggroWarningDisplay", -- Old Option?
+		"InterfaceOptionsDisplayPanelWorldPVPObjectiveDisplay", -- Old Option?
+		"InterfaceOptionsDisplayPanelLocalization", -- Old Option?
+		"InterfaceOptionsDisplayPanelSelectionCircle",
 		"InterfaceOptionsSocialPanelChatStyle",
 		"InterfaceOptionsSocialPanelTimestamps",
 		"InterfaceOptionsCombatTextPanelFCTDropDown",
@@ -406,6 +534,10 @@ S:AddCallback("Skin_BlizzardOptions", function()
 
 		"VideoOptionsResolutionPanelResolutionDropDown",
 		"VideoOptionsResolutionPanelRefreshDropDown",
+
+		"CompactUnitFrameProfilesProfileSelector",
+		"CompactUnitFrameProfilesGeneralOptionsFrameSortByDropdown",
+		"CompactUnitFrameProfilesGeneralOptionsFrameHealthTextDropdown", 
 	}
 	for _, dropdown in ipairs(dropdowns) do
 		dropdown = _G[dropdown]
