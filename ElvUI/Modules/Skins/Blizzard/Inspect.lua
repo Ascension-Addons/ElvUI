@@ -9,182 +9,222 @@ local GetInventoryItemID = GetInventoryItemID
 local GetItemInfo = GetItemInfo
 local GetItemQualityColor = GetItemQualityColor
 
-S:AddCallbackForAddon("Blizzard_InspectUI", "Skin_Blizzard_InspectUI", function()
+S:AddCallbackForAddon("Ascension_InspectUI", "Skin_InspectUI", function ()
 	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.inspect then return end
 
-	InspectFrame:StripTextures(true)
-	InspectFrame:CreateBackdrop("Transparent")
-	InspectFrame.backdrop:Point("TOPLEFT", 11, -12)
-	InspectFrame.backdrop:Point("BOTTOMRIGHT", -32, 76)
 
-	S:SetUIPanelWindowInfo(InspectFrame, "width")
+	AscensionInspectFrame:StripTextures(true)
+	AscensionInspectFrameNineSlice:StripTextures()
+	AscensionInspectFrame:CreateBackdrop("Transparent")
+	-- Cleanup Blizzard style Borders/Insets
+	AscensionInspectFrameInset:StripTextures()
+	AscensionInspectFrameRightInset:StripTextures()
+	InspectPaperDollPanel:StripTextures(true)
+	InspectPaperDollPanelModel:StripTextures(true)
 
-	S:SetBackdropHitRect(InspectFrame)
-	S:SetBackdropHitRect(InspectPVPFrame, InspectFrame.backdrop)
-	S:SetBackdropHitRect(InspectTalentFrame, InspectFrame.backdrop)
+	InspectPvPPanel:StripTextures(true)
 
-	InspectPVPFrameHonor:SetHitRectInsets(0, 120, 0, 0)
-	InspectPVPFrameArena:SetHitRectInsets(0, 120, 0, 0)
 
-	S:HandleCloseButton(InspectFrameCloseButton, InspectFrame.backdrop)
+	S:SetBackdropHitRect(AscensionInspectFrame)
+	S:HandleCloseButton(AscensionInspectFrameCloseButton)
+	
+	S:HandleTabSystem(AscensionInspectFrame)
+	-- TODO: Tab system for mystic enchant button continually updates after load - Ascension Bug?
+	S:HandleTabSystem(AscensionInspectFrameRightInset)
+	
 
-	S:HandleTab(InspectFrameTab1)
-	S:HandleTab(InspectFrameTab2)
-	S:HandleTab(InspectFrameTab3)
+	-- Stat Panel --
+	InspectStatsPanel:StripTextures(true)
+	InspectStatsPanel:CreateBackdrop("Default")
+	S:HandleScrollList(InspectStatsPanel, function(button)
+		S:HandleNextPrevButton(button.MoveDownButton, "down", nil, true)
+		button.MoveDownButton:Size(16)
+		button.MoveDownButton:SetPoint("RIGHT", -4, 1)
+		S:HandleNextPrevButton(button.MoveUpButton, "up", nil, true)
+		button.MoveUpButton:Size(16)
+		button.MoveUpButton:SetPoint("RIGHT", button.MoveDownButton, "LEFT", 0, -1)
+		local r, g, b, a = unpack(E.media.backdropfadecolor)
+		button.Left:SetTexture(E.media.blankTex)
+		button.Left:SetVertexColor(r, g, b, a)
+		button.Right:SetTexture(E.media.blankTex)
+		button.Right:SetVertexColor(r, g, b, a)
+		button.Middle:SetTexture(E.media.blankTex)
+		button.Middle:SetVertexColor(r, g, b, a)
+	end)
 
-	InspectPaperDollFrame:StripTextures()
+	-- Mystic Enchant Panel
+	InspectMysticEnchantPanel:StripTextures(true)
+	InspectMysticEnchantPanel:CreateBackdrop("Default")
+	S:HandleScrollList(InspectMysticEnchantPanel, function(button)
+		button:GetNormalTexture():SetAllPoints()
+		hooksecurefunc(button, "Update", function(self)
+			self:SetNormalTexture(E.media.blankTex)
+			local color = self.index % 2 == 0 and E.media.backdropcolor or E.media.backdropfadecolor
+			self:GetNormalTexture():SetVertexColor(unpack(color))
+		end)
+	end)
 
+	-- Handle item inspect frame
 	local slots = {
-		"HeadSlot",
-		"NeckSlot",
-		"ShoulderSlot",
-		"BackSlot",
-		"ChestSlot",
-		"ShirtSlot",
-		"TabardSlot",
-		"WristSlot",
-		"HandsSlot",
-		"WaistSlot",
-		"LegsSlot",
-		"FeetSlot",
-		"Finger0Slot",
-		"Finger1Slot",
-		"Trinket0Slot",
-		"Trinket1Slot",
-		"MainHandSlot",
-		"SecondaryHandSlot",
-		"RangedSlot"
+		[1] = AscensionInspectHeadSlot,
+		[2] = AscensionInspectNeckSlot,
+		[3] = AscensionInspectShoulderSlot,
+		[4] = AscensionInspectShirtSlot,
+		[5] = AscensionInspectChestSlot,
+		[6] = AscensionInspectWaistSlot,
+		[7] = AscensionInspectLegsSlot,
+		[8] = AscensionInspectFeetSlot,
+		[9] = AscensionInspectWristSlot,
+		[10] = AscensionInspectHandsSlot,
+		[11] = AscensionInspectFinger0Slot,
+		[12] = AscensionInspectFinger1Slot,
+		[13] = AscensionInspectTrinket0Slot,
+		[14] = AscensionInspectTrinket1Slot,
+		[15] = AscensionInspectBackSlot,
+		[16] = AscensionInspectMainHandSlot,
+		[17] = AscensionInspectSecondaryHandSlot,
+		[18] = AscensionInspectRangedSlot,
+		[19] = AscensionInspectTabardSlot,
+		[20] = AscensionInspectAmmoSlot, -- 0
 	}
 
-	for _, slot in ipairs(slots) do
-		local icon = _G["Inspect"..slot.."IconTexture"]
-		local frame = _G["Inspect"..slot]
+	for i, slotFrame in ipairs(slots) do
+		local slotFrameName = slotFrame:GetName()
+		local icon = _G[slotFrameName.."IconTexture"]
 
-		frame:StripTextures()
-		frame:SetFrameLevel(frame:GetFrameLevel() + 2)
-		frame:CreateBackdrop("Default")
-		frame.backdrop:SetAllPoints()
+		slotFrame:StripTextures()
+		slotFrame:SetFrameLevel(InspectPaperDollPanel:GetFrameLevel() + 2)
+		slotFrame:CreateBackdrop("Default")
+		slotFrame.backdrop:SetAllPoints()
+		slotFrame.IconBorder:SetAlpha(0)
 
-		frame:StyleButton()
+		slotFrame:StyleButton()
 
-		icon:SetTexCoord(unpack(E.TexCoords))
 		icon:SetInside()
-	end
+		icon:SetTexCoord(unpack(E.TexCoords))
+		
 
-	local styleButton
-	do
-		local function awaitCache(button)
-			if InspectFrame.unit then
-				styleButton(button)
-			end
-		end
+		-- Set the item icon borders when Update function runs
+		hooksecurefunc(slotFrame, "Update", function(button)
+			if AscensionInspectFrame.unit then
+				if button.hasItem then
+					local itemID = GetInventoryItemID(AscensionInspectFrame.unit, button:GetID())
+					if itemID then
+						local _, _, quality = GetItemInfo(itemID)
 
-		styleButton = function(button)
-			if button.hasItem then
-				local itemID = GetInventoryItemID(InspectFrame.unit, button:GetID())
-				if itemID then
-					local _, _, quality = GetItemInfo(itemID)
-
-					if not quality then
-						E:Delay(0.1, awaitCache, button)
-						return
-					elseif quality then
-						button.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
-						return
+						if not quality then
+							E:Delay(0.1, awaitCache, button)
+							return
+						elseif quality then
+							button.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
+							return
+						end
 					end
 				end
+
+				button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 			end
-
-			button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
-		end
+		end)
 	end
 
-	hooksecurefunc("InspectPaperDollItemSlotButton_Update", styleButton)
+	-- Handle the Build tab
+	InspectBuildPanel:StripTextures(true)
+	InspectBuildPanel:CreateBackdrop("Default")
+	HandleInspectBuildScrollFrame()
+	InspectBuildPanelBuildScrollInset:StripTextures()
 
-	S:HandleRotateButton(InspectModelRotateLeftButton)
-	S:HandleRotateButton(InspectModelRotateRightButton)
+	InspectBuildPanelSpecs:StripTextures(true)
+	InspectBuildPanelSpecs:CreateBackdrop("Default")
+	S:HandleScrollList(InspectBuildPanelSpecs, function(button)
+		button:GetNormalTexture():SetAllPoints()
+		hooksecurefunc(button, "Update", function(self)
+			self:SetNormalTexture(E.media.blankTex)
+			local color = self.index % 2 == 0 and E.media.backdropcolor or E.media.backdropfadecolor
+			self:GetNormalTexture():SetVertexColor(unpack(color))
+		end)
+	end)
 
-	InspectPVPFrame:StripTextures()
-
-	for i = 1, MAX_ARENA_TEAMS do
-		local frame = _G["InspectPVPTeam"..i]
-		frame:StripTextures()
-		frame:CreateBackdrop("Transparent")
-		frame.backdrop:Point("TOPLEFT", 9, -6)
-		frame.backdrop:Point("BOTTOMRIGHT", -24, -5)
-	--	_G["InspectPVPTeam"..i.."StandardBar"]:Kill()
-		S:SetBackdropHitRect(frame)
-	end
-
-	InspectTalentFrame:StripTextures()
-
-	S:HandleCloseButton(InspectTalentFrameCloseButton, InspectFrame.backdrop)
-
-	for i = 1, MAX_TALENT_TABS do
-		local headerTab = _G["InspectTalentFrameTab"..i]
-
-		headerTab:StripTextures()
-		headerTab:CreateBackdrop("Default", true)
-		headerTab.backdrop:Point("TOPLEFT", 2, -7)
-		headerTab.backdrop:Point("BOTTOMRIGHT", 1, -1)
-		S:SetBackdropHitRect(headerTab)
-
-		headerTab:Width(i == 2 and 101 or 102)
-		headerTab.SetWidth = E.noop
-
-		headerTab:HookScript("OnEnter", S.SetModifiedBackdrop)
-		headerTab:HookScript("OnLeave", S.SetOriginalBackdrop)
-	end
-
-	for i = 1, MAX_NUM_TALENTS do
-		local talent = _G["InspectTalentFrameTalent"..i]
-
-		if talent then
-			local icon = _G["InspectTalentFrameTalent"..i.."IconTexture"]
-			local rank = _G["InspectTalentFrameTalent"..i.."Rank"]
-
-			talent:StripTextures()
-			talent:SetTemplate("Default")
-			talent:StyleButton()
-
-			icon:SetInside()
-			icon:SetTexCoord(unpack(E.TexCoords))
-			icon:SetDrawLayer("ARTWORK")
-
-			rank:SetFont(E.LSM:Fetch("font", E.db.general.font), 12, "OUTLINE")
-		end
-	end
-
-	InspectHeadSlot:Point("TOPLEFT", 19, -76)
-	InspectHandsSlot:Point("TOPLEFT", 307, -76)
-	InspectMainHandSlot:Point("TOPLEFT", InspectPaperDollFrame, "BOTTOMLEFT", 121, 131)
-
-	InspectModelFrame:Size(237, 324)
-	InspectModelFrame:Point("TOPLEFT", 63, -76)
-
-	InspectModelRotateLeftButton:Point("TOPLEFT", 4, -4)
-
-	InspectTalentFrameScrollFrame:StripTextures()
-	InspectTalentFrameScrollFrame:CreateBackdrop("Transparent")
-	InspectTalentFrameScrollFrame.backdrop:Point("TOPLEFT", -1, 1)
-	InspectTalentFrameScrollFrame.backdrop:Point("BOTTOMRIGHT", 5, -4)
-
-	InspectTalentFramePointsBar:StripTextures()
-
-	InspectModelRotateRightButton:Point("TOPLEFT", InspectModelRotateLeftButton, "TOPRIGHT", 3, 0)
-
-	InspectFrameTab1:Point("CENTER", InspectFrame, "BOTTOMLEFT", 54, 62)
-	InspectFrameTab2:Point("LEFT", InspectFrameTab1, "RIGHT", -15, 0)
-	InspectFrameTab3:Point("LEFT", InspectFrameTab2, "RIGHT", -15, 0)
-
-	InspectTalentFrameBackgroundTopLeft:Point("TOPLEFT", 21, -77)
-
-	InspectTalentFrameTab1:Point("TOPLEFT", 17, -40)
-
-	InspectTalentFrameScrollFrame:Width(298)
-	InspectTalentFrameScrollFrame:Point("TOPRIGHT", -66, -77)
-
-	S:HandleScrollBar(InspectTalentFrameScrollFrameScrollBar)
-	InspectTalentFrameScrollFrameScrollBar:Point("TOPLEFT", InspectTalentFrameScrollFrame, "TOPRIGHT", 8, -18)
-	InspectTalentFrameScrollFrameScrollBar:Point("BOTTOMLEFT", InspectTalentFrameScrollFrame, "BOTTOMRIGHT", 8, 15)
 end)
+
+-- Ascension used custom-scroll frames which don't map directly to built-in ElvUI functions :(
+function HandleInspectBuildScrollFrame()
+	scrollList = InspectBuildPanel
+	scrollListScroll = scrollList.BuildScroll
+	if not scrollListScroll then return end
+	scrollListScroll:StripTextures()
+
+	local scrollBar = InspectBuildPanelBuildScrollScrollBar
+	scrollBar:StripTextures()
+
+	S:HandleNextPrevButton(InspectBuildPanelBuildScrollScrollBarScrollUpButton, 'up')
+	InspectBuildPanelBuildScrollScrollBarScrollUpButton.Texture:SetAlpha(0)
+	S:HandleNextPrevButton(InspectBuildPanelBuildScrollScrollBarScrollDownButton, 'down')
+	InspectBuildPanelBuildScrollScrollBarScrollDownButton.Texture:SetAlpha(0)
+
+	local thumb = scrollBar:GetThumbTexture()
+	local function ThumbOnEnter(frame)
+		local r, g, b = unpack(E.media.rgbvaluecolor)
+		local thumb = frame.Thumb or frame
+		if thumb.backdrop then
+			thumb.backdrop:SetBackdropColor(r, g, b, .75)
+		end
+	end
+
+	local function ThumbOnLeave(frame)
+		local r, g, b = unpack(E.media.rgbvaluecolor)
+		local thumb = frame.Thumb or frame
+
+		if thumb.backdrop and not thumb.__isActive then
+			thumb.backdrop:SetBackdropColor(r, g, b, .25)
+		end
+	end
+
+	local function ThumbOnMouseDown(frame)
+		local r, g, b = unpack(E.media.rgbvaluecolor)
+		local thumb = frame.Thumb or frame
+		thumb.__isActive = true
+
+		if thumb.backdrop then
+			thumb.backdrop:SetBackdropColor(r, g, b, .75)
+		end
+	end
+
+	local function ThumbOnMouseUp(frame)
+		local r, g, b = unpack(E.media.rgbvaluecolor)
+		local thumb = frame.Thumb or frame
+		thumb.__isActive = nil
+
+		if thumb.backdrop then
+			thumb.backdrop:SetBackdropColor(r, g, b, .25)
+		end
+	end
+
+	if thumb then
+		thumb.Begin:SetAlpha(0)
+		thumb.End:SetAlpha(0)
+		thumb.Middle:SetAlpha(0)
+		thumb:CreateBackdrop('Transparent')
+		thumb.backdrop:SetFrameLevel(thumb:GetFrameLevel()+1)
+
+		local r, g, b = unpack(E.media.rgbvaluecolor)
+		thumb.backdrop:SetBackdropColor(r, g, b, .25)
+		thumb.backdrop:SetPoint("TOPLEFT", thumb.Begin)
+		thumb.backdrop:SetPoint("BOTTOMRIGHT", thumb.End)
+
+		thumb:HookScript('OnEnter', ThumbOnEnter)
+		thumb:HookScript('OnLeave', ThumbOnLeave)
+		thumb:HookScript('OnMouseUp', ThumbOnMouseUp)
+		thumb:HookScript('OnMouseDown', ThumbOnMouseDown)
+	end
+
+	local children = {InspectBuildPanelBuildScrollChild:GetChildren()}
+
+	for i, button in ipairs(children) do
+		button:GetNormalTexture():SetAllPoints()
+		hooksecurefunc(button, "Update", function(self)
+			self:SetNormalTexture(E.media.blankTex)
+			local color = i % 2 == 0 and E.media.backdropcolor or E.media.backdropfadecolor
+			self:GetNormalTexture():SetVertexColor(unpack(color))
+		end)
+	end
+end
