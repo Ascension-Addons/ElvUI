@@ -111,6 +111,11 @@ E.Options.args.skins = {
 					name = L["Calendar Frame"],
 					desc = L["TOGGLESKIN_DESC"]
 				},
+				callboard = {
+					type = "toggle",
+					name = L["CallBoard Frame"],
+					desc = L["TOGGLESKIN_DESC"]
+				},
 				character = {
 					type = "toggle",
 					name = L["Character Frame"],

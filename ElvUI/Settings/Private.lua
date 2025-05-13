@@ -73,6 +73,7 @@ V.skins = {
 		binding = true,
 		BlizzardOptions = true,
 		calendar = true,
+		callboard = true,
 		character = true,
 		debug = true,
 		dressingroom = true,
