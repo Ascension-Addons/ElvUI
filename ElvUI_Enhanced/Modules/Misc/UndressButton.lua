@@ -35,7 +35,7 @@ function UB:CreateUndressButton(auction)
 		else
 			S:HandleButton(self.auctionDressUpButton)
 			self.auctionDressUpButton:Point("RIGHT", AuctionDressUpFrameResetButton, "LEFT", -3, 0)
-			AuctionDressUpFrameResetButton:Point("BOTTOM", 42, 33)
+			AuctionDressUpFrameResetButton:Point("BOTTOM", 40, 8)
 		end
 	end
 end
