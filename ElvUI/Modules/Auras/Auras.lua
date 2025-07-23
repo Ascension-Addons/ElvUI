@@ -631,6 +631,9 @@ end
 function A:Initialize()
 	if E.private.auras.disableBlizzard then
 		BuffFrame:Kill()
+		if VanityBuffs then
+			VanityBuffs:Kill()
+		end
 		ConsolidatedBuffs:Kill()
 		TemporaryEnchantFrame:Kill()
 	end

@@ -27,6 +27,9 @@ S:AddCallback("Skin_Tooltip", function()
 		WorldMapCompareTooltip2,
 		WorldMapCompareTooltip3
 	}
+	if VanityBuffsTooltip then
+		table.insert(tooltips, VanityBuffsTooltip)
+	end
 	for _, tt in ipairs(tooltips) do
 		TT:SecureHookScript(tt, "OnShow", "SetStyle")
 	end

@@ -91,6 +91,9 @@ S:AddCallback("Skin_Misc", function()
 
 	-- Other Frames
 	AutoCompleteBox:SetTemplate("Transparent")
+	if VanityBuffsTooltip then
+		VanityBuffsTooltip:SetTemplate("Transparent")
+	end 
 	ConsolidatedBuffsTooltip:SetTemplate("Transparent")
 	--ResInSafeZoneButton
 
