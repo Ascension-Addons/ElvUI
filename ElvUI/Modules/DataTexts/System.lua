@@ -164,38 +164,45 @@ local function OnEnter(self)
 	local _, _, homeLatency = GetNetStats()
 
 	DT.tooltip:AddDoubleLine(L["Home Latency:"], format(homeLatencyString, homeLatency), 0.69, 0.31, 0.31, 0.84, 0.75, 0.65)
-	DT.tooltip:AddDoubleLine(L["Total Memory:"], formatMem(totalMemory), 0.69, 0.31, 0.31, 0.84, 0.75, 0.65)
+	if C_CVar.GetBool("allowAddonMemoryUsage") then
+		DT.tooltip:AddDoubleLine(L["Total Memory:"], formatMem(totalMemory), 0.69, 0.31, 0.31, 0.84, 0.75, 0.65)
 
-	local totalCPU
-	if cpuProfiling then
-		totalCPU = UpdateCPU()
-		DT.tooltip:AddDoubleLine(L["Total CPU:"], format(homeLatencyString, totalCPU), 0.69, 0.31, 0.31, 0.84, 0.75, 0.65)
-	end
-
-	DT.tooltip:AddLine(" ")
-
-	local addon, red, green
-
-	if IsShiftKeyDown() or not cpuProfiling then
-		for i = 1, #memoryTable do
-			addon = memoryTable[i]
-			red = addon[3] / totalMemory
-			green = 1 - red
-			DT.tooltip:AddDoubleLine(addon[2], formatMem(addon[3]), 1, 1, 1, red, green + .5, 0)
-		end
-	else
-		for i = 1, #cpuTable do
-			addon = cpuTable[i]
-			red = addon[3] / totalCPU
-			green = 1 - red
-			DT.tooltip:AddDoubleLine(addon[2], format(homeLatencyString, addon[3]), 1, 1, 1, red, green + .5, 0)
+		local totalCPU
+		if cpuProfiling then
+			totalCPU = UpdateCPU()
+			DT.tooltip:AddDoubleLine(L["Total CPU:"], format(homeLatencyString, totalCPU), 0.69, 0.31, 0.31, 0.84, 0.75, 0.65)
 		end
 
 		DT.tooltip:AddLine(" ")
-		DT.tooltip:AddLine(L["(Hold Shift) Memory Usage"])
-	end
 
-	DT.tooltip:AddLine(L["(Modifer Click) Collect Garbage"])
+		local addon, red, green
+
+		if IsShiftKeyDown() or not cpuProfiling then
+			for i = 1, #memoryTable do
+				addon = memoryTable[i]
+				red = addon[3] / totalMemory
+				green = 1 - red
+				DT.tooltip:AddDoubleLine(addon[2], formatMem(addon[3]), 1, 1, 1, red, green + .5, 0)
+			end
+		else
+			for i = 1, #cpuTable do
+				addon = cpuTable[i]
+				red = addon[3] / totalCPU
+				green = 1 - red
+				DT.tooltip:AddDoubleLine(addon[2], format(homeLatencyString, addon[3]), 1, 1, 1, red, green + .5, 0)
+			end
+
+			DT.tooltip:AddLine(" ")
+			DT.tooltip:AddLine(L["(Hold Shift) Memory Usage"])
+		end
+
+		DT.tooltip:AddLine(L["(Modifer Click) Collect Garbage"])
+	else
+		DT.tooltip:AddLine(" ")
+		DT.tooltip:AddLine(L["Automatic Client Garbage Collector is currently active"])
+		DT.tooltip:AddLine(L["This prevents reporting addon memory usage"])
+		DT.tooltip:AddLine(L["To change behavior use /cvar allowAddonMemoryUsage 1"])
+	end
 	DT.tooltip:Show()
 	enteredFrame = true
 end
