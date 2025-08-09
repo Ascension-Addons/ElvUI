@@ -9,6 +9,9 @@ L["%s is attempting to share the profile %s with you. Would you like to accept t
 L["%s: %s tried to call the protected function '%s'."] = true
 L["(Hold Shift) Memory Usage"] = true
 L["(Modifer Click) Collect Garbage"] = true
+L["Automatic Client Garbage Collector is currently active"] = true
+L["This prevents reporting addon memory usage"] = true
+L["To change behavior use /cvar allowAddonMemoryUsage 1"] = true
 L["A raid marker feature is available by pressing Escape -> Keybinds scroll to the bottom under ElvUI and setting a keybind for the raid marker."] = true
 L["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."] = true
 L["ABOVE_THREAT_FORMAT"] = "%s: %.0f%% [%.0f%% above |cff%02x%02x%02x%s|r]"
