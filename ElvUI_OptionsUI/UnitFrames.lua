@@ -1196,7 +1196,7 @@ local function GetOptionsTable_Energy(hasDetatchOption, updateFunc, groupName, n
 			type = "range",
 			order = 12,
 			name = L["Detached Width"],
-			disabled = function() return not E.db.unitframe.units[groupName].power.detachFromFrame end,
+			disabled = function() return not E.db.unitframe.units[groupName].energy.detachFromFrame end,
 			min = 15, max = 1000, step = 1
 		}
 		config.args.parent = {
@@ -1204,7 +1204,7 @@ local function GetOptionsTable_Energy(hasDetatchOption, updateFunc, groupName, n
 			order = 11,
 			name = L["Parent"],
 			desc = L["Choose UIPARENT to prevent it from hiding with the unitframe."],
-			disabled = function() return not E.db.unitframe.units[groupName].power.detachFromFrame end,
+			disabled = function() return not E.db.unitframe.units[groupName].energy.detachFromFrame end,
 			values = {
 				["FRAME"] = "FRAME",
 				["UIPARENT"] = "UIPARENT"
@@ -1404,7 +1404,7 @@ local function GetOptionsTable_Rage(hasDetatchOption, updateFunc, groupName, num
 			type = "range",
 			order = 12,
 			name = L["Detached Width"],
-			disabled = function() return not E.db.unitframe.units[groupName].power.detachFromFrame end,
+			disabled = function() return not E.db.unitframe.units[groupName].rage.detachFromFrame end,
 			min = 15, max = 1000, step = 1
 		}
 		config.args.parent = {
@@ -1412,7 +1412,7 @@ local function GetOptionsTable_Rage(hasDetatchOption, updateFunc, groupName, num
 			order = 11,
 			name = L["Parent"],
 			desc = L["Choose UIPARENT to prevent it from hiding with the unitframe."],
-			disabled = function() return not E.db.unitframe.units[groupName].power.detachFromFrame end,
+			disabled = function() return not E.db.unitframe.units[groupName].rage.detachFromFrame end,
 			values = {
 				["FRAME"] = "FRAME",
 				["UIPARENT"] = "UIPARENT"
