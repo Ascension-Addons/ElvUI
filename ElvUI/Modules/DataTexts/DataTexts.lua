@@ -212,7 +212,7 @@ function DT:AssignPanelToDataText(panel, data)
 				if not callback then
 					callback = function(arg) data.eventFunc(panel, arg) end
 				end
-				panel:RegisterBucketEvent(event, period, callback)
+				AceBucket:RegisterBucketEvent(event, period, callback)
 			end
 		end
 	end
