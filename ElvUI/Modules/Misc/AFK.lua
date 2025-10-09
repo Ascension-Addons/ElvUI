@@ -157,8 +157,8 @@ function mod:OnEvent(event, ...)
 
 	if not E.db.general.afk then return end
 	if InCombatLockdown() or CinematicFrame:IsShown() or MovieFrame:IsShown() then return end
-	if UnitCastingInfo("player") ~= nil then
-		--Don't activate afk if player is crafting stuff, check back in 30 seconds
+	if UnitCastingInfo("player") ~= nil or (AuctionFrame and AuctionFrame:IsVisible()) then
+		-- Don't activate afk if player is crafting stuff or at AH, check back in 30 seconds
 		self:ScheduleTimer("OnEvent", 30)
 		return
 	end
