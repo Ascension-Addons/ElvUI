@@ -121,7 +121,7 @@ function NP:Update_TargetIndicator(nameplate)
 		local style, color, size, scale, spacing = tdb.glowStyle, NP.db.colors.glowColor, tdb.arrowSize, tdb.arrowScale, tdb.arrowSpacing
 		local r, g, b, a = color.r, color.g, color.b, color.a
 		local db = NP:PlateDB(nameplate)
-
+		scale = scale or 1
 		size = size * scale
 
 		-- background glow is 2, 6, and 8; 2 is background glow only

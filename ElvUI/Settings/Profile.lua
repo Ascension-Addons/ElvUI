@@ -648,6 +648,7 @@ P.nameplates = {
 		TARGET = {
 			arrow = 'Arrow',
 			arrowSize = 48,
+			arrowScale = 1,
 			arrowSpacing = 3,
 			glowStyle = 'style2',
 			classpower = {
