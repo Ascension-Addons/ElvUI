@@ -960,7 +960,7 @@ end
 
 do
 	local speedText = _G.SPEED
-	local baseSpeed = _G.BASE_MOVEMENT_SPEED
+	local baseSpeed = 7
 	E:AddTag('speed:percent', 0.1, function(unit)
 		local currentSpeedInYards = GetUnitSpeed(unit)
 		local currentSpeedInPercent = (currentSpeedInYards / baseSpeed) * 100
