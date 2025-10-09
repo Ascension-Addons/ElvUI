@@ -118,9 +118,11 @@ function NP:Update_TargetIndicator(nameplate)
 	indicator.style = tdb.glowStyle
 
 	if indicator.style ~= 'none' then
-		local style, color, size, spacing = tdb.glowStyle, NP.db.colors.glowColor, tdb.arrowSize, tdb.arrowSpacing
+		local style, color, size, scale, spacing = tdb.glowStyle, NP.db.colors.glowColor, tdb.arrowSize, tdb.arrowScale, tdb.arrowSpacing
 		local r, g, b, a = color.r, color.g, color.b, color.a
 		local db = NP:PlateDB(nameplate)
+
+		size = size * scale
 
 		-- background glow is 2, 6, and 8; 2 is background glow only
 		if not db.health.enable and (style ~= 'style2' and style ~= 'style6' and style ~= 'style8') then
@@ -155,12 +157,12 @@ function NP:Update_TargetIndicator(nameplate)
 		-- background glow is 2, 6, and 8
 		if indicator.Spark and (style == 'style2' or style == 'style6' or style == 'style8') then
 			local size
-			if db.health.enable and not (db.nameOnly or nameOnlySF) then
+			if db.health.enable and not (db.nameOnly) then
 				parent = nameplate.Health
-				size = E.Border + 14
+				size = (E.Border + 14) * scale
 			else
 				parent = nameplate
-				size = -(E.Border + 4)
+				size = (-(E.Border + 4)) * scale
 			end
 			indicator.Spark:Point('TOPLEFT', parent, 'TOPLEFT', -(size * 2), size)
 			indicator.Spark:Point('BOTTOMRIGHT', parent, 'BOTTOMRIGHT', (size * 2), -size)
