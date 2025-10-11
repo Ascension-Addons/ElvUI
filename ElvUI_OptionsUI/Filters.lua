@@ -671,7 +671,7 @@ local function UpdateFilterGroup()
 					name = L["Remove SpellID"],
 					desc = L["Remove a spell from the filter."],
 					func = function()
-						if G.unitframe.buffwatch[E.myclass][selectedSpell] then
+						if E.global.unitframe.buffwatch[E.myclass][selectedSpell] then
 							E.global.unitframe.buffwatch[E.myclass][selectedSpell].enabled = false
 							E:Print(L["You may not remove a spell from a default filter that is not customly added. Setting spell to false instead."])
 						else
