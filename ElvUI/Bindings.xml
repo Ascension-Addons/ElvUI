@@ -14,4 +14,7 @@
 	<Binding name="Toggle Chat (Both)" runOnUp="false">
 		HideBothChat()
 	</Binding>
+	<Binding name="Sort Bags" runOnUp="false">
+		ElvUI_ContainerFrameSortButton:Click()
+	</Binding>
 </Bindings>
