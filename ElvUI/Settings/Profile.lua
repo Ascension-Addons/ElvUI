@@ -2792,7 +2792,7 @@ P.unitframe = {
 			startFromCenter = false,
 			showPlayer = true,
 			healPrediction = {
-				enable = false
+				enable = true
 			},
 			colorOverride = "USE_DEFAULT",
 			width = 184,
@@ -3061,7 +3061,7 @@ P.unitframe = {
 			sortDir = "ASC",
 			showPlayer = true,
 			healPrediction = {
-				enable = false
+				enable = true
 			},
 			colorOverride = "USE_DEFAULT",
 			width = 80,
@@ -3258,7 +3258,7 @@ P.unitframe = {
 			sortDir = "ASC",
 			showPlayer = true,
 			healPrediction = {
-				enable = false
+				enable = true
 			},
 			colorOverride = "USE_DEFAULT",
 			width = 80,
@@ -3457,7 +3457,7 @@ P.unitframe = {
 			invertGroupingOrder = false,
 			startFromCenter = false,
 			healPrediction = {
-				enable = true
+				enable = false
 			},
 			colorOverride = "USE_DEFAULT",
 			width = 80,

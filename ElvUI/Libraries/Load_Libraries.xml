@@ -18,7 +18,6 @@
 	<!--  -->
 	<Script file="LibSimpleSticky\LibSimpleSticky.lua"/>
 	<Script file="LibSpellRange-1.0\LibSpellRange-1.0.lua"/>
-	<Script file="HealPredict\healpredict.lua"/>
 	<Include file="oUF\oUF.xml"/>
 	<Include file="oUF_Plugins\oUF_Plugins.xml"/>
 	<Script file="LibDataBroker\LibDataBroker-1.1.lua"/>

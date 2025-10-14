@@ -49,12 +49,10 @@ local _, ns = ...
 local oUF = ns.oUF or oUF
 assert(oUF, "oUF_HealComm4 was unable to locate oUF install")
 
-local healpredict = HealPredict
-assert(healpredict, "oUF_HealComm4 was unable to locate HealPredict")
-
 local UnitHealth = UnitHealth
 local UnitHealthMax = UnitHealthMax
 local UnitName = UnitName
+local UnitGetIncomingHeals = UnitGetIncomingHeals
 
 local enabledUF, enabled = {}, nil
 
@@ -72,8 +70,8 @@ local function Update(self)
 		element:PreUpdate(unit)
 	end
 
-	local myIncomingHeal = healpredict.UnitGetIncomingHeals(unit, UnitName("player")) or 0
-	local allIncomingHeal = healpredict.UnitGetIncomingHeals(unit) or 0
+	local myIncomingHeal = UnitGetIncomingHeals(unit, UnitName("player")) or 0
+	local allIncomingHeal = UnitGetIncomingHeals(unit) or 0
 	local health = UnitHealth(unit)
 	local maxHealth = UnitHealthMax(unit)
 	local maxOverflowHP = maxHealth * element.maxOverflow
@@ -146,18 +144,6 @@ local function UpdateAllUnits(...)
 	end
 end
 
-local function ToggleCallbacks(toggle)
-	if toggle and not enabled and #enabledUF > 0 then
-		healpredict.RegisterCallback("oUF_HealComm", UpdateAllUnits)
-
-		enabled = true
-	elseif not toggle and enabled and #enabledUF == 0 then
-		healpredict.UnregisterCallback("oUF_HealComm")
-
-		enabled = nil
-	end
-end
-
 local function Enable(self)
 	local element = self.HealCommBar
 
@@ -167,6 +153,7 @@ local function Enable(self)
 
 		self:RegisterEvent("UNIT_HEALTH", Path)
 		self:RegisterEvent("UNIT_MAXHEALTH", Path)
+		self:RegisterEvent("UNIT_HEAL_PREDICTION", Path)
 
 		if not element.maxOverflow then
 			element.maxOverflow = 1.05
@@ -181,8 +168,6 @@ local function Enable(self)
 		end
 
 		enabledUF[#enabledUF + 1] = self
-		ToggleCallbacks(true)
-
 		return true
 	end
 end
@@ -201,15 +186,7 @@ local function Disable(self)
 
 		self:UnregisterEvent("UNIT_HEALTH", Path)
 		self:UnregisterEvent("UNIT_MAXHEALTH", Path)
-
-		for i = 1, #enabledUF do
-			if enabledUF[i] == self then
-				table.remove(enabledUF, i)
-				break
-			end
-		end
-
-		ToggleCallbacks(false)
+		self:UnregisterEvent("UNIT_HEAL_PREDICTION", Path)
 	end
 end
 
