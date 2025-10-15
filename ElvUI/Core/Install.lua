@@ -167,6 +167,7 @@ local function SetupChat(noDisplayMsg)
 end
 
 local function SetupCVars(noDisplayMsg)
+	SetCVar("showTooltipID", 1)
 	SetCVar("mapQuestDifficulty", 1)
 	SetCVar("ShowClassColorInNameplate", 1)
 	SetCVar("screenshotQuality", 10)
