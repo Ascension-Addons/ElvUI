@@ -39,7 +39,8 @@ function NP:Health_UpdateColor(_, unit)
 		element.r, element.g, element.b = r, g, b -- save these for the style filter to switch back
 	end
 
-	if UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) and not UnitIsPlayer(unit) and not UnitIsDeadOrGhost(unit) then
+	local db = NP:PlateDB(self)
+	if db.greyTappedTargets and UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) and not UnitIsPlayer(unit) and not UnitIsDeadOrGhost(unit) then
 		r, g, b = 0.5, 0.5, 0.5
 		element.r, element.g, element.b = r, g, b
 	end

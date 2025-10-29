@@ -67,6 +67,9 @@ local function GetUnitSettings(unit, name)
 	group.args.general.args.visibilityShortcut = ACH:Execute(L["Visibility"], nil, 100, function() ACD:SelectGroup('ElvUI', 'nameplates', 'generalGroup', 'general', 'plateVisibility') end)
 	group.args.general.args.nameOnly = ACH:Toggle(L["Name Only"], nil, 101)
 	group.args.general.args.showTitle = ACH:Toggle(L["Show Title"], L["Title will only appear if Name Only is enabled or triggered in a Style Filter."], 102)
+	if unit == 'ENEMY_NPC' then
+		group.args.general.args.greyTappedTargets = ACH:Toggle(L["Grey Tapped Targets"], L["Make tapped targets appear greyed out."], 103)
+	end
 	group.args.general.args.smartAuraPosition = ACH:Select(L["Smart Aura Position"], L["Will show Buffs in the Debuff position when there are no Debuffs active, or vice versa."], 104, C.Values.SmartAuraPositions)
 
 	group.args.healthGroup = ACH:Group(L["Health"], nil, 2, nil, function(info) return E.db.nameplates.units[unit].health[info[#info]] end, function(info, value) E.db.nameplates.units[unit].health[info[#info]] = value NP:ConfigureAll() end)
