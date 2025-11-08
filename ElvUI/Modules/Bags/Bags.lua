@@ -1438,24 +1438,6 @@ function B:ContructContainerFrame(name, isBank)
 		f.vendorGraysButton:SetScript("OnLeave", GameTooltip_Hide)
 		f.vendorGraysButton:SetScript("OnClick", B.VendorGrayCheck)
 
-				-- Deconstruct button
-		f.deconstructButton = CreateFrame("Button", nil, f.holderFrame)
-		f.deconstructButton:Size(16 + E.Border)
-		f.deconstructButton:SetTemplate()
-		f.deconstructButton:Point("RIGHT", f.vendorGraysButton, "LEFT", -5, 0)
-		f.deconstructButton:SetNormalTexture("Interface\\ICONS\\INV_Rod_Enchantedcobalt")
-		f.deconstructButton:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-		f.deconstructButton:GetNormalTexture():SetInside()
-		f.deconstructButton:SetPushedTexture("Interface\\ICONS\\INV_Rod_Enchantedcobalt")
-		f.deconstructButton:GetPushedTexture():SetTexCoord(unpack(E.TexCoords))
-		f.deconstructButton:GetPushedTexture():SetInside()
-		f.deconstructButton:StyleButton(nil, true)
-		f.deconstructButton.ttText = "Deconstruct Mode"
-		f.deconstructButton.ttText2 = "Allow you to disenchant/mill/prospect/unlock items.\nClick to toggle.\nCurrent state: |cffFF0000Disabled|r"
-		f.deconstructButton:SetScript("OnEnter", B.Tooltip_Show)
-		f.deconstructButton:SetScript("OnLeave", GameTooltip_Hide)
-		-- OnClick handler will be set by Deconstruct module
-
 		--Search
 		f.editBox = CreateFrame("EditBox", name.."EditBox", f)
 		f.editBox:SetFrameLevel(f.editBox:GetFrameLevel() + 2)

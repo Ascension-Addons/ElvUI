@@ -76,6 +76,21 @@ function D:HasRelevantProfession()
 	return false
 end
 
+-- Update button state (enabled/disabled)
+function D:UpdateButtonState()
+	if not D.DeconstructButton then return end
+	
+	local hasProf = D:HasRelevantProfession()
+	
+	if hasProf then
+		D.DeconstructButton:Enable()
+		D.DeconstructButton:SetAlpha(1)
+	else
+		D.DeconstructButton:Disable()
+		D.DeconstructButton:SetAlpha(0.5)
+	end
+end
+
 -- Check which professions the player has
 function D:UpdateProfessions()
 	D.HasEnchanting = false
@@ -288,6 +303,9 @@ end
 
 -- Toggle deconstruct mode (called from button click)
 function D:ToggleMode()
+	-- Don't toggle if player doesn't have required professions
+	if not D:HasRelevantProfession() then return end
+	
 	D.DeconstructMode = not D.DeconstructMode
 
 	if D.DeconstructButton then
@@ -475,6 +493,40 @@ function D:UpdateBagSlots(frame, isActive)
 	end
 end
 
+-- Helper function to create and setup the deconstruct button
+local function CreateDeconstructButton(bagFrame)
+	if not bagFrame or not bagFrame.holderFrame then return end
+	if bagFrame.deconstructButton then return end -- Already created
+
+	-- Create the button
+	local button = CreateFrame("Button", nil, bagFrame.holderFrame)
+	button:Size(16 + E.Border)
+	button:SetTemplate()
+	button:Point("RIGHT", bagFrame.vendorGraysButton, "LEFT", -5, 0)
+	button:SetNormalTexture("Interface\\ICONS\\INV_Rod_Enchantedcobalt")
+	button:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
+	button:GetNormalTexture():SetInside()
+	button:SetPushedTexture("Interface\\ICONS\\INV_Rod_Enchantedcobalt")
+	button:GetPushedTexture():SetTexCoord(unpack(E.TexCoords))
+	button:GetPushedTexture():SetInside()
+	button:StyleButton(nil, true)
+	button.ttText = "Deconstruct Mode"
+	button.ttText2 = "Allow you to disenchant/mill/prospect/unlock items.\nClick to toggle.\nCurrent state: |cffFF0000Disabled|r"
+	button:SetScript("OnEnter", B.Tooltip_Show)
+	button:SetScript("OnLeave", GameTooltip_Hide)
+	button:SetScript("OnClick", function() D:ToggleMode() end)
+
+	bagFrame.deconstructButton = button
+	D.DeconstructButton = button
+
+	-- Re-anchor the search box to the deconstruct button
+	if bagFrame.editBox then
+		bagFrame.editBox:ClearAllPoints()
+		bagFrame.editBox:Point("BOTTOMLEFT", bagFrame.holderFrame, "TOPLEFT", (E.Border * 2) + 18, E.Border * 2 + 2)
+		bagFrame.editBox:Point("RIGHT", bagFrame.deconstructButton, "LEFT", -5, 0)
+	end
+end
+
 -- Helper function to setup button and hooks (called once when bags are first opened)
 local function SetupDeconstructButton()
 	if D.DeconstructButton then return end
@@ -482,14 +534,13 @@ local function SetupDeconstructButton()
 	-- Update professions first
 	D:UpdateProfessions()
 
-	-- Only show button if player has relevant professions
-	if not D:HasRelevantProfession() then return end
+	if not B.BagFrame then return end
 
-	if not B.BagFrame or not B.BagFrame.deconstructButton then return end
-
-	-- Store button reference
-	D.DeconstructButton = B.BagFrame.deconstructButton
-	D.DeconstructButton:SetScript("OnClick", function() D:ToggleMode() end)
+	-- Create the button (always show if module is enabled)
+	CreateDeconstructButton(B.BagFrame)
+	
+	-- Update button state (enabled/disabled)
+	D:UpdateButtonState()
 
 	-- Only create the real deconstruct button and hooks once
 	if not D.DeconstructionReal then
@@ -517,6 +568,7 @@ end
 -- Initialize the module
 function D:Initialize()
 	if not E.private.bags.enable then return end
+	if not E.db.bags.deconstruct then return end -- Check if deconstruct is enabled
 
 	-- Hook into Layout to setup button for bags and reapply dimming
 	hooksecurefunc(B, "Layout", function(_, isBank)
@@ -547,17 +599,8 @@ end
 function D:SKILL_LINES_CHANGED()
 	D:UpdateProfessions()
 
-	-- Show/hide button based on professions
-	local hasProf = D:HasRelevantProfession()
-
-	if D.DeconstructButton then
-		if hasProf then
-			D.DeconstructButton:Show()
-		else
-			D.DeconstructButton:Hide()
-			D.DeconstructMode = false
-		end
-	end
+	-- Update button state (enabled/disabled) based on professions
+	D:UpdateButtonState()
 end
 
 -- Handle BAG_UPDATE event
