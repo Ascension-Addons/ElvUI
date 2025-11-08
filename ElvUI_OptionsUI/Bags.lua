@@ -152,8 +152,8 @@ E.Options.args.bags = {
 				deconstruct = {
 					order = 16,
 					type = "toggle",
-					name = "Deconstruct Mode",
-					desc = "Enable the Deconstruct Mode button for disenchanting, milling, prospecting, and unlocking items.",
+					name = L["Deconstruct Mode"],
+					desc = L["Deconstruct Mode Desc"],
 					set = function(info, value) E.db.bags[info[#info]] = value E:StaticPopup_Show("PRIVATE_RL") end
 				},
 				unlearnedVanityIcon = {

@@ -320,7 +320,7 @@ function D:ToggleMode()
 			end
 		end
 
-		D.DeconstructButton.ttText2 = format("Allow you to disenchant/mill/prospect/unlock items.\nClick to toggle.\nCurrent state: %s.", D:GetDeconMode())
+		D.DeconstructButton.ttText2 = format(L["Deconstruct Mode Desc"] .. "\n" .. L["Current state: %s."], D:GetDeconMode())
 		if GameTooltip:IsOwned(D.DeconstructButton) then B.Tooltip_Show(D.DeconstructButton) end
 	end
 
@@ -510,8 +510,8 @@ local function CreateDeconstructButton(bagFrame)
 	button:GetPushedTexture():SetTexCoord(unpack(E.TexCoords))
 	button:GetPushedTexture():SetInside()
 	button:StyleButton(nil, true)
-	button.ttText = "Deconstruct Mode"
-	button.ttText2 = "Allow you to disenchant/mill/prospect/unlock items.\nClick to toggle.\nCurrent state: |cffFF0000Disabled|r"
+	button.ttText = L["Deconstruct Mode"]
+	button.ttText2 = format(L["Deconstruct Mode Desc"] .. "\n" .. L["Current state: %s."], D:GetDeconMode())
 	button:SetScript("OnEnter", B.Tooltip_Show)
 	button:SetScript("OnLeave", GameTooltip_Hide)
 	button:SetScript("OnClick", function() D:ToggleMode() end)
