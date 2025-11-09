@@ -165,6 +165,7 @@ P.bags = {
 	moneyCoins = true,
 	junkIcon = false,
 	junkDesaturate = true,
+	deconstruct = true,
 	unlearnedVanityIcon = false,
 	unlearnedWardrobeIcon = false,
 	ignoredItems = {},
