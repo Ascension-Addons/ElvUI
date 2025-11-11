@@ -1,5 +1,6 @@
 local E, L, V, P, G = unpack(select(2, ...)) --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local S = E:GetModule("Skins")
+local M = E:GetModule("WorldMap")
 
 --Lua functions
 --WoW API / Variables
@@ -7,18 +8,23 @@ local S = E:GetModule("Skins")
 S:AddCallback("Skin_WorldMap", function()
 	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.worldmap then return end
 
+	-- Check if Mapster is enabled
+	local mapsterEnabled = M:IsMapsterEnabled()
+
 	WorldMapFrame:DisableDrawLayer("BACKGROUND")
 	WorldMapFrame:DisableDrawLayer("ARTWORK")
 	WorldMapFrame:DisableDrawLayer("OVERLAY")
 	WorldMapFrame:CreateBackdrop("Transparent")
 	WorldMapFrame.backdrop:Point("TOPRIGHT", WorldMapFrameCloseButton, -3, 0)
 	WorldMapFrame.backdrop:Point("BOTTOMRIGHT", WorldMapTrackQuest, 0, -3)
-	WorldMapFrame:SetClampRectInsets(3, 0, 2, 1)
+	
+	if not mapsterEnabled then
+		WorldMapFrame:SetClampRectInsets(3, 0, 2, 1)
+		WorldMapFrameTitle:SetDrawLayer("BORDER")
+		WorldMapTitleButton:Width(530)
+		WorldMapTitleButton:Point("TOPLEFT", WorldMapFrameMiniBorderLeft, "TOPLEFT", 4, 1)
+	end
 
-	WorldMapFrameTitle:SetDrawLayer("BORDER")
-
-	WorldMapTitleButton:Width(530)
-	WorldMapTitleButton:Point("TOPLEFT", WorldMapFrameMiniBorderLeft, "TOPLEFT", 4, 1)
 
 	WorldMapDetailFrame:CreateBackdrop()
 	WorldMapDetailFrame.backdrop:Point("TOPLEFT", -2, 2)
@@ -124,6 +130,8 @@ S:AddCallback("Skin_WorldMap", function()
 	local currentMapMode
 
 	local function SmallSkin()
+		if mapsterEnabled then return end -- Let Mapster handle positioning
+		
 		if WORLDMAP_SETTINGS.advanced then
 			if currentMapMode == 0 then return end
 			currentMapMode = 0
@@ -150,6 +158,8 @@ S:AddCallback("Skin_WorldMap", function()
 	end
 
 	local function LargeSkin()
+		if mapsterEnabled then return end -- Let Mapster handle positioning
+		
 		if currentMapMode == 2 then return end
 		currentMapMode = 2
 
@@ -163,6 +173,8 @@ S:AddCallback("Skin_WorldMap", function()
 	end
 
 	local function QuestSkin()
+		if mapsterEnabled then return end -- Let Mapster handle positioning
+		
 		if currentMapMode == 3 then return end
 		currentMapMode = 3
 
@@ -176,6 +188,8 @@ S:AddCallback("Skin_WorldMap", function()
 	end
 
 	local function FixSkin()
+		if mapsterEnabled then return end -- Let Mapster handle positioning
+		
 		if WORLDMAP_SETTINGS.size == WORLDMAP_FULLMAP_SIZE then
 			LargeSkin()
 		elseif WORLDMAP_SETTINGS.size == WORLDMAP_WINDOWED_SIZE then
@@ -185,7 +199,7 @@ S:AddCallback("Skin_WorldMap", function()
 		end
 	end
 
-	if not E.private.worldmap.enable then
+	if not E.private.worldmap.enable and not mapsterEnabled then
 		WorldMapFrame:EnableMouse(false)
 		WorldMapFrame.EnableMouse = E.noop
 	end
@@ -193,12 +207,13 @@ S:AddCallback("Skin_WorldMap", function()
 	WorldMapTitleButton:Hide()
 	WorldMapFrame.backdrop:EnableMouse(true)
 
-	FixSkin()
-	S:SetUIPanelWindowInfo(WorldMapFrame, "width", 594)
-
-	hooksecurefunc("WorldMapFrame_SetQuestMapView", QuestSkin)
-	hooksecurefunc("WorldMapFrame_SetFullMapView", LargeSkin)
-	hooksecurefunc("WorldMapFrame_SetMiniMode", SmallSkin)
-	hooksecurefunc("ToggleMapFramerate", FixSkin)
-	hooksecurefunc("WorldMapFrame_ToggleAdvanced", FixSkin)
+	if not mapsterEnabled then
+		FixSkin()
+		S:SetUIPanelWindowInfo(WorldMapFrame, "width", 594)
+		hooksecurefunc("WorldMapFrame_SetQuestMapView", QuestSkin)
+		hooksecurefunc("WorldMapFrame_SetFullMapView", LargeSkin)
+		hooksecurefunc("WorldMapFrame_SetMiniMode", SmallSkin)
+		hooksecurefunc("ToggleMapFramerate", FixSkin)
+		hooksecurefunc("WorldMapFrame_ToggleAdvanced", FixSkin)
+	end
 end)
