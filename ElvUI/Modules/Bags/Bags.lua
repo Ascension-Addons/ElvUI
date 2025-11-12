@@ -308,6 +308,181 @@ function B:UpdateAllBagSlots()
 	end
 end
 
+-- Extracted helper: handle appearance & meta for an item link on a slot.
+-- This can be reused by other modules (e.g., GuildBank) by passing the slot and item link.
+function B:UpdateSlotAppearance(slot, clink)
+	if not (slot and clink) then return end
+
+	slot.id = GetItemInfoFromHyperlink(clink)
+	local iLvl, iType, iSubtype, itemEquipLoc, itemPrice
+	slot.name, _, slot.rarity, iLvl, _, iType, iSubtype, _, itemEquipLoc, _, itemPrice = GetItemInfo(clink)
+
+	local r, g, b
+	if slot.rarity then
+		r, g, b = GetItemQualityColor(slot.rarity)
+	end
+
+	-- Bind type (BoE / BoU)
+	if B.db.showBindType and (slot.rarity and slot.rarity > 1) then
+		local bindTypeLines = GetCVarBool("colorblindmode") and 8 or 7
+		local BoE, BoU
+		for i = 2, bindTypeLines do
+			local line = _G["ElvUI_ScanTooltipTextLeft"..i]:GetText()
+			if (not line or line == "") or (line == ITEM_SOULBOUND or line == ITEM_ACCOUNTBOUND or line == ITEM_BNETACCOUNTBOUND) then break end
+
+			BoE, BoU = line == ITEM_BIND_ON_EQUIP, line == ITEM_BIND_ON_USE
+
+			if not B.db.showBindType and (slot.rarity and slot.rarity > 1) or (BoE or BoU) then break end
+		end
+
+		if (BoE or BoU) and slot.bindType then
+			slot.bindType:SetText(BoE and L["BoE"] or L["BoU"])
+			slot.bindType:SetVertexColor(r, g, b)
+		end
+	end
+
+	-- Item Level
+	if iLvl and B.db.itemLevel and (itemEquipLoc ~= nil and itemEquipLoc ~= "" and itemEquipLoc ~= "INVTYPE_AMMO" and itemEquipLoc ~= "INVTYPE_BAG" and itemEquipLoc ~= "INVTYPE_QUIVER" and itemEquipLoc ~= "INVTYPE_TABARD") and (slot.rarity and slot.rarity > 1) and iLvl >= B.db.itemLevelThreshold and slot.itemLevel then
+		slot.itemLevel:SetText(iLvl)
+		if B.db.itemLevelCustomColorEnable then
+			slot.itemLevel:SetTextColor(B.db.itemLevelCustomColor.r, B.db.itemLevelCustomColor.g, B.db.itemLevelCustomColor.b)
+		else
+			slot.itemLevel:SetTextColor(r, g, b)
+		end
+	end
+
+	slot.isUnlearnedVanity = VANITY_ITEMS[slot.id] and not C_VanityCollection.IsCollectionItemOwned(slot.id) and iType ~= "Consumable"
+	local appearanceID = C_Appearance.GetItemAppearanceID(slot.id)
+	slot.isUnlearnedWardrobe = appearanceID and not C_AppearanceCollection.IsAppearanceCollected(appearanceID)
+	slot.isJunk = (slot.rarity and slot.rarity == 0) and (itemPrice and itemPrice > 0) and (iType and iType ~= "Quest")
+	slot.junkDesaturate = slot.isJunk and E.db.bags.junkDesaturate
+
+	local showVanity = slot.unlearnedVanityIcon and E.db.bags.unlearnedVanityIcon and slot.isUnlearnedVanity
+	local showWardrobe = slot.unlearnedWardrobeIcon and E.db.bags.unlearnedWardrobeIcon and slot.isUnlearnedWardrobe
+
+	-- Vanity & Wardrobe icons (or junk)
+	if showVanity and showWardrobe then
+		slot.unlearnedVanityAndWardrobeIcon:Show()
+	elseif showVanity then
+		slot.unlearnedVanityIcon:Show()
+	elseif showWardrobe then
+		slot.unlearnedWardrobeIcon:Show()
+	elseif slot.JunkIcon and E.db.bags.junkIcon and slot.isJunk then
+		slot.JunkIcon:Show()
+	end
+
+	-- Quest icon (slot.questId / slot.isActiveQuest should be set by the caller when appropriate)
+	if B.db.questIcon and (slot.questId and not slot.isActiveQuest) and slot.questIcon then
+		slot.questIcon:Show()
+	end
+
+	-- color slot according to item quality / quest
+	if B.db.questItemColors and (slot.questId and not slot.isActiveQuest) then
+		slot:SetBackdropBorderColor(unpack(B.QuestColors.questStarter))
+		slot.ignoreBorderColors = true
+	elseif B.db.questItemColors and (slot.questId or slot.isQuestItem) then
+		slot:SetBackdropBorderColor(unpack(B.QuestColors.questItem))
+		slot.ignoreBorderColors = true
+	elseif B.db.qualityColors and (slot.rarity and slot.rarity > 1) then
+		slot:SetBackdropBorderColor(r, g, b)
+		slot.ignoreBorderColors = true
+	else
+		slot:SetBackdropBorderColor(unpack(E.media.bordercolor))
+		slot.ignoreBorderColors = nil
+	end
+end
+
+-- Ensure a slot (button/frame) has the small UI elements bags expect so appearance code can reuse them.
+function B:CreateSlotAppearanceElements(slot)
+	if not slot then return end
+
+	if not slot.questIcon then
+		local questIcon = slot:CreateTexture(nil, "OVERLAY")
+		questIcon:SetTexture(E.Media.Textures.BagQuestIcon)
+		questIcon:SetTexCoord(0, 1, 0, 1)
+		if questIcon.SetInside then questIcon:SetInside() end
+		questIcon:Hide()
+		slot.questIcon = questIcon
+	end
+
+	if not slot.unlearnedVanityAndWardrobeIcon then
+		local unlearnedVanityAndWardrobeIcon = slot:CreateTexture(nil, "OVERLAY")
+		unlearnedVanityAndWardrobeIcon:SetTexture(E.Media.Textures.BagVanityAndWardrobe)
+		unlearnedVanityAndWardrobeIcon:Point("BOTTOMLEFT", 1, 1)
+		unlearnedVanityAndWardrobeIcon:Hide()
+		slot.unlearnedVanityAndWardrobeIcon = unlearnedVanityAndWardrobeIcon
+	end
+
+	if not slot.unlearnedVanityIcon then
+		local unlearnedVanityIcon = slot:CreateTexture(nil, "OVERLAY")
+		unlearnedVanityIcon:SetTexture(E.Media.Textures.BagVanityIcon)
+		unlearnedVanityIcon:Point("BOTTOMLEFT", 1, 1)
+		unlearnedVanityIcon:Hide()
+		slot.unlearnedVanityIcon = unlearnedVanityIcon
+	end
+
+	if not slot.unlearnedWardrobeIcon then
+		local unlearnedWardrobeIcon = slot:CreateTexture(nil, "OVERLAY")
+		unlearnedWardrobeIcon:SetAtlas(E.Media.Atlases.BagWardrobeIcon)
+		unlearnedWardrobeIcon:Point("BOTTOMLEFT", 1, 1)
+		unlearnedWardrobeIcon:Hide()
+		slot.unlearnedWardrobeIcon = unlearnedWardrobeIcon
+	end
+
+	if not slot.JunkIcon then
+		local JunkIcon = slot:CreateTexture(nil, "OVERLAY")
+		JunkIcon:SetTexture(E.Media.Textures.BagJunkIcon)
+		JunkIcon:Point("BOTTOMLEFT", 1, 1)
+		JunkIcon:Hide()
+		slot.JunkIcon = JunkIcon
+	end
+
+	if not slot.itemLevel then
+		slot.itemLevel = slot:CreateFontString(nil, "OVERLAY")
+		slot.itemLevel:Point("BOTTOMRIGHT", -1, 3)
+		slot.itemLevel:FontTemplate(E.Libs.LSM:Fetch("font", E.db.bags.itemLevelFont), E.db.bags.itemLevelFontSize, E.db.bags.itemLevelFontOutline)
+	end
+
+	if not slot.bindType then
+		slot.bindType = slot:CreateFontString(nil, "OVERLAY")
+		slot.bindType:Point("TOP", 0, -2)
+		slot.bindType:FontTemplate(E.Libs.LSM:Fetch("font", E.db.bags.itemLevelFont), E.db.bags.itemLevelFontSize, E.db.bags.itemLevelFontOutline)
+	end
+
+	if not slot.searchOverlay then
+		local searchOverlay = slot:CreateTexture(nil, "ARTWORK")
+		searchOverlay:SetTexture(E.media.blankTex)
+		searchOverlay:SetVertexColor(0, 0, 0)
+		searchOverlay:SetAllPoints()
+		searchOverlay:Hide()
+		slot.searchOverlay = searchOverlay
+	end
+end
+
+-- Clear any dynamic appearance info from a slot so it doesn't retain data from a previous item/tab
+function B:ClearSlotAppearance(slot)
+	if not slot then return end
+
+	slot.name, slot.rarity, slot.locked, slot.readable, slot.isJunk, slot.junkDesaturate = nil, nil, nil, nil, nil, nil
+
+	-- Hide optional icons if present
+	if slot.questIcon then slot.questIcon:Hide() end
+	if slot.JunkIcon then slot.JunkIcon:Hide() end
+	if slot.unlearnedVanityIcon then slot.unlearnedVanityIcon:Hide() end
+	if slot.unlearnedWardrobeIcon then slot.unlearnedWardrobeIcon:Hide() end
+	if slot.unlearnedVanityAndWardrobeIcon then slot.unlearnedVanityAndWardrobeIcon:Hide() end
+
+	-- Clear texts
+	if slot.itemLevel then slot.itemLevel:SetText("") end
+	if slot.bindType then slot.bindType:SetText("") end
+
+	-- Reset border to default
+	if slot.SetBackdropBorderColor then
+		slot:SetBackdropBorderColor(unpack(E.media.bordercolor))
+		slot.ignoreBorderColors = nil
+	end
+end
+
 function B:UpdateSlot(frame, bagID, slotID)
 	if (frame.Bags[bagID] and frame.Bags[bagID].numSlots ~= GetContainerNumSlots(bagID)) or not frame.Bags[bagID] or not frame.Bags[bagID][slotID] then return end
 
@@ -316,16 +491,12 @@ function B:UpdateSlot(frame, bagID, slotID)
 	local texture, count, locked, _, readable = GetContainerItemInfo(bagID, slotID)
 	local clink = GetContainerItemLink(bagID, slotID)
 
-	slot.name, slot.rarity, slot.locked, slot.readable, slot.isJunk, slot.junkDesaturate = nil, nil, locked, readable, nil, nil
+	-- Clear any previous dynamic appearance state and set locked/readable
+	B:ClearSlotAppearance(slot)
+	slot.locked = locked
+	slot.readable = readable
 
 	slot:Show()
-	slot.questIcon:Hide()
-	slot.JunkIcon:Hide()
-	slot.unlearnedVanityIcon:Hide()
-	slot.unlearnedWardrobeIcon:Hide()
-	slot.unlearnedVanityAndWardrobeIcon:Hide()
-	slot.itemLevel:SetText("")
-	slot.bindType:SetText("")
 
 	if B.db.showBindType then
 		E.ScanTooltip:SetOwner(UIParent, "ANCHOR_NONE")
@@ -341,87 +512,9 @@ function B:UpdateSlot(frame, bagID, slotID)
 		slot:SetBackdropBorderColor(unpack(B.ProfessionColors[bagType]))
 		slot.ignoreBorderColors = true
 	elseif clink then
-		slot.id = GetItemInfoFromHyperlink(clink)
-		local iLvl, iType, iSubtype, itemEquipLoc, itemPrice
-		slot.name, _, slot.rarity, iLvl, _, iType, iSubtype, _, itemEquipLoc, _, itemPrice = GetItemInfo(clink)
-
-		local isQuestItem, questId, isActiveQuest = GetContainerItemQuestInfo(bagID, slotID)
-		local r, g, b
-
-		if slot.rarity then
-			r, g, b = GetItemQualityColor(slot.rarity)
-		end
-
-		if B.db.showBindType and (slot.rarity and slot.rarity > 1) then
-			local bindTypeLines = GetCVarBool("colorblindmode") and 8 or 7
-			local BoE, BoU
-			for i = 2, bindTypeLines do
-				local line = _G["ElvUI_ScanTooltipTextLeft"..i]:GetText()
-				if (not line or line == "") or (line == ITEM_SOULBOUND or line == ITEM_ACCOUNTBOUND or line == ITEM_BNETACCOUNTBOUND) then break end
-
-				BoE, BoU = line == ITEM_BIND_ON_EQUIP, line == ITEM_BIND_ON_USE
-
-				if not B.db.showBindType and (slot.rarity and slot.rarity > 1) or (BoE or BoU) then break end
-			end
-
-			if BoE or BoU then
-				slot.bindType:SetText(BoE and L["BoE"] or L["BoU"])
-				slot.bindType:SetVertexColor(r, g, b)
-			end
-		end
-
-		-- Item Level
-		if iLvl and B.db.itemLevel and (itemEquipLoc ~= nil and itemEquipLoc ~= "" and itemEquipLoc ~= "INVTYPE_AMMO" and itemEquipLoc ~= "INVTYPE_BAG" and itemEquipLoc ~= "INVTYPE_QUIVER" and itemEquipLoc ~= "INVTYPE_TABARD") and (slot.rarity and slot.rarity > 1) and iLvl >= B.db.itemLevelThreshold then
-			slot.itemLevel:SetText(iLvl)
-			if B.db.itemLevelCustomColorEnable then
-				slot.itemLevel:SetTextColor(B.db.itemLevelCustomColor.r, B.db.itemLevelCustomColor.g, B.db.itemLevelCustomColor.b)
-			else
-				slot.itemLevel:SetTextColor(r, g, b)
-			end
-		end
-
-		slot.isUnlearnedVanity = VANITY_ITEMS[slot.id] and not C_VanityCollection.IsCollectionItemOwned(slot.id) and iType ~= "Consumable"
-		local appearanceID = C_Appearance.GetItemAppearanceID(slot.id)
-		slot.isUnlearnedWardrobe = appearanceID and not C_AppearanceCollection.IsAppearanceCollected(appearanceID)
-		slot.isJunk = (slot.rarity and slot.rarity == 0) and (itemPrice and itemPrice > 0) and (iType and iType ~= "Quest")
-		slot.junkDesaturate = slot.isJunk and E.db.bags.junkDesaturate
-
-		local showVanity = slot.unlearnedVanityIcon and E.db.bags.unlearnedVanityIcon and slot.isUnlearnedVanity
-		local showWardrobe = slot.unlearnedWardrobeIcon and E.db.bags.unlearnedWardrobeIcon and slot.isUnlearnedWardrobe
-
-
-		-- Both Vanity and Wardrobe Unlock
-		if showVanity and showWardrobe then
-			slot.unlearnedVanityAndWardrobeIcon:Show()
-		-- Vanity Unlock Icon
-		elseif showVanity then
-			slot.unlearnedVanityIcon:Show()
-		-- Wardrobe Unlock Icon
-		elseif showWardrobe then
-			slot.unlearnedWardrobeIcon:Show()
-		-- Junk Icon
-		elseif slot.JunkIcon and E.db.bags.junkIcon and slot.isJunk then
-			slot.JunkIcon:Show()
-		end
-
-		if B.db.questIcon and (questId and not isActiveQuest) then
-			slot.questIcon:Show()
-		end
-
-		-- color slot according to item quality
-		if B.db.questItemColors and (questId and not isActiveQuest) then
-			slot:SetBackdropBorderColor(unpack(B.QuestColors.questStarter))
-			slot.ignoreBorderColors = true
-		elseif B.db.questItemColors and (questId or isQuestItem) then
-			slot:SetBackdropBorderColor(unpack(B.QuestColors.questItem))
-			slot.ignoreBorderColors = true
-		elseif B.db.qualityColors and (slot.rarity and slot.rarity > 1) then
-			slot:SetBackdropBorderColor(r, g, b)
-			slot.ignoreBorderColors = true
-		else
-			slot:SetBackdropBorderColor(unpack(E.media.bordercolor))
-			slot.ignoreBorderColors = nil
-		end
+		-- store quest info on the slot so the helper can work without needing bag/slot ids
+		slot.isQuestItem, slot.questId, slot.isActiveQuest = GetContainerItemQuestInfo(bagID, slotID)
+		B:UpdateSlotAppearance(slot, clink)
 	else
 		slot:SetBackdropBorderColor(unpack(E.media.bordercolor))
 		slot.ignoreBorderColors = nil
@@ -673,45 +766,8 @@ function B:Layout(isBank)
 					f.Bags[bagID][slotID].Count:FontTemplate(E.Libs.LSM:Fetch("font", E.db.bags.countFont), E.db.bags.countFontSize, E.db.bags.countFontOutline)
 					f.Bags[bagID][slotID].Count:SetTextColor(countColor.r, countColor.g, countColor.b)
 
-					if not f.Bags[bagID][slotID].questIcon then
-						f.Bags[bagID][slotID].questIcon = _G[f.Bags[bagID][slotID]:GetName().."IconQuestTexture"] or _G[f.Bags[bagID][slotID]:GetName()].IconQuestTexture
-						f.Bags[bagID][slotID].questIcon:SetTexture(E.Media.Textures.BagQuestIcon)
-						f.Bags[bagID][slotID].questIcon:SetTexCoord(0, 1, 0, 1)
-						f.Bags[bagID][slotID].questIcon:SetInside()
-						f.Bags[bagID][slotID].questIcon:Hide()
-					end
-
-					if not f.Bags[bagID][slotID].unlearnedVanityAndWardrobeIcon then
-						local unlearnedVanityAndWardrobeIcon = f.Bags[bagID][slotID]:CreateTexture(nil, "OVERLAY")
-						unlearnedVanityAndWardrobeIcon:SetTexture(E.Media.Textures.BagVanityAndWardrobe)
-						unlearnedVanityAndWardrobeIcon:Point("BOTTOMLEFT", 1, 1)
-						unlearnedVanityAndWardrobeIcon:Hide()
-						f.Bags[bagID][slotID].unlearnedVanityAndWardrobeIcon = unlearnedVanityAndWardrobeIcon
-					end
-
-					if not f.Bags[bagID][slotID].unlearnedVanityIcon then
-						local unlearnedVanityIcon = f.Bags[bagID][slotID]:CreateTexture(nil, "OVERLAY")
-						unlearnedVanityIcon:SetTexture(E.Media.Textures.BagVanityIcon)
-						unlearnedVanityIcon:Point("BOTTOMLEFT", 1, 1)
-						unlearnedVanityIcon:Hide()
-						f.Bags[bagID][slotID].unlearnedVanityIcon = unlearnedVanityIcon
-					end
-
-					if not f.Bags[bagID][slotID].unlearnedWardrobeIcon then
-						local unlearnedWardrobeIcon = f.Bags[bagID][slotID]:CreateTexture(nil, "OVERLAY")
-						unlearnedWardrobeIcon:SetAtlas(E.Media.Atlases.BagWardrobeIcon)
-						unlearnedWardrobeIcon:Point("BOTTOMLEFT", 1, 1)
-						unlearnedWardrobeIcon:Hide()
-						f.Bags[bagID][slotID].unlearnedWardrobeIcon = unlearnedWardrobeIcon
-					end
-
-					if not f.Bags[bagID][slotID].JunkIcon then
-						local JunkIcon = f.Bags[bagID][slotID]:CreateTexture(nil, "OVERLAY")
-						JunkIcon:SetTexture(E.Media.Textures.BagJunkIcon)
-						JunkIcon:Point("BOTTOMLEFT", 1, 1)
-						JunkIcon:Hide()
-						f.Bags[bagID][slotID].JunkIcon = JunkIcon
-					end
+					-- Ensure this slot has the UI elements the appearance helper expects
+					B:CreateSlotAppearanceElements(f.Bags[bagID][slotID])
 
 					f.Bags[bagID][slotID].iconTexture = _G[f.Bags[bagID][slotID]:GetName().."IconTexture"]
 					f.Bags[bagID][slotID].iconTexture:SetInside(f.Bags[bagID][slotID])
@@ -732,13 +788,6 @@ function B:Layout(isBank)
 					f.Bags[bagID][slotID].bagID = bagID
 					f.Bags[bagID][slotID].slotID = slotID
 
-					f.Bags[bagID][slotID].itemLevel = f.Bags[bagID][slotID]:CreateFontString(nil, "OVERLAY")
-					f.Bags[bagID][slotID].itemLevel:Point("BOTTOMRIGHT", -1, 3)
-					f.Bags[bagID][slotID].itemLevel:FontTemplate(E.Libs.LSM:Fetch("font", E.db.bags.itemLevelFont), E.db.bags.itemLevelFontSize, E.db.bags.itemLevelFontOutline)
-
-					f.Bags[bagID][slotID].bindType = f.Bags[bagID][slotID]:CreateFontString(nil, "OVERLAY")
-					f.Bags[bagID][slotID].bindType:Point("TOP", 0, -2)
-					f.Bags[bagID][slotID].bindType:FontTemplate(E.Libs.LSM:Fetch("font", E.db.bags.itemLevelFont), E.db.bags.itemLevelFontSize, E.db.bags.itemLevelFontOutline)
 				end
 
 				f.Bags[bagID][slotID]:SetID(slotID)
@@ -1515,8 +1564,8 @@ function B:ToggleBags(id)
 	if not B.BagFrame:IsShown() then
 		B:UpdateAllBagSlots()
 		B:OpenBags()
---	else
---		B:CloseBags()
+	--	else
+	--		B:CloseBags()
 	end
 end
 

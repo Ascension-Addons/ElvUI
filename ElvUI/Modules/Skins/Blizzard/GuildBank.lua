@@ -95,6 +95,9 @@ S:AddCallbackForAddon("Blizzard_GuildBankUI", "Skin_Blizzard_GuildBankUI", funct
 
 			count:SetDrawLayer("OVERLAY")
 
+			-- Ensure guild bank button has the small UI elements bags expect
+			B:CreateSlotAppearanceElements(button)
+
 			buttonMap[#buttonMap + 1] = button
 		end
 	end
@@ -114,17 +117,30 @@ S:AddCallbackForAddon("Blizzard_GuildBankUI", "Skin_Blizzard_GuildBankUI", funct
 
 		for i = 1, MAX_GUILDBANK_SLOTS_PER_TAB do
 			link = GetGuildBankItemLink(tab, i)
+			local button = buttonMap[i]
 
-			if link then
-				_, _, quality = GetItemInfo(link)
+			-- Clear leftover appearance state from previous tab/items
+			if button then
+				B:ClearSlotAppearance(button)
+			end
 
-				if quality and quality > 1 then
-					buttonMap[i]:SetBackdropBorderColor(GetItemQualityColor(quality))
-				else
-					buttonMap[i]:SetBackdropBorderColor(unpack(E.media.bordercolor))
+			if link and button then
+				-- Prepare scan tooltip for bind type detection (if enabled)
+				if B.db.showBindType then
+					E.ScanTooltip:SetOwner(UIParent, "ANCHOR_NONE")
+					E.ScanTooltip:SetGuildBankItem(tab, i)
+					E.ScanTooltip:Show()
 				end
+
+				-- Reuse Bags appearance logic on guild bank button
+				B:UpdateSlotAppearance(button, link)
+
+				E.ScanTooltip:Hide()
 			else
-				buttonMap[i]:SetBackdropBorderColor(unpack(E.media.bordercolor))
+				-- Ensure it's cleared and show default border
+				if button then
+					B:ClearSlotAppearance(button)
+				end
 			end
 		end
 	end)
