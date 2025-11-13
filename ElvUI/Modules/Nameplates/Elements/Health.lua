@@ -10,6 +10,10 @@ local UnitClass = UnitClass
 local UnitReaction = UnitReaction
 local UnitIsConnected = UnitIsConnected
 local CreateFrame = CreateFrame
+local UnitIsTapped = UnitIsTapped
+local UnitIsTappedByPlayer = UnitIsTappedByPlayer
+local UnitIsDeadOrGhost = UnitIsDeadOrGhost
+local UnitIsPlayer = UnitIsPlayer
 
 function NP:Health_UpdateColor(_, unit)
 	if not unit or self.unit ~= unit then return end
@@ -33,6 +37,12 @@ function NP:Health_UpdateColor(_, unit)
 	if t then
 		r, g, b = t.r, t.g, t.b
 		element.r, element.g, element.b = r, g, b -- save these for the style filter to switch back
+	end
+
+	local db = NP:PlateDB(self)
+	if db.greyTappedTargets and UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) and not UnitIsPlayer(unit) and not UnitIsDeadOrGhost(unit) then
+		r, g, b = 0.5, 0.5, 0.5
+		element.r, element.g, element.b = r, g, b
 	end
 
 	local sf = NP:StyleFilterChanges(self)

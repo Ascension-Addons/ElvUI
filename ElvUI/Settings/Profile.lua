@@ -671,7 +671,9 @@ P.nameplates = {
 			markTanks = true,
 		},
 		FRIENDLY_NPC = {},
-		ENEMY_NPC = {},
+		ENEMY_NPC = {
+			greyTappedTargets = true,
+		},
 	},
 }
 
