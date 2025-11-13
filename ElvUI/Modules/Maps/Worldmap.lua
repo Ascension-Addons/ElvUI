@@ -177,8 +177,15 @@ function M:UpdateMapAlpha()
 	end
 end
 
+function M:IsMapsterEnabled()
+	local Mapster = LibStub("AceAddon-3.0"):GetAddon("Mapster", true)
+	return Mapster ~= nil
+end
+
 function M:Initialize()
 	self:UpdateMapAlpha()
+
+	local mapsterEnabled = self:IsMapsterEnabled()
 
 	if not E.private.worldmap.enable then return end
 
@@ -209,17 +216,24 @@ function M:Initialize()
 		self:RegisterEvent("PLAYER_REGEN_DISABLED")
 	end
 
-	WorldMapFrame:EnableMouse(false)
-	WorldMapFrame.EnableMouse = E.noop
+	-- Only disable mouse interaction if Mapster is not enabled
+	-- Mapster needs mouse events for dragging the map
+	if not mapsterEnabled then
+		WorldMapFrame:EnableMouse(false)
+		WorldMapFrame.EnableMouse = E.noop
+	end
 
 	if E.global.general.smallerWorldMap then
-		BlackoutWorld:SetTexture(nil)
+		-- Only modify these if Mapster is not handling positioning
+		if not mapsterEnabled then
+			BlackoutWorld:SetTexture(nil)
 
-		WorldMapFrame:SetParent(UIParent)
-		WorldMapFrame.SetParent = E.noop
+			WorldMapFrame:SetParent(UIParent)
+			WorldMapFrame.SetParent = E.noop
 
-		WorldMapFrame:EnableKeyboard(false)
-		WorldMapFrame.EnableKeyboard = E.noop
+			WorldMapFrame:EnableKeyboard(false)
+			WorldMapFrame.EnableKeyboard = E.noop
+		end
 
 		if not GetCVarBool("miniWorldMap") then
 			ShowUIPanel(WorldMapFrame)
