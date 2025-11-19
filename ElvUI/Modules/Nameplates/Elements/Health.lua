@@ -140,8 +140,25 @@ function NP:Update_HealComm(nameplate)
 			nameplate:EnableElement('HealCommBar')
 		end
 
-		nameplate.HealCommBar.myBar:SetStatusBarColor(NP.db.colors.healPrediction.personal.r, NP.db.colors.healPrediction.personal.g, NP.db.colors.healPrediction.personal.b)
-		nameplate.HealCommBar.otherBar:SetStatusBarColor(NP.db.colors.healPrediction.others.r, NP.db.colors.healPrediction.others.g, NP.db.colors.healPrediction.others.b)
+		local c = NP.db.colors.healPrediction
+		nameplate.HealCommBar.myBar:SetStatusBarColor(c.personal.r, c.personal.g, c.personal.b)
+		nameplate.HealCommBar.otherBar:SetStatusBarColor(c.others.r, c.others.g, c.others.b)
+
+		if nameplate.HealCommBar.absorbBar then
+			nameplate.HealCommBar.absorbBar:SetStatusBarColor(c.absorbs.r, c.absorbs.g, c.absorbs.b, c.absorbs.a)
+		end
+
+		if nameplate.HealCommBar.healAbsorbBar then
+			nameplate.HealCommBar.healAbsorbBar:SetStatusBarColor(c.healAbsorbs.r, c.healAbsorbs.g, c.healAbsorbs.b, c.healAbsorbs.a)
+		end
+
+		if nameplate.HealCommBar.overAbsorb then
+			nameplate.HealCommBar.overAbsorb:SetVertexColor(c.overAbsorbs.r, c.overAbsorbs.g, c.overAbsorbs.b, c.overAbsorbs.a)
+		end
+
+		if nameplate.HealCommBar.overHealAbsorb then
+			nameplate.HealCommBar.overHealAbsorb:SetVertexColor(c.overHealAbsorbs.r, c.overHealAbsorbs.g, c.overHealAbsorbs.b, c.overHealAbsorbs.a)
+		end
 	elseif nameplate:IsElementEnabled('HealCommBar') then
 		nameplate:DisableElement('HealCommBar')
 	end
@@ -158,6 +175,12 @@ end
 function NP:SetAlpha_HealComm(obj, show)
 	obj.myBar:SetAlpha(show and 1 or 0)
 	obj.otherBar:SetAlpha(show and 1 or 0)
+	if obj.absorbBar then
+		obj.absorbBar:SetAlpha(show and 1 or 0)
+	end
+	if obj.healAbsorbBar then
+		obj.healAbsorbBar:SetAlpha(show and 1 or 0)
+	end
 end
 
 function NP:SetVisibility_HealComm(obj)
@@ -171,9 +194,21 @@ function NP:SetVisibility_HealComm(obj)
 	if obj.maxOverflow > 1 then
 		obj.myBar:SetParent(obj.health)
 		obj.otherBar:SetParent(obj.health)
+		if obj.absorbBar then
+			obj.absorbBar:SetParent(obj.health)
+		end
+		if obj.healAbsorbBar then
+			obj.healAbsorbBar:SetParent(obj.health)
+		end
 	else
 		obj.myBar:SetParent(obj.parent)
 		obj.otherBar:SetParent(obj.parent)
+		if obj.absorbBar then
+			obj.absorbBar:SetParent(obj.parent)
+		end
+		if obj.healAbsorbBar then
+			obj.healAbsorbBar:SetParent(obj.parent)
+		end
 	end
 end
 
@@ -183,9 +218,13 @@ function NP:Construct_HealComm(frame)
 
 	local myBar = CreateFrame("StatusBar", nil, parent)
 	local otherBar = CreateFrame("StatusBar", nil, parent)
+	local absorbBar = E:CreateReversibleStatusBar(nil, parent)
+	local healAbsorbBar = E:CreateReversibleStatusBar(nil, parent)
 
-	myBar:SetFrameLevel(health:GetFrameLevel()+1)
-	otherBar:SetFrameLevel(health:GetFrameLevel()+1)
+	myBar:SetFrameLevel(health:GetFrameLevel()+2)
+	otherBar:SetFrameLevel(health:GetFrameLevel()+2)
+	absorbBar:SetFrameLevel(health:GetFrameLevel()+2)
+	healAbsorbBar:SetFrameLevel(health:GetFrameLevel()+2)
 
 	NP.StatusBars[myBar] = true
 	NP.StatusBars[otherBar] = true
@@ -193,6 +232,8 @@ function NP:Construct_HealComm(frame)
 	local healPrediction = {
 		myBar = myBar,
 		otherBar = otherBar,
+		absorbBar = absorbBar,
+		healAbsorbBar = healAbsorbBar,
 		PostUpdate = NP.UpdateHealComm,
 		maxOverflow = 1,
 		health = health,
@@ -226,13 +267,19 @@ function NP:Configure_HealComm(frame)
 		
 		local myBar = healPrediction.myBar
 		local otherBar = healPrediction.otherBar
+		local absorbBar = healPrediction.absorbBar
+		local healAbsorbBar = healPrediction.healAbsorbBar
 
 		myBar:SetOrientation(orientation)
 		otherBar:SetOrientation(orientation)
+		absorbBar:SetOrientation(orientation)
+		healAbsorbBar:SetOrientation(orientation)
 
 		if orientation == "HORIZONTAL" then
 			local width = health:GetWidth()
 			width = (width > 0 and width) or health.WIDTH
+			local height = health:GetHeight()
+			height = (height > 0 and height) or health.HEIGHT
 			local healthTexture = health:GetStatusBarTexture()
 
 			myBar:Size(width, 0)
@@ -246,7 +293,21 @@ function NP:Configure_HealComm(frame)
 			otherBar:Point("TOP", health, "TOP")
 			otherBar:Point("BOTTOM", health, "BOTTOM")
 			otherBar:Point("LEFT", myBar:GetStatusBarTexture(), "RIGHT")
+
+			absorbBar:SetSize(width, height)
+			absorbBar:ClearAllPoints()
+			absorbBar:Point("TOP", health, "TOP")
+			absorbBar:Point("BOTTOM", health, "BOTTOM")
+			absorbBar:Point("RIGHT", health, "RIGHT")
+
+			healAbsorbBar:SetSize(width, height)
+			healAbsorbBar:ClearAllPoints()
+			healAbsorbBar:Point("TOP", health, "TOP")
+			healAbsorbBar:Point("BOTTOM", health, "BOTTOM")
+			healAbsorbBar:Point("RIGHT", health, "RIGHT")
 		else
+			local width = health:GetWidth()
+			width = (width > 0 and width) or health.WIDTH
 			local height = health:GetHeight()
 			height = (height > 0 and height) or health.HEIGHT
 			local healthTexture = health:GetStatusBarTexture()
@@ -262,10 +323,28 @@ function NP:Configure_HealComm(frame)
 			otherBar:Point("LEFT", health, "LEFT")
 			otherBar:Point("RIGHT", health, "RIGHT")
 			otherBar:Point("BOTTOM", myBar:GetStatusBarTexture(), "TOP")
+
+			absorbBar:SetSize(width, height)
+			absorbBar:ClearAllPoints()
+			absorbBar:Point("LEFT", health, "LEFT")
+			absorbBar:Point("RIGHT", health, "RIGHT")
+			absorbBar:Point("TOP", health, "TOP")
+
+			healAbsorbBar:SetSize(width, height)
+			healAbsorbBar:ClearAllPoints()
+			healAbsorbBar:Point("LEFT", health, "LEFT")
+			healAbsorbBar:Point("RIGHT", health, "RIGHT")
+			healAbsorbBar:Point("TOP", health, "TOP")
 		end
 
-		frame.HealCommBar.myBar:SetStatusBarColor(NP.db.colors.healPrediction.personal.r, NP.db.colors.healPrediction.personal.g, NP.db.colors.healPrediction.personal.b)
-		frame.HealCommBar.otherBar:SetStatusBarColor(NP.db.colors.healPrediction.others.r, NP.db.colors.healPrediction.others.g, NP.db.colors.healPrediction.others.b)
+		local hpc = NP.db.colors.healPrediction
+		frame.HealCommBar.myBar:SetStatusBarColor(hpc.personal.r, hpc.personal.g, hpc.personal.b)
+		frame.HealCommBar.otherBar:SetStatusBarColor(hpc.others.r, hpc.others.g, hpc.others.b)
+		frame.HealCommBar.absorbBar:SetStatusBarColor(hpc.absorbs.r, hpc.absorbs.g, hpc.absorbs.b, hpc.absorbs.a)
+		frame.HealCommBar.healAbsorbBar:SetStatusBarColor(hpc.healAbsorbs.r, hpc.healAbsorbs.g, hpc.healAbsorbs.b, hpc.healAbsorbs.a)
+
+		frame.HealCommBar.absorbBar:SetReverseFill(true)
+		frame.HealCommBar.healAbsorbBar:SetReverseFill(true)
 	elseif frame:IsElementEnabled('HealComm4') then
 		frame:DisableElement('HealComm4')
 	end
@@ -297,7 +376,7 @@ local function UpdateFillBar(frame, previousTexture, bar, amount)
 	return bar:GetStatusBarTexture()
 end
 
-function NP:UpdateHealComm(_, myIncomingHeal, allIncomingHeal)
+function NP:UpdateHealComm(_, myIncomingHeal, allIncomingHeal, absorb, healAbsorb)
 	local health = self.health
 	local previousTexture = health:GetStatusBarTexture()
 

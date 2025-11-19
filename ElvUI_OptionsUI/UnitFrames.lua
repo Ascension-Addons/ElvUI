@@ -3901,8 +3901,20 @@ E.Options.args.unitframe = {
 									name = L["Others"],
 									hasAlpha = true
 								},
-								maxOverflow = {
+								absorbs = {
 									order = 4,
+									type = "color",
+									name = L["Absorbs"],
+									hasAlpha = true
+								},
+								healAbsorbs = {
+									order = 5,
+									type = "color",
+									name = L["Heal Absorbs"],
+									hasAlpha = true
+								},
+								maxOverflow = {
+									order = 6,
 									type = "range",
 									name = L["Max Overflow"],
 									desc = L["Max amount of overflow allowed to extend past the end of the health bar."],

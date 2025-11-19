@@ -539,6 +539,8 @@ P.nameplates = {
 		healPrediction = {
 			personal = {r = 0, g = 1, b = 0.5, a = 0.25},
 			others = {r = 0, g = 1, b = 0, a = 0.25},
+			absorbs = {r = 1, g = 1, b = 1, a = 0.35},
+			healAbsorbs = {r = 1, g = 0, b = 0, a = 0.35},
 		},
 		threat = {
 			goodColor = {r = 0.20, g = 0.71, b = 0.00},
@@ -1105,6 +1107,8 @@ P.unitframe = {
 		healPrediction = {
 			personal = {r = 0, g = 1, b = 0.5, a = 0.25},
 			others = {r = 0, g = 1, b = 0, a = 0.25},
+			absorbs = {r = 1, g = 1, b = 1, a = 0.35},
+			healAbsorbs = {r = 1, g = 0, b = 0, a = 0.35},
 			maxOverflow = 0
 		},
 		classResources = {
