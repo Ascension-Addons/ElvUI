@@ -41,7 +41,14 @@ D.ItemTable = {
 		['70923'] = true, -- Sweater
 		['34486'] = true, -- Orgrimmar achievement fish
 		['11287'] = true, -- Lesser Magic Wand
-		['11288'] = true -- Greater Magic Wand
+		['11288'] = true, -- Greater Magic Wand
+		['11289'] = true, -- Lesser Mystic Wand
+		['11290'] = true, -- Greater Mystic Wand
+		['4614'] = true, -- Pendant of Myzrael
+		['20406'] = true, -- Twilight Cultist Mantle
+		['20407'] = true, -- Twilight Cultist Robe
+		['20408'] = true, -- Twilight Cultist Cowl
+		['21766'] = true, -- Opal Necklace of Impact
 	},
 	['Cooking'] = {
 		['46349'] = true -- Chef's Hat
