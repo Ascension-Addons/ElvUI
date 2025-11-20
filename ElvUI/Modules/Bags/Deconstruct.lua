@@ -9,6 +9,7 @@ local E, L, V, P, G = unpack(select(2, ...))
 local B = E:GetModule("Bags")
 
 local D = B:NewModule("Deconstruct", "AceHook-3.0", "AceEvent-3.0")
+local Search = E.Libs.ItemSearch
 
 -- Lua functions
 local _G = _G
@@ -67,6 +68,8 @@ D.ItemTable = {
 D.Keys = {}
 D.BlacklistDE = {}
 D.BlacklistLOCK = {}
+D.BlacklistDEPatterns = {}
+D.BlacklistLOCKPatterns = {}
 
 -- Profession spell names
 D.DEname = GetSpellInfo(13262) -- Disenchant
@@ -124,46 +127,72 @@ end
 
 function D:BuildBlacklistDE()
 	wipe(D.BlacklistDE)
+	wipe(D.BlacklistDEPatterns)
 	local db = E.db.bags.deconstructBlacklist or {}
 	local g = E.global.bags.deconstructBlacklist or {}
 
 	for key, value in pairs(db) do
 		if value and value ~= "" then
-			local itemName = GetItemInfo(value)
-			if itemName then D.BlacklistDE[itemName] = true end
+			local entry = tostring(value)
+			entry = entry:match("^%s*(.-)%s*$") or entry
+			local itemName = GetItemInfo(entry)
+			if itemName then
+				D.BlacklistDE[itemName] = true
+			else
+				table.insert(D.BlacklistDEPatterns, entry)
+			end
 		end
 	end
 
 	for key, value in pairs(g) do
 		if value and value ~= "" then
-			local itemName = GetItemInfo(value)
-			if itemName then D.BlacklistDE[itemName] = true end
+			local entry = tostring(value)
+			entry = entry:match("^%s*(.-)%s*$") or entry
+			local itemName = GetItemInfo(entry)
+			if itemName then
+				D.BlacklistDE[itemName] = true
+			else
+				table.insert(D.BlacklistDEPatterns, entry)
+			end
 		end
 	end
 end
 
 function D:BuildBlacklistLOCK()
 	wipe(D.BlacklistLOCK)
+	wipe(D.BlacklistLOCKPatterns)
 	local db = E.db.bags.lockBlacklist or {}
 	local g = E.global.bags.lockBlacklist or {}
 
 	for key, value in pairs(db) do
 		if value and value ~= "" then
-			local itemName = GetItemInfo(value)
-			if itemName then D.BlacklistLOCK[itemName] = true end
+			local entry = tostring(value)
+			entry = entry:match("^%s*(.-)%s*$") or entry
+			local itemName = GetItemInfo(entry)
+			if itemName then
+				D.BlacklistLOCK[itemName] = true
+			else
+				table.insert(D.BlacklistLOCKPatterns, entry)
+			end
 		end
 	end
 
 	for key, value in pairs(g) do
 		if value and value ~= "" then
-			local itemName = GetItemInfo(value)
-			if itemName then D.BlacklistLOCK[itemName] = true end
+			local entry = tostring(value)
+			entry = entry:match("^%s*(.-)%s*$") or entry
+			local itemName = GetItemInfo(entry)
+			if itemName then
+				D.BlacklistLOCK[itemName] = true
+			else
+				table.insert(D.BlacklistLOCKPatterns, entry)
+			end
 		end
 	end
 end
 
 -- Check if item can be disenchanted
-function D:IsBreakable(itemId, itemName, itemQuality, equipSlot)
+function D:IsBreakable(itemId, itemName, itemQuality, equipSlot, itemLink)
 	if not itemId then return false end
 	if type(itemId) == "number" then itemId = tostring(itemId) end
 
@@ -171,7 +200,17 @@ function D:IsBreakable(itemId, itemName, itemQuality, equipSlot)
 	if D.ItemTable['DoNotDE'][itemId] then return false end
 	if D.ItemTable['Cooking'][itemId] then return false end
 	if D.ItemTable['Fishing'][itemId] then return false end
-	if D.BlacklistDE[itemName] then return false end
+	if itemName and D.BlacklistDE[itemName] then return false end
+
+	-- Check pattern blacklist using LibItemSearch (supports full search syntax)
+	for _, query in ipairs(D.BlacklistDEPatterns or {}) do
+		if query and query ~= "" then
+			local ok, result = pcall(Search.Matches, Search, itemLink or itemName, query)
+			if ok and result then
+				return false
+			end
+		end
+	end
 
 	return true
 end
@@ -428,6 +467,8 @@ function D:DeconstructParser()
 	local itemId = tonumber(itemLink:match("item:(%d+)"))
 	if not itemId then return end
 
+	local itemName = GetItemInfo(itemId)
+
 	if InCombatLockdown() then return end
 
 	-- Check what can be done with this item
@@ -436,6 +477,21 @@ function D:DeconstructParser()
 	-- Check for lockboxes
 	local hasKey = HaveKey()
 	if (D.HasPickLock or hasKey) and D:IsUnlockable(itemLink) then
+		-- Skip if lockbox is blacklisted (exact name or pattern)
+		if itemName then
+			if D.BlacklistLOCK[itemName] then
+				return
+			end
+			for _, query in ipairs(D.BlacklistLOCKPatterns or {}) do
+				if query and query ~= "" then
+					local ok, result = pcall(Search.Matches, Search, itemLink, query)
+					if ok and result then
+						return
+					end
+				end
+			end
+		end
+
 		r, g, b = 0, 1, 1
 		if D.HasPickLock then
 			D:ApplyDeconstruct(itemLink, itemId, D.LOCKname, 'spell', r, g, b, owner)
@@ -462,7 +518,7 @@ function D:DeconstructParser()
 	-- Check for disenchantable items (Enchanting only)
 	if D.HasEnchanting and D:IsDisenchantable(itemId) then
 		local itemName, _, itemQuality, _, _, _, _, _, equipSlot = GetItemInfo(itemId)
-		if D:IsBreakable(itemId, itemName, itemQuality, equipSlot) then
+		if D:IsBreakable(itemId, itemName, itemQuality, equipSlot, itemLink) then
 			r, g, b = 0.5, 0, 1
 			D:ApplyDeconstruct(itemLink, itemId, D.DEname, 'spell', r, g, b, owner)
 			return
@@ -478,7 +534,23 @@ function D:CanProcessItem(itemLink, hasKey)
 	if not itemId then return false end
 
 	-- Check lockboxes (Rogues only)
-	if (D.HasPickLock or hasKey) and D:IsUnlockable(itemLink) then return true end
+	if (D.HasPickLock or hasKey) and D:IsUnlockable(itemLink) then
+		local itemName = GetItemInfo(itemId)
+		if itemName then
+			if D.BlacklistLOCK[itemName] then
+				return false
+			end
+			for _, query in ipairs(D.BlacklistLOCKPatterns or {}) do
+				if query and query ~= "" then
+					local ok, result = pcall(Search.Matches, Search, itemLink, query)
+					if ok and result then
+						return false
+					end
+				end
+			end
+		end
+		return true
+	end
 
 	-- Check prospectable (Jewelcrafting only)
 	if D.HasJewelcrafting and D:IsProspectable(itemId) then return true end
@@ -489,7 +561,7 @@ function D:CanProcessItem(itemLink, hasKey)
 	-- Check disenchantable (Enchanting only)
 	if D.HasEnchanting and D:IsDisenchantable(itemId) then
 		local itemName, _, itemQuality, _, _, _, _, _, equipSlot = GetItemInfo(itemId)
-		if D:IsBreakable(itemId, itemName, itemQuality, equipSlot) then return true end
+		if D:IsBreakable(itemId, itemName, itemQuality, equipSlot, itemLink) then return true end
 	end
 
 	return false
