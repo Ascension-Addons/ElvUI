@@ -541,6 +541,8 @@ P.nameplates = {
 			others = {r = 0, g = 1, b = 0, a = 0.25},
 			absorbs = {r = 1, g = 1, b = 1, a = 0.35},
 			healAbsorbs = {r = 1, g = 0, b = 0, a = 0.35},
+			overflowHeals = false,
+			overflowAbsorbs = false,
 		},
 		threat = {
 			goodColor = {r = 0.20, g = 0.71, b = 0.00},
@@ -1109,7 +1111,9 @@ P.unitframe = {
 			others = {r = 0, g = 1, b = 0, a = 0.25},
 			absorbs = {r = 1, g = 1, b = 1, a = 0.35},
 			healAbsorbs = {r = 1, g = 0, b = 0, a = 0.35},
-			maxOverflow = 0
+			maxOverflow = 0,
+			overflowHeals = false,
+			overflowAbsorbs = false,
 		},
 		classResources = {
 			comboPoints = {

@@ -89,14 +89,23 @@ local function Update(self)
 		allIncomingHeal = allIncomingHeal - healAbsorb
 		healAbsorb = 0
 
-		if health + allIncomingHeal > maxOverflowHP then
-			allIncomingHeal = maxOverflowHP - health
+		if element.overflowHeals then
+			if health + allIncomingHeal > maxOverflowHP then
+				allIncomingHeal = maxOverflowHP - health
+			end
 		end
 
 		if allIncomingHeal < myIncomingHeal then
 			myIncomingHeal = allIncomingHeal
 		else
 			otherIncomingHeal = allIncomingHeal - myIncomingHeal
+		end
+	end
+
+	if element.overflowAbsorbs then
+		local maxAbsorb = maxOverflowHP - health
+		if absorb > maxAbsorb then
+			absorb = maxAbsorb > 0 and maxAbsorb or 0
 		end
 	end
 
@@ -194,14 +203,6 @@ local function Enable(self)
 
 		if not element.maxOverflow then
 			element.maxOverflow = 1.05
-		end
-
-		if element.myBar and element.myBar:IsObjectType("StatusBar") and not element.myBar:GetStatusBarTexture() then
-			element.myBar:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
-		end
-
-		if element.otherBar and element.otherBar:IsObjectType("StatusBar") and not element.otherBar:GetStatusBarTexture() then
-			element.otherBar:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
 		end
 
 		if element.absorbBar and element.absorbBar:IsObjectType("StatusBar") and not element.absorbBar:GetStatusBarTexture() then
