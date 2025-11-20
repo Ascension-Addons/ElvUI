@@ -192,7 +192,7 @@ function D:BuildBlacklistLOCK()
 end
 
 -- Check if item can be disenchanted
-function D:IsBreakable(itemId, itemName, itemQuality, equipSlot, itemLink)
+function D:IsBreakable(itemId, itemName, itemLink)
 	if not itemId then return false end
 	if type(itemId) == "number" then itemId = tostring(itemId) end
 
@@ -216,18 +216,13 @@ function D:IsBreakable(itemId, itemName, itemQuality, equipSlot, itemLink)
 end
 
 -- Check if item is disenchantable
-function D:IsDisenchantable(itemId)
-	if not itemId then return false end
-
-	local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc = GetItemInfo(itemId)
-	if not itemName then return false end
+function D:IsDisenchantable(itemId, itemName, itemLink, itemRarity, itemType, itemEquipLoc)
+	if not itemId or not itemName or not D.HasEnchanting then return false end
 
 	-- Quality: 2=Uncommon, 3=Rare, 4=Epic
 	if not itemRarity or itemRarity < 2 or itemRarity > 4 then return false end
-
 	if itemType ~= "Armor" and itemType ~= "Weapon" then return false end
 	if not itemEquipLoc or itemEquipLoc == "" then return false end
-	if not D.HasEnchanting then return false end
 
 	return true
 end
@@ -467,7 +462,7 @@ function D:DeconstructParser()
 	local itemId = tonumber(itemLink:match("item:(%d+)"))
 	if not itemId then return end
 
-	local itemName = GetItemInfo(itemId)
+	local itemName, _, itemRarity, _, _, itemType, itemSubType, _, itemEquipLoc = GetItemInfo(itemId)
 
 	if InCombatLockdown() then return end
 
@@ -516,9 +511,8 @@ function D:DeconstructParser()
 	end
 
 	-- Check for disenchantable items (Enchanting only)
-	if D.HasEnchanting and D:IsDisenchantable(itemId) then
-		local itemName, _, itemQuality, _, _, _, _, _, equipSlot = GetItemInfo(itemId)
-		if D:IsBreakable(itemId, itemName, itemQuality, equipSlot, itemLink) then
+	if D.HasEnchanting and D:IsDisenchantable(itemId, itemName, itemLink, itemRarity, itemType, itemEquipLoc) then
+		if D:IsBreakable(itemId, itemName, itemLink) then
 			r, g, b = 0.5, 0, 1
 			D:ApplyDeconstruct(itemLink, itemId, D.DEname, 'spell', r, g, b, owner)
 			return
@@ -533,9 +527,10 @@ function D:CanProcessItem(itemLink, hasKey)
 	local itemId = tonumber(itemLink:match("item:(%d+)"))
 	if not itemId then return false end
 
+	local itemName, _, itemRarity, _, _, itemType, _, _, itemEquipLoc = GetItemInfo(itemId)
+
 	-- Check lockboxes (Rogues only)
 	if (D.HasPickLock or hasKey) and D:IsUnlockable(itemLink) then
-		local itemName = GetItemInfo(itemId)
 		if itemName then
 			if D.BlacklistLOCK[itemName] then
 				return false
@@ -559,9 +554,8 @@ function D:CanProcessItem(itemLink, hasKey)
 	if D.HasInscription and D:IsMillable(itemId) then return true end
 
 	-- Check disenchantable (Enchanting only)
-	if D.HasEnchanting and D:IsDisenchantable(itemId) then
-		local itemName, _, itemQuality, _, _, _, _, _, equipSlot = GetItemInfo(itemId)
-		if D:IsBreakable(itemId, itemName, itemQuality, equipSlot, itemLink) then return true end
+	if D.HasEnchanting and D:IsDisenchantable(itemId, itemName, itemLink, itemRarity, itemType, itemEquipLoc) then
+		if D:IsBreakable(itemId, itemName, itemLink) then return true end
 	end
 
 	return false
