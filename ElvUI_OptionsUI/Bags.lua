@@ -149,13 +149,6 @@ E.Options.args.bags = {
 					name = L["Disable Bank Sort"],
 					set = function(info, value) E.db.bags[info[#info]] = value B:ToggleSortButtonState(true) end
 				},
-				deconstruct = {
-					order = 16,
-					type = "toggle",
-					name = L["Deconstruct Mode"],
-					desc = L["Deconstruct Mode Desc"],
-					set = function(info, value) E.db.bags[info[#info]] = value E:StaticPopup_Show("PRIVATE_RL") end
-				},
 				unlearnedVanityIcon = {
 					order = 17,
 					type = "toggle",
@@ -792,8 +785,184 @@ E.Options.args.bags = {
 				}
 			}
 		},
-		search_syntax = {
+		deconstructGroup = {
 			order = 10,
+			type = "group",
+			name = L["Deconstruct Mode"],
+			disabled = function() return not E.Bags.Initialized end,
+			args = {
+				header = {
+					order = 1,
+					type = "header",
+					name = L["Deconstruct Mode"]
+				},
+				description = {
+					order = 2,
+					type = "description",
+					name = L["Deconstruct Mode Desc"]
+				}
+				,deconstruct = {
+					order = 3,
+					type = "toggle",
+					name = L["Enable"],
+					set = function(info, value) E.db.bags[info[#info]] = value E:StaticPopup_Show("PRIVATE_RL") end
+				},
+				spacer = {
+					order = 4,
+					type = "description",
+					name = " "
+				},
+				deconstructBlacklistGroup = {
+					order = 5,
+					type = "group",
+					name = L["Deconstruct Blacklist"],
+					guiInline = true,
+					args = {
+						addEntryProfile = {
+							order = 1,
+							type = "input",
+							name = L["Profile"],
+							desc = L["Add an item or search syntax to the deconstruct blacklist."],
+							get = function(info) return "" end,
+							set = function(info, value)
+								if value == "" or gsub(value, "%s+", "") == "" then return end
+								local itemID = match(value, "item:(%d+)")
+								E.db.bags.deconstructBlacklist[(itemID or value)] = value
+								local D = B:GetModule("Deconstruct")
+								if D and D.BuildBlacklistDE then D:BuildBlacklistDE() end
+							end
+						},
+						spacer = {
+							order = 2,
+							type = "description",
+							name = " ",
+							width = "normal"
+						},
+						addEntryGlobal = {
+							order = 3,
+							type = "input",
+							name = L["Global"],
+							desc = L["Add an item or search syntax to the deconstruct blacklist."],
+							get = function(info) return "" end,
+							set = function(info, value)
+								if value == "" or gsub(value, "%s+", "") == "" then return end
+								local itemID = match(value, "item:(%d+)")
+								E.global.bags.deconstructBlacklist[(itemID or value)] = value
+								if E.db.bags.deconstructBlacklist[(itemID or value)] then
+									E.db.bags.deconstructBlacklist[(itemID or value)] = nil
+								end
+								local D = B:GetModule("Deconstruct")
+								if D and D.BuildBlacklistDE then D:BuildBlacklistDE() end
+							end
+						}
+					}
+				},
+				deconstructBlacklistProfile = {
+					order = 6,
+					type = "multiselect",
+					name = L["Deconstruct Blacklist (Profile)"],
+					values = function() return E.db.bags.deconstructBlacklist end,
+					get = function(info, value) return E.db.bags.deconstructBlacklist[value] end,
+					set = function(info, value)
+						E.db.bags.deconstructBlacklist[value] = nil
+						GameTooltip:Hide()
+						local D = B:GetModule("Deconstruct")
+						if D and D.BuildBlacklistDE then D:BuildBlacklistDE() end
+					end
+				},
+				deconstructBlacklistGlobal = {
+					order = 7,
+					type = "multiselect",
+					name = L["Deconstruct Blacklist (Global)"],
+					values = function() return E.global.bags.deconstructBlacklist end,
+					get = function(info, value) return E.global.bags.deconstructBlacklist[value] end,
+					set = function(info, value)
+						E.global.bags.deconstructBlacklist[value] = nil
+						GameTooltip:Hide()
+						local D = B:GetModule("Deconstruct")
+						if D and D.BuildBlacklistDE then D:BuildBlacklistDE() end
+					end
+				},
+				spacer2 = {
+					order = 8,
+					type = "description",
+					name = " "
+				},
+				lockBlacklistGroup = {
+					order = 9,
+					type = "group",
+					name = L["Lockbox Blacklist"],
+					guiInline = true,
+					args = {
+						addEntryProfile = {
+							order = 1,
+							type = "input",
+							name = L["Profile"],
+							desc = L["Add an item or search syntax to the lockbox blacklist."],
+							get = function(info) return "" end,
+							set = function(info, value)
+								if value == "" or gsub(value, "%s+", "") == "" then return end
+								local itemID = match(value, "item:(%d+)")
+								E.db.bags.lockBlacklist[(itemID or value)] = value
+								local D = B:GetModule("Deconstruct")
+								if D and D.BuildBlacklistLOCK then D:BuildBlacklistLOCK() end
+							end
+						},
+						spacer = {
+							order = 2,
+							type = "description",
+							name = " ",
+							width = "normal"
+						},
+						addEntryGlobal = {
+							order = 3,
+							type = "input",
+							name = L["Global"],
+							desc = L["Add an item or search syntax to the lockbox blacklist."],
+							get = function(info) return "" end,
+							set = function(info, value)
+								if value == "" or gsub(value, "%s+", "") == "" then return end
+								local itemID = match(value, "item:(%d+)")
+								E.global.bags.lockBlacklist[(itemID or value)] = value
+								if E.db.bags.lockBlacklist[(itemID or value)] then
+									E.db.bags.lockBlacklist[(itemID or value)] = nil
+								end
+								local D = B:GetModule("Deconstruct")
+								if D and D.BuildBlacklistLOCK then D:BuildBlacklistLOCK() end
+							end
+						}
+					}
+				},
+				lockBlacklistProfile = {
+					order = 10,
+					type = "multiselect",
+					name = L["Lockbox Blacklist (Profile)"],
+					values = function() return E.db.bags.lockBlacklist end,
+					get = function(info, value) return E.db.bags.lockBlacklist[value] end,
+					set = function(info, value)
+						E.db.bags.lockBlacklist[value] = nil
+						GameTooltip:Hide()
+						local D = B:GetModule("Deconstruct")
+						if D and D.BuildBlacklistLOCK then D:BuildBlacklistLOCK() end
+					end
+				},
+				lockBlacklistGlobal = {
+					order = 11,
+					type = "multiselect",
+					name = L["Lockbox Blacklist (Global)"],
+					values = function() return E.global.bags.lockBlacklist end,
+					get = function(info, value) return E.global.bags.lockBlacklist[value] end,
+					set = function(info, value)
+						E.global.bags.lockBlacklist[value] = nil
+						GameTooltip:Hide()
+						local D = B:GetModule("Deconstruct")
+						if D and D.BuildBlacklistLOCK then D:BuildBlacklistLOCK() end
+					end
+				}
+			}
+		},
+		search_syntax = {
+			order = 11,
 			type = "group",
 			name = L["Search Syntax"],
 			disabled = function() return not E.Bags.Initialized end,

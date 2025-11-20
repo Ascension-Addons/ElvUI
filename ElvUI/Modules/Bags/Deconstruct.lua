@@ -114,26 +114,49 @@ end
 -- Helper function to check if player has a skeleton key
 local function HaveKey() for key in pairs(D.Keys) do if GetItemCount(key) > 0 then return key end end end
 
--- Build blacklist from settings
-function D:Blacklisting(skill) D['BuildBlacklist' .. skill](self) end
+function D:Blacklisting(skill)
+	if skill == 'DE' then
+		D:BuildBlacklistDE()
+	elseif skill == 'LOCK' then
+		D:BuildBlacklistLOCK()
+	end
+end
 
-function D:BuildBlacklistDE(...)
+function D:BuildBlacklistDE()
 	wipe(D.BlacklistDE)
-	for index = 1, select('#', ...) do
-		local name = select(index, ...)
-		if name and name ~= "" then
-			local itemName = GetItemInfo(name)
+	local db = E.db.bags.deconstructBlacklist or {}
+	local g = E.global.bags.deconstructBlacklist or {}
+
+	for key, value in pairs(db) do
+		if value and value ~= "" then
+			local itemName = GetItemInfo(value)
+			if itemName then D.BlacklistDE[itemName] = true end
+		end
+	end
+
+	for key, value in pairs(g) do
+		if value and value ~= "" then
+			local itemName = GetItemInfo(value)
 			if itemName then D.BlacklistDE[itemName] = true end
 		end
 	end
 end
 
-function D:BuildBlacklistLOCK(...)
+function D:BuildBlacklistLOCK()
 	wipe(D.BlacklistLOCK)
-	for index = 1, select('#', ...) do
-		local name = select(index, ...)
-		if name and name ~= "" then
-			local itemName = GetItemInfo(name)
+	local db = E.db.bags.lockBlacklist or {}
+	local g = E.global.bags.lockBlacklist or {}
+
+	for key, value in pairs(db) do
+		if value and value ~= "" then
+			local itemName = GetItemInfo(value)
+			if itemName then D.BlacklistLOCK[itemName] = true end
+		end
+	end
+
+	for key, value in pairs(g) do
+		if value and value ~= "" then
+			local itemName = GetItemInfo(value)
 			if itemName then D.BlacklistLOCK[itemName] = true end
 		end
 	end
