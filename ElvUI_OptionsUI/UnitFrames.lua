@@ -3901,8 +3901,20 @@ E.Options.args.unitframe = {
 									name = L["Others"],
 									hasAlpha = true
 								},
-								maxOverflow = {
+								absorbs = {
 									order = 4,
+									type = "color",
+									name = L["Absorbs"],
+									hasAlpha = true
+								},
+								healAbsorbs = {
+									order = 5,
+									type = "color",
+									name = L["Heal Absorbs"],
+									hasAlpha = true
+								},
+								maxOverflow = {
+									order = 6,
 									type = "range",
 									name = L["Max Overflow"],
 									desc = L["Max amount of overflow allowed to extend past the end of the health bar."],
@@ -3910,6 +3922,22 @@ E.Options.args.unitframe = {
 									min = 0, max = 1, step = 0.01,
 									get = function(info) return E.db.unitframe.colors.healPrediction.maxOverflow end,
 									set = function(info, value) E.db.unitframe.colors.healPrediction.maxOverflow = value UF:Update_AllFrames() end
+								},
+								overflowHeals = {
+									order = 7,
+									type = "toggle",
+									name = L["Overflow Heals"],
+									desc = L["When enabled, incoming heals overflow past the health bar, otherwise bar is reverse filled."],
+									get = function(info) return E.db.unitframe.colors.healPrediction.overflowHeals end,
+									set = function(info, value) E.db.unitframe.colors.healPrediction.overflowHeals = value UF:Update_AllFrames() end
+								},
+								overflowAbsorbs = {
+									order = 8,
+									type = "toggle",
+									name = L["Overflow Absorbs"],
+									desc = L["When enabled, absorb shields overflow past the health bar, otherwise bar is reverse filled."],
+									get = function(info) return E.db.unitframe.colors.healPrediction.overflowAbsorbs end,
+									set = function(info, value) E.db.unitframe.colors.healPrediction.overflowAbsorbs = value UF:Update_AllFrames() end
 								}
 							}
 						},
