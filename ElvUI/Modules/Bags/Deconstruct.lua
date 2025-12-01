@@ -9,6 +9,7 @@ local E, L, V, P, G = unpack(select(2, ...))
 local B = E:GetModule("Bags")
 
 local D = B:NewModule("Deconstruct", "AceHook-3.0", "AceEvent-3.0")
+local Search = E.Libs.ItemSearch
 
 -- Lua functions
 local _G = _G
@@ -41,7 +42,14 @@ D.ItemTable = {
 		['70923'] = true, -- Sweater
 		['34486'] = true, -- Orgrimmar achievement fish
 		['11287'] = true, -- Lesser Magic Wand
-		['11288'] = true -- Greater Magic Wand
+		['11288'] = true, -- Greater Magic Wand
+		['11289'] = true, -- Lesser Mystic Wand
+		['11290'] = true, -- Greater Mystic Wand
+		['4614'] = true, -- Pendant of Myzrael
+		['20406'] = true, -- Twilight Cultist Mantle
+		['20407'] = true, -- Twilight Cultist Robe
+		['20408'] = true, -- Twilight Cultist Cowl
+		['21766'] = true, -- Opal Necklace of Impact
 	},
 	['Cooking'] = {
 		['46349'] = true -- Chef's Hat
@@ -60,6 +68,8 @@ D.ItemTable = {
 D.Keys = {}
 D.BlacklistDE = {}
 D.BlacklistLOCK = {}
+D.BlacklistDEPatterns = {}
+D.BlacklistLOCKPatterns = {}
 
 -- Profession spell names
 D.DEname = GetSpellInfo(13262) -- Disenchant
@@ -107,33 +117,82 @@ end
 -- Helper function to check if player has a skeleton key
 local function HaveKey() for key in pairs(D.Keys) do if GetItemCount(key) > 0 then return key end end end
 
--- Build blacklist from settings
-function D:Blacklisting(skill) D['BuildBlacklist' .. skill](self) end
+function D:Blacklisting(skill)
+	if skill == 'DE' then
+		D:BuildBlacklistDE()
+	elseif skill == 'LOCK' then
+		D:BuildBlacklistLOCK()
+	end
+end
 
-function D:BuildBlacklistDE(...)
+function D:BuildBlacklistDE()
 	wipe(D.BlacklistDE)
-	for index = 1, select('#', ...) do
-		local name = select(index, ...)
-		if name and name ~= "" then
-			local itemName = GetItemInfo(name)
-			if itemName then D.BlacklistDE[itemName] = true end
+	wipe(D.BlacklistDEPatterns)
+	local db = E.db.bags.deconstructBlacklist or {}
+	local g = E.global.bags.deconstructBlacklist or {}
+
+	for key, value in pairs(db) do
+		if value and value ~= "" then
+			local entry = tostring(value)
+			entry = entry:match("^%s*(.-)%s*$") or entry
+			local itemName = GetItemInfo(entry)
+			if itemName then
+				D.BlacklistDE[itemName] = true
+			else
+				table.insert(D.BlacklistDEPatterns, entry)
+			end
+		end
+	end
+
+	for key, value in pairs(g) do
+		if value and value ~= "" then
+			local entry = tostring(value)
+			entry = entry:match("^%s*(.-)%s*$") or entry
+			local itemName = GetItemInfo(entry)
+			if itemName then
+				D.BlacklistDE[itemName] = true
+			else
+				table.insert(D.BlacklistDEPatterns, entry)
+			end
 		end
 	end
 end
 
-function D:BuildBlacklistLOCK(...)
+function D:BuildBlacklistLOCK()
 	wipe(D.BlacklistLOCK)
-	for index = 1, select('#', ...) do
-		local name = select(index, ...)
-		if name and name ~= "" then
-			local itemName = GetItemInfo(name)
-			if itemName then D.BlacklistLOCK[itemName] = true end
+	wipe(D.BlacklistLOCKPatterns)
+	local db = E.db.bags.lockBlacklist or {}
+	local g = E.global.bags.lockBlacklist or {}
+
+	for key, value in pairs(db) do
+		if value and value ~= "" then
+			local entry = tostring(value)
+			entry = entry:match("^%s*(.-)%s*$") or entry
+			local itemName = GetItemInfo(entry)
+			if itemName then
+				D.BlacklistLOCK[itemName] = true
+			else
+				table.insert(D.BlacklistLOCKPatterns, entry)
+			end
+		end
+	end
+
+	for key, value in pairs(g) do
+		if value and value ~= "" then
+			local entry = tostring(value)
+			entry = entry:match("^%s*(.-)%s*$") or entry
+			local itemName = GetItemInfo(entry)
+			if itemName then
+				D.BlacklistLOCK[itemName] = true
+			else
+				table.insert(D.BlacklistLOCKPatterns, entry)
+			end
 		end
 	end
 end
 
 -- Check if item can be disenchanted
-function D:IsBreakable(itemId, itemName, itemQuality, equipSlot)
+function D:IsBreakable(itemId, itemName, itemLink)
 	if not itemId then return false end
 	if type(itemId) == "number" then itemId = tostring(itemId) end
 
@@ -141,24 +200,29 @@ function D:IsBreakable(itemId, itemName, itemQuality, equipSlot)
 	if D.ItemTable['DoNotDE'][itemId] then return false end
 	if D.ItemTable['Cooking'][itemId] then return false end
 	if D.ItemTable['Fishing'][itemId] then return false end
-	if D.BlacklistDE[itemName] then return false end
+	if itemName and D.BlacklistDE[itemName] then return false end
+
+	-- Check pattern blacklist using LibItemSearch (supports full search syntax)
+	for _, query in ipairs(D.BlacklistDEPatterns or {}) do
+		if query and query ~= "" then
+			local ok, result = pcall(Search.Matches, Search, itemLink or itemName, query)
+			if ok and result then
+				return false
+			end
+		end
+	end
 
 	return true
 end
 
 -- Check if item is disenchantable
-function D:IsDisenchantable(itemId)
-	if not itemId then return false end
-
-	local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc = GetItemInfo(itemId)
-	if not itemName then return false end
+function D:IsDisenchantable(itemId, itemName, itemLink, itemRarity, itemType, itemEquipLoc)
+	if not itemId or not itemName or not D.HasEnchanting then return false end
 
 	-- Quality: 2=Uncommon, 3=Rare, 4=Epic
 	if not itemRarity or itemRarity < 2 or itemRarity > 4 then return false end
-
 	if itemType ~= "Armor" and itemType ~= "Weapon" then return false end
 	if not itemEquipLoc or itemEquipLoc == "" then return false end
-	if not D.HasEnchanting then return false end
 
 	return true
 end
@@ -398,6 +462,8 @@ function D:DeconstructParser()
 	local itemId = tonumber(itemLink:match("item:(%d+)"))
 	if not itemId then return end
 
+	local itemName, _, itemRarity, _, _, itemType, itemSubType, _, itemEquipLoc = GetItemInfo(itemId)
+
 	if InCombatLockdown() then return end
 
 	-- Check what can be done with this item
@@ -406,6 +472,21 @@ function D:DeconstructParser()
 	-- Check for lockboxes
 	local hasKey = HaveKey()
 	if (D.HasPickLock or hasKey) and D:IsUnlockable(itemLink) then
+		-- Skip if lockbox is blacklisted (exact name or pattern)
+		if itemName then
+			if D.BlacklistLOCK[itemName] then
+				return
+			end
+			for _, query in ipairs(D.BlacklistLOCKPatterns or {}) do
+				if query and query ~= "" then
+					local ok, result = pcall(Search.Matches, Search, itemLink, query)
+					if ok and result then
+						return
+					end
+				end
+			end
+		end
+
 		r, g, b = 0, 1, 1
 		if D.HasPickLock then
 			D:ApplyDeconstruct(itemLink, itemId, D.LOCKname, 'spell', r, g, b, owner)
@@ -430,9 +511,8 @@ function D:DeconstructParser()
 	end
 
 	-- Check for disenchantable items (Enchanting only)
-	if D.HasEnchanting and D:IsDisenchantable(itemId) then
-		local itemName, _, itemQuality, _, _, _, _, _, equipSlot = GetItemInfo(itemId)
-		if D:IsBreakable(itemId, itemName, itemQuality, equipSlot) then
+	if D.HasEnchanting and D:IsDisenchantable(itemId, itemName, itemLink, itemRarity, itemType, itemEquipLoc) then
+		if D:IsBreakable(itemId, itemName, itemLink) then
 			r, g, b = 0.5, 0, 1
 			D:ApplyDeconstruct(itemLink, itemId, D.DEname, 'spell', r, g, b, owner)
 			return
@@ -447,8 +527,25 @@ function D:CanProcessItem(itemLink, hasKey)
 	local itemId = tonumber(itemLink:match("item:(%d+)"))
 	if not itemId then return false end
 
+	local itemName, _, itemRarity, _, _, itemType, _, _, itemEquipLoc = GetItemInfo(itemId)
+
 	-- Check lockboxes (Rogues only)
-	if (D.HasPickLock or hasKey) and D:IsUnlockable(itemLink) then return true end
+	if (D.HasPickLock or hasKey) and D:IsUnlockable(itemLink) then
+		if itemName then
+			if D.BlacklistLOCK[itemName] then
+				return false
+			end
+			for _, query in ipairs(D.BlacklistLOCKPatterns or {}) do
+				if query and query ~= "" then
+					local ok, result = pcall(Search.Matches, Search, itemLink, query)
+					if ok and result then
+						return false
+					end
+				end
+			end
+		end
+		return true
+	end
 
 	-- Check prospectable (Jewelcrafting only)
 	if D.HasJewelcrafting and D:IsProspectable(itemId) then return true end
@@ -457,9 +554,8 @@ function D:CanProcessItem(itemLink, hasKey)
 	if D.HasInscription and D:IsMillable(itemId) then return true end
 
 	-- Check disenchantable (Enchanting only)
-	if D.HasEnchanting and D:IsDisenchantable(itemId) then
-		local itemName, _, itemQuality, _, _, _, _, _, equipSlot = GetItemInfo(itemId)
-		if D:IsBreakable(itemId, itemName, itemQuality, equipSlot) then return true end
+	if D.HasEnchanting and D:IsDisenchantable(itemId, itemName, itemLink, itemRarity, itemType, itemEquipLoc) then
+		if D:IsBreakable(itemId, itemName, itemLink) then return true end
 	end
 
 	return false
