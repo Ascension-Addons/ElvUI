@@ -595,10 +595,10 @@ function B.FillBags(from, to)
 		end
 	end
 	if #specialtyBags > 0 then
-		B:Fill(from, specialtyBags)
+		B:Fill(from, specialtyBags, B.db.sortInverted)  -- Add reverse parameter
 	end
 
-	B.Fill(from, to)
+	B.Fill(from, to, B.db.sortInverted)  -- Add reverse parameter
 	wipe(specialtyBags)
 end
 
@@ -638,32 +638,45 @@ function B.Fill(sourceBags, targetBags, reverse, canMove)
 end
 
 function B.SortBags(...)
-	for i = 1, select("#", ...) do
-		local bags = select(i, ...)
-		for _, slotNum in ipairs(bags) do
-			local bagType = B:IsSpecialtyBag(slotNum)
-			if bagType == false then bagType = "Normal" end
-			if not bagCache[bagType] then bagCache[bagType] = {} end
-			tinsert(bagCache[bagType], slotNum)
-		end
+	local actualReverse = B.db.sortInverted  -- Default to setting from options
+	local args = {...}
+	local startIndex = 1
+	
+	-- Check if first argument is a boolean (only passed when Shift is held)
+	if #args > 0 and type(args[1]) == "boolean" then
+		actualReverse = args[1]  -- Use the Shift override (could be true or false)
+		startIndex = 2
+	end
 
-		for bagType, sortedBags in pairs(bagCache) do
-			if bagType ~= "Normal" then
-				B.Stack(sortedBags, sortedBags, B.IsPartial)
-				B.Stack(bagCache.Normal, sortedBags)
-				B.Fill(bagCache.Normal, sortedBags, B.db.sortInverted)
-				B.Sort(sortedBags, nil, B.db.sortInverted)
-				wipe(sortedBags)
+	-- Process the bag groups starting from startIndex
+	for i = startIndex, #args do
+		local bags = args[i]
+		if type(bags) == "table" then
+			for _, slotNum in ipairs(bags) do
+				local bagType = B:IsSpecialtyBag(slotNum)
+				if bagType == false then bagType = "Normal" end
+				if not bagCache[bagType] then bagCache[bagType] = {} end
+				tinsert(bagCache[bagType], slotNum)
 			end
-		end
 
-		if bagCache.Normal then
-			B.Stack(bagCache.Normal, bagCache.Normal, B.IsPartial)
-			B.Sort(bagCache.Normal, nil, B.db.sortInverted)
-			wipe(bagCache.Normal)
+			for bagType, sortedBags in pairs(bagCache) do
+				if bagType ~= "Normal" then
+					B.Stack(sortedBags, sortedBags, B.IsPartial)
+					B.Stack(bagCache.Normal, sortedBags)
+					B.Fill(bagCache.Normal, sortedBags, actualReverse)
+					B.Sort(sortedBags, nil, actualReverse)
+					wipe(sortedBags)
+				end
+			end
+
+			if bagCache.Normal then
+				B.Stack(bagCache.Normal, bagCache.Normal, B.IsPartial)
+				B.Sort(bagCache.Normal, nil, actualReverse)
+				wipe(bagCache.Normal)
+			end
+			wipe(bagCache)
+			wipe(bagGroups)
 		end
-		wipe(bagCache)
-		wipe(bagGroups)
 	end
 end
 
@@ -872,16 +885,17 @@ function B:GetGroup(id)
 end
 
 function B:CommandDecorator(func, groupsDefaults)
-	return function(groups)
+	return function(reverse)
 		if B.SortUpdateTimer:IsShown() then
 			B:StopStacking(L["Already Running.. Bailing Out!"], true)
 			return
 		end
 
 		wipe(bagGroups)
-		if not groups or #groups == 0 then
-			groups = groupsDefaults
-		end
+		
+		-- Handle the bag groups
+		local groups = groupsDefaults
+		
 		for bags in gmatch((groups or ""), "%S+") do
 			if bags == "guild" then
 				bags = B:GetGroup(bags)
@@ -897,9 +911,14 @@ function B:CommandDecorator(func, groupsDefaults)
 		end
 
 		B:ScanBags()
-		if func(unpack(bagGroups)) == false then
-			return
+		
+		-- Pass reverse parameter if it's not nil (even if it's false)
+		if reverse ~= nil then
+			func(reverse, unpack(bagGroups))
+		else
+			func(unpack(bagGroups))
 		end
+		
 		wipe(bagGroups)
 		B:StartStacking()
 	end

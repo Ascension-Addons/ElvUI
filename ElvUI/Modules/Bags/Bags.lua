@@ -1299,6 +1299,7 @@ function B:ContructContainerFrame(name, isBank)
 		f.sortButton:GetDisabledTexture():SetDesaturated(true)
 		f.sortButton:StyleButton(nil, true)
 		f.sortButton.ttText = L["Sort Bags"]
+		f.sortButton.ttText2 = L["Hold Shift to reverse the sort direction"]
 		f.sortButton:SetScript("OnEnter", self.Tooltip_Show)
 		f.sortButton:SetScript("OnLeave", GameTooltip_Hide)
 		f.sortButton:SetScript("OnClick", function()
@@ -1307,7 +1308,13 @@ function B:ContructContainerFrame(name, isBank)
 			if not f.registerUpdate then
 				B:SortingFadeBags(f, true)
 			end
-			B:CommandDecorator(B.SortBags, "bank")()
+			
+			-- Check if Shift is held down to reverse sort direction (opposite of setting)
+			local reverseSort = nil
+			if IsShiftKeyDown() then
+				reverseSort = not B.db.sortInverted  -- Opposite of current setting
+			end
+			B:CommandDecorator(B.SortBags, "bank")(reverseSort)
 		end)
 		if E.db.bags.disableBankSort then
 			f.sortButton:Disable()
@@ -1423,6 +1430,7 @@ function B:ContructContainerFrame(name, isBank)
 		f.sortButton:GetDisabledTexture():SetDesaturated(true)
 		f.sortButton:StyleButton(nil, true)
 		f.sortButton.ttText = L["Sort Bags"]
+		f.sortButton.ttText2 = L["Hold Shift to reverse the sort direction"]  -- ADD THIS LINE
 		f.sortButton:SetScript("OnEnter", self.Tooltip_Show)
 		f.sortButton:SetScript("OnLeave", GameTooltip_Hide)
 		f.sortButton:SetScript("OnClick", function()
@@ -1430,7 +1438,13 @@ function B:ContructContainerFrame(name, isBank)
 			if not f.registerUpdate then
 				B:SortingFadeBags(f, true)
 			end
-			B:CommandDecorator(B.SortBags, "bags")()
+			
+			-- Check if Shift is held down to reverse sort direction (opposite of setting)  -- ADD THIS SECTION
+			local reverseSort = nil
+			if IsShiftKeyDown() then
+				reverseSort = not B.db.sortInverted  -- Opposite of current setting
+			end
+			B:CommandDecorator(B.SortBags, "bags")(reverseSort)
 		end)
 		if E.db.bags.disableBagSort then
 			f.sortButton:Disable()
