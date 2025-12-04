@@ -61,6 +61,15 @@ function UF:Construct_HealComm(frame)
 	absorbBar:SetStatusBarTexture(texture)
 	healAbsorbBar:SetStatusBarTexture(texture)
 
+	myBar:SetMinMaxValues(0, 1)
+	myBar:SetValue(0)
+	otherBar:SetMinMaxValues(0, 1)
+	otherBar:SetValue(0)
+	absorbBar:SetMinMaxValues(0, 1)
+	absorbBar:SetValue(0)
+	healAbsorbBar:SetMinMaxValues(0, 1)
+	healAbsorbBar:SetValue(0)
+
 	local healPrediction = {
 		myBar = myBar,
 		otherBar = otherBar,
@@ -90,6 +99,7 @@ function UF:Configure_HealComm(frame)
 		healPrediction.maxOverflow = 1 + (c.maxOverflow or 0)
 		healPrediction.overflowHeals = c.overflowHeals
 		healPrediction.overflowAbsorbs = c.overflowAbsorbs
+		healPrediction.absorbs = frame.db.healPrediction.absorbs
 
 		if healPrediction.allowClippingUpdate then
 			UF:SetVisibility_HealComm(healPrediction)
@@ -192,6 +202,11 @@ function UF:Configure_HealComm(frame)
 		otherBar:SetStatusBarColor(c.others.r, c.others.g, c.others.b, c.others.a)
 		absorbBar:SetStatusBarColor(c.absorbs.r, c.absorbs.g, c.absorbs.b, c.absorbs.a)
 		healAbsorbBar:SetStatusBarColor(c.healAbsorbs.r, c.healAbsorbs.g, c.healAbsorbs.b, c.healAbsorbs.a)
+
+		if not healPrediction.absorbs then
+			absorbBar:Hide()
+			healAbsorbBar:Hide()
+		end
 	elseif frame:IsElementEnabled("HealComm4") then
 		frame:DisableElement("HealComm4")
 	end

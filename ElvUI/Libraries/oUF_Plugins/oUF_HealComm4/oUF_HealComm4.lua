@@ -74,8 +74,8 @@ local function Update(self)
 
 	local myIncomingHeal = UnitGetIncomingHeals(unit, UnitName("player")) or 0
 	local allIncomingHeal = UnitGetIncomingHeals(unit) or 0
-	local absorb = UnitGetTotalAbsorbs and UnitGetTotalAbsorbs(unit) or 0
-	local healAbsorb = UnitGetTotalHealAbsorbs and UnitGetTotalHealAbsorbs(unit) or 0
+	local absorb = (element.absorbs and UnitGetTotalAbsorbs and UnitGetTotalAbsorbs(unit)) or 0
+	local healAbsorb = (element.absorbs and UnitGetTotalHealAbsorbs and UnitGetTotalHealAbsorbs(unit)) or 0
 	local health = UnitHealth(unit)
 	local maxHealth = UnitHealthMax(unit)
 	local maxOverflowHP = maxHealth * element.maxOverflow
@@ -110,32 +110,48 @@ local function Update(self)
 	end
 
 	if element.myBar then
-		element.myBar:SetMinMaxValues(0, maxHealth)
+		if element.maxHealth ~= maxHealth then
+			element.myBar:SetMinMaxValues(0, maxHealth)
+		end
 		element.myBar:SetValue(myIncomingHeal)
 		element.myBar:Show()
 	end
 
 	if element.otherBar then
-		element.otherBar:SetMinMaxValues(0, maxHealth)
+		if element.maxHealth ~= maxHealth then
+			element.otherBar:SetMinMaxValues(0, maxHealth)
+		end
 		element.otherBar:SetValue(otherIncomingHeal)
 		element.otherBar:Show()
 	end
 
 	if element.absorbBar then
-		element.absorbBar:SetMinMaxValues(0, maxHealth)
-		element.absorbBar:SetValue(absorb)
-		if absorb > 0 then
-			element.absorbBar:Show()
+		if element.absorbs then
+			if element.maxHealth ~= maxHealth then
+				element.absorbBar:SetMinMaxValues(0, maxHealth)
+			end
+			element.absorbBar:SetValue(absorb)
+			if absorb > 0 then
+				element.absorbBar:Show()
+			else
+				element.absorbBar:Hide()
+			end
 		else
 			element.absorbBar:Hide()
 		end
 	end
 
 	if element.healAbsorbBar then
-		element.healAbsorbBar:SetMinMaxValues(0, maxHealth)
-		element.healAbsorbBar:SetValue(healAbsorb)
-		if healAbsorb > 0 then
-			element.healAbsorbBar:Show()
+		if element.absorbs then
+			if element.maxHealth ~= maxHealth then
+				element.healAbsorbBar:SetMinMaxValues(0, maxHealth)
+			end
+			element.healAbsorbBar:SetValue(healAbsorb)
+			if healAbsorb > 0 then
+				element.healAbsorbBar:Show()
+			else
+				element.healAbsorbBar:Hide()
+			end
 		else
 			element.healAbsorbBar:Hide()
 		end
@@ -154,6 +170,8 @@ local function Update(self)
 	if element.PostUpdate then
 		return element:PostUpdate(unit, myIncomingHeal, otherIncomingHeal, absorb, healAbsorb)
 	end
+
+	element.maxHealth = maxHealth
 end
 
 local function Path(self, ...)
@@ -203,6 +221,14 @@ local function Enable(self)
 
 		if not element.maxOverflow then
 			element.maxOverflow = 1.05
+		end
+
+		if element.myBar and element.myBar:IsObjectType("StatusBar") and not element.myBar:GetStatusBarTexture() then
+			element.myBar:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
+		end
+
+		if element.otherBar and element.otherBar:IsObjectType("StatusBar") and not element.otherBar:GetStatusBarTexture() then
+			element.otherBar:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
 		end
 
 		if element.absorbBar and element.absorbBar:IsObjectType("StatusBar") and not element.absorbBar:GetStatusBarTexture() then
