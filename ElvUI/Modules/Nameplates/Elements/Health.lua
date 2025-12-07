@@ -135,7 +135,7 @@ end
 function NP:Update_HealComm(nameplate)
 	local db = NP:PlateDB(nameplate)
 
-	if db.health.enable and db.health.healPrediction then
+	if db.health.enable and db.health.healPrediction and db.health.healPrediction.enable then
 		if not nameplate:IsElementEnabled('HealCommBar') then
 			nameplate:EnableElement('HealCommBar')
 		end
@@ -232,6 +232,15 @@ function NP:Construct_HealComm(frame)
 	absorbBar:SetStatusBarTexture(texture)
 	healAbsorbBar:SetStatusBarTexture(texture)
 
+	myBar:SetMinMaxValues(0, 1)
+	myBar:SetValue(0)
+	otherBar:SetMinMaxValues(0, 1)
+	otherBar:SetValue(0)
+	absorbBar:SetMinMaxValues(0, 1)
+	absorbBar:SetValue(0)
+	healAbsorbBar:SetMinMaxValues(0, 1)
+	healAbsorbBar:SetValue(0)
+
 	local healPrediction = {
 		myBar = myBar,
 		otherBar = otherBar,
@@ -267,6 +276,7 @@ function NP:Configure_HealComm(frame)
 		healPrediction.maxOverflow = 1 + (c.maxOverflow or 0)
 		healPrediction.overflowHeals = c.overflowHeals
 		healPrediction.overflowAbsorbs = c.overflowAbsorbs
+		healPrediction.absorbs = frame.db.healPrediction.absorbs
 
 		if healPrediction.allowClippingUpdate then
 			NP:SetVisibility_HealComm(healPrediction)
@@ -364,6 +374,11 @@ function NP:Configure_HealComm(frame)
 		frame.HealCommBar.otherBar:SetStatusBarColor(hpc.others.r, hpc.others.g, hpc.others.b)
 		frame.HealCommBar.absorbBar:SetStatusBarColor(hpc.absorbs.r, hpc.absorbs.g, hpc.absorbs.b, hpc.absorbs.a)
 		frame.HealCommBar.healAbsorbBar:SetStatusBarColor(hpc.healAbsorbs.r, hpc.healAbsorbs.g, hpc.healAbsorbs.b, hpc.healAbsorbs.a)
+
+		if not healPrediction.absorbs then
+			absorbBar:Hide()
+			healAbsorbBar:Hide()
+		end
 	elseif frame:IsElementEnabled('HealComm4') then
 		frame:DisableElement('HealComm4')
 	end

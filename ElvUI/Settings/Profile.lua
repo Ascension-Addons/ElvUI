@@ -304,7 +304,10 @@ local NP_Auras = {
 
 local NP_Health = {
 	enable = true,
-	healPrediction = true,
+	healPrediction = {
+		enable = true,
+		absorbs = false,
+	},
 	height = 10,
 	useClassColor = true,
 	text = {
@@ -1166,7 +1169,8 @@ P.unitframe = {
 			height = 54,
 			lowmana = 30,
 			healPrediction = {
-				enable = true
+				enable = true,
+				absorbs = true,
 			},
 			threatStyle = "GLOW",
 			smartAuraPosition = "DISABLED",
@@ -1449,7 +1453,8 @@ P.unitframe = {
 			smartAuraPosition = "DISABLED",
 			colorOverride = "USE_DEFAULT",
 			healPrediction = {
-				enable = true
+				enable = true,
+				absorbs = false,
 			},
 			middleClickFocus = true,
 			disableMouseoverGlow = false,
@@ -1908,7 +1913,8 @@ P.unitframe = {
 			width = 190,
 			height = 36,
 			healPrediction = {
-				enable = true
+				enable = true,
+				absorbs = false,
 			},
 			disableMouseoverGlow = false,
 			disableTargetGlow = false,
@@ -2208,7 +2214,8 @@ P.unitframe = {
 			width = 130,
 			height = 36,
 			healPrediction = {
-				enable = true
+				enable = true,
+				absorbs = false,
 			},
 			disableMouseoverGlow = false,
 			disableTargetGlow = true,
@@ -2643,7 +2650,8 @@ P.unitframe = {
 			width = 246,
 			height = 47,
 			healPrediction = {
-				enable = true
+				enable = true,
+				absorbs = false,
 			},
 			colorOverride = "USE_DEFAULT",
 			disableMouseoverGlow = false,
@@ -2805,7 +2813,8 @@ P.unitframe = {
 			startFromCenter = false,
 			showPlayer = true,
 			healPrediction = {
-				enable = true
+				enable = true,
+				absorbs = false,
 			},
 			colorOverride = "USE_DEFAULT",
 			width = 184,
@@ -3074,7 +3083,8 @@ P.unitframe = {
 			sortDir = "ASC",
 			showPlayer = true,
 			healPrediction = {
-				enable = true
+				enable = true,
+				absorbs = false,
 			},
 			colorOverride = "USE_DEFAULT",
 			width = 80,
@@ -3271,7 +3281,8 @@ P.unitframe = {
 			sortDir = "ASC",
 			showPlayer = true,
 			healPrediction = {
-				enable = true
+				enable = true,
+				absorbs = false,
 			},
 			colorOverride = "USE_DEFAULT",
 			width = 80,
