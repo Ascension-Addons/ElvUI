@@ -55,12 +55,20 @@ local UnitName = UnitName
 local UnitGetIncomingHeals = UnitGetIncomingHeals
 local UnitGetTotalAbsorbs = UnitGetTotalAbsorbs
 local UnitGetTotalHealAbsorbs = UnitGetTotalHealAbsorbs
+local GetTime = GetTime
 
 local enabledUF, enabled = {}, nil
 
 local function Update(self)
 	local unit = self.unit
 	local element = self.HealCommBar
+
+	local now = GetTime()
+	local lastUpdate = element.lastUpdate or 0
+	if now - lastUpdate < 0.05 then
+		return
+	end
+	element.lastUpdate = now
 
 	--[[ Callback: HealthPrediction:PreUpdate(unit)
 	Called before the element has been updated.
