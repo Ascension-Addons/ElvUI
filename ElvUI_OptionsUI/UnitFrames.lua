@@ -2349,8 +2349,13 @@ local function GetOptionsTable_HealPrediction(updateFunc, groupName, numGroup)
 				type = "toggle",
 				name = L["Enable"]
 			},
-			colors = {
+			absorbs = {
 				order = 3,
+				type = "toggle",
+				name = L["Enable Absorbs"]
+			},
+			colors = {
+				order = 4,
 				type = "execute",
 				name = L["COLORS"],
 				func = function() ACD:SelectGroup("ElvUI", "unitframe", "generalOptionsGroup", "allColorsGroup", "healPrediction") end,
