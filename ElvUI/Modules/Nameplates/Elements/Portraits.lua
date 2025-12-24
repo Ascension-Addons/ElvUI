@@ -12,7 +12,7 @@ function NP:Portrait_PostUpdate()
 
 	if sf.Portrait or (db.portrait and db.portrait.enable) then
 		if db.portrait.classicon and nameplate.isPlayer then
-			self:SetTexture([[Interface\WorldStateFrame\Icons-Classes]])
+			self:SetTexture([[Interface\GLUES\CHARACTERCREATE\UI-CHARACTERCREATE-CLASSES]])
 			self:SetTexCoord(unpack(_G.CLASS_ICON_TCOORDS[nameplate.classFile]))
 			self.backdrop:Hide()
 		else

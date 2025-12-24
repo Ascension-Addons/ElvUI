@@ -43,7 +43,7 @@ function TC:Initialize()
 	self.frame:SetFrameLevel(12)
 	self.frame.Texture = self.frame:CreateTexture(nil, "ARTWORK")
 	self.frame.Texture:SetAllPoints()
-	self.frame.Texture:SetTexture([[Interface\WorldStateFrame\Icons-Classes]])
+	self.frame.Texture:SetTexture([[Interface\GLUES\CHARACTERCREATE\UI-CHARACTERCREATE-CLASSES]])
 
 	self:ToggleSettings()
 end
