@@ -100,8 +100,6 @@ local reversibleBar = setmetatable({
 			"Usage: StatusBar:SetMinMaxValues(number, number)"
 		)
 
-		if self.MINVALUE == minValue and self.MAXVALUE == maxValue then return end
-
 		if maxValue > minValue then
 			self.MINVALUE = minValue
 			self.MAXVALUE = maxValue
@@ -124,7 +122,6 @@ local reversibleBar = setmetatable({
 	SetValue = function(self, value)
 		assert(type(value) == "number", "Usage: StatusBar:SetValue(number)")
 		if WithinRange(value, self.MINVALUE, self.MAXVALUE) then
-			if self.VALUE == value then return end
 			self.VALUE = value
 			reversibleBar_Update(self)
 		end
@@ -134,7 +131,6 @@ local reversibleBar = setmetatable({
 	end,
 	SetOrientation = function(self, orientation)
 		if orientation == "HORIZONTAL" or orientation == "VERTICAL" then
-			if self.ORIENTATION == orientation then return end
 			self.ORIENTATION = orientation
 			reversibleBar_Update(self)
 		end
@@ -143,18 +139,14 @@ local reversibleBar = setmetatable({
 		return self.ORIENTATION
 	end,
 	SetRotatesTexture = function(self, rotate)
-		local newRotate = (rotate ~= nil and rotate ~= false)
-		if self.ROTATE == newRotate then return end
-		self.ROTATE = newRotate
+		self.ROTATE = (rotate ~= nil and rotate ~= false)
 		reversibleBar_Update(self)
 	end,
 	GetRotatesTexture = function(self)
 		return self.ROTATE
 	end,
 	SetReverseFill = function(self, reverse)
-		local newReverse = (reverse == true)
-		if self.REVERSE == newReverse then return end
-		self.REVERSE = newReverse
+		self.REVERSE = (reverse == true)
 		reversibleBar_Update(self)
 	end,
 	GetReverseFill = function(self)
@@ -162,16 +154,16 @@ local reversibleBar = setmetatable({
 	end,
 	SetFillStyle = function(self, style)
 		assert(type(style) == "string" or style == nil, "Usage: StatusBar:SetFillStyle(string)")
-		local newStyle = "STANDARD"
 		if style and style:lower() == "center" then
-			newStyle = "CENTER"
+			self.FILLSTYLE = "CENTER"
+			reversibleBar_Update(self)
 		elseif style and style:lower() == "reverse" then
-			newStyle = "REVERSE"
+			self.FILLSTYLE = "REVERSE"
+			reversibleBar_Update(self)
+		else
+			self.FILLSTYLE = "STANDARD"
+			reversibleBar_Update(self)
 		end
-
-		if self.FILLSTYLE == newStyle then return end
-		self.FILLSTYLE = newStyle
-		reversibleBar_Update(self)
 	end,
 	GetFillStyle = function(self)
 		return self.FILLSTYLE

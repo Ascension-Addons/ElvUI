@@ -61,15 +61,6 @@ function UF:Construct_HealComm(frame)
 	absorbBar:SetStatusBarTexture(texture)
 	healAbsorbBar:SetStatusBarTexture(texture)
 
-	myBar:SetMinMaxValues(0, 1)
-	myBar:SetValue(0)
-	otherBar:SetMinMaxValues(0, 1)
-	otherBar:SetValue(0)
-	absorbBar:SetMinMaxValues(0, 1)
-	absorbBar:SetValue(0)
-	healAbsorbBar:SetMinMaxValues(0, 1)
-	healAbsorbBar:SetValue(0)
-
 	local healPrediction = {
 		myBar = myBar,
 		otherBar = otherBar,
@@ -99,7 +90,6 @@ function UF:Configure_HealComm(frame)
 		healPrediction.maxOverflow = 1 + (c.maxOverflow or 0)
 		healPrediction.overflowHeals = c.overflowHeals
 		healPrediction.overflowAbsorbs = c.overflowAbsorbs
-		healPrediction.absorbs = frame.db.healPrediction.absorbs
 
 		if healPrediction.allowClippingUpdate then
 			UF:SetVisibility_HealComm(healPrediction)
@@ -126,13 +116,6 @@ function UF:Configure_HealComm(frame)
 			otherBar:SetOrientation(orientation)
 			absorbBar:SetOrientation(orientation)
 			healAbsorbBar:SetOrientation(orientation)
-
-			healPrediction.cachedOrientation = orientation
-
-			myBar._anchorState = nil
-			otherBar._anchorState = nil
-			absorbBar._anchorState = nil
-			healAbsorbBar._anchorState = nil
 
 			if orientation == "HORIZONTAL" then
 				local p1 = "LEFT"
@@ -209,26 +192,12 @@ function UF:Configure_HealComm(frame)
 		otherBar:SetStatusBarColor(c.others.r, c.others.g, c.others.b, c.others.a)
 		absorbBar:SetStatusBarColor(c.absorbs.r, c.absorbs.g, c.absorbs.b, c.absorbs.a)
 		healAbsorbBar:SetStatusBarColor(c.healAbsorbs.r, c.healAbsorbs.g, c.healAbsorbs.b, c.healAbsorbs.a)
-
-		if not healPrediction.absorbs then
-			absorbBar:Hide()
-			healAbsorbBar:Hide()
-		end
 	elseif frame:IsElementEnabled("HealComm4") then
 		frame:DisableElement("HealComm4")
 	end
 end
 
 local function AnchorPredictionBar(bar, health, orientation, anchorTexture, hasEnoughSpace, overflowMode, p1, p2, reverseAnchorTexture)
-	local needsReverse = not overflowMode and not hasEnoughSpace
-	local anchorKey = orientation .. (overflowMode and "O" or (hasEnoughSpace and "E" or "R"))
-	if bar._anchorState == anchorKey and bar._reverseFill == needsReverse then
-		return
-	end
-
-	bar._anchorState = anchorKey
-	bar._reverseFill = needsReverse
-
 	bar:ClearAllPoints()
 
 	if orientation == "HORIZONTAL" then
@@ -256,11 +225,8 @@ function UF:UpdateHealComm(unit, myIncomingHeal, allIncomingHeal, totalAbsorb, m
 	if not self.frame or not self.health then return end
 
 	local health = self.health
-	local healthTexture = self.healthBarTexture
-	if not healthTexture then
-		healthTexture = health:GetStatusBarTexture()
-		self.healthBarTexture = healthTexture
-	end
+	local healthTexture = self.healthBarTexture or health:GetStatusBarTexture()
+	local orientation = health:GetOrientation()
 
 	local currentHealth = UnitHealth(unit) or 0
 	local maxHealth = UnitHealthMax(unit) or 1
@@ -268,7 +234,6 @@ function UF:UpdateHealComm(unit, myIncomingHeal, allIncomingHeal, totalAbsorb, m
 	local otherIncomingHeal = allIncomingHeal - myIncomingHeal
 	local totalIncomingHeal = myIncomingHeal + otherIncomingHeal
 
-	local orientation = self.cachedOrientation or health:GetOrientation()
 	local p1 = self.anchor1 or (orientation == "HORIZONTAL" and "LEFT" or "BOTTOM")
 	local p2 = self.anchor2 or (orientation == "HORIZONTAL" and "RIGHT" or "TOP")
 
