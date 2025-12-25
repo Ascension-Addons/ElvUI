@@ -59,8 +59,6 @@ local UnitPVPName = UnitPVPName
 local UnitPVPRank = UnitPVPRank
 local UnitReaction = UnitReaction
 local UnitSex = UnitSex
-local UnitGetTotalAbsorbs = UnitGetTotalAbsorbs
-local UnitGetTotalHealAbsorbs = UnitGetTotalHealAbsorbs
 
 local C_QuestLog_GetTitleForQuestID = GetTitleForQuestID
 local C_QuestLog_GetQuestDifficultyLevel = function(questID)
@@ -440,34 +438,6 @@ E:AddTag('health:deficit-percent:name', 'UNIT_HEALTH UNIT_MAXHEALTH UNIT_NAME_UP
 		return _TAGS['health:percent-nostatus'](unit)
 	else
 		return _TAGS.name(unit)
-	end
-end)
-
-E:AddTag('health:absorb', 'UNIT_ABSORB_AMOUNT_CHANGED', function(unit)
-	local absorb = UnitGetTotalAbsorbs(unit) or 0
-	if absorb > 0 then
-		return E:GetFormattedText('CURRENT', absorb, UnitHealthMax(unit))
-	end
-end)
-
-E:AddTag('health:absorb:shortvalue', 'UNIT_ABSORB_AMOUNT_CHANGED', function(unit)
-	local absorb = UnitGetTotalAbsorbs(unit) or 0
-	if absorb > 0 then
-		return E:GetFormattedText('CURRENT', absorb, UnitHealthMax(unit), nil, true)
-	end
-end)
-
-E:AddTag('health:healAbsorb', 'UNIT_HEAL_ABSORB_AMOUNT_CHANGED', function(unit)
-	local healAbsorb = UnitGetTotalHealAbsorbs(unit) or 0
-	if healAbsorb > 0 then
-		return E:GetFormattedText('CURRENT', healAbsorb, UnitHealthMax(unit))
-	end
-end)
-
-E:AddTag('health:healAbsorb:shortvalue', 'UNIT_HEAL_ABSORB_AMOUNT_CHANGED', function(unit)
-	local healAbsorb = UnitGetTotalHealAbsorbs(unit) or 0
-	if healAbsorb > 0 then
-		return E:GetFormattedText('CURRENT', healAbsorb, UnitHealthMax(unit), nil, true)
 	end
 end)
 
@@ -1374,10 +1344,6 @@ E.TagInfo = {
 		['health:deficit'] = { category = 'Health', description = "Displays the health of the unit as a deficit (Total Health - Current Health = -Deficit)" },
 		['health:max:shortvalue'] = { category = 'Health', description = "Shortvalue of the unit's maximum health" },
 		['health:max'] = { category = 'Health', description = "Displays the maximum health of the unit" },
-		['health:absorb'] = { category = 'Health', description = "Displays the amount of damage absorbed by shields on the unit" },
-		['health:absorb:shortvalue'] = { category = 'Health', description = "Shortvalue of the amount of damage absorbed by shields on the unit" },
-		['health:healAbsorb'] = { category = 'Health', description = "Displays the amount of healing absorbed by debuffs on the unit" },
-		['health:healAbsorb:shortvalue'] = { category = 'Health', description = "Shortvalue of the amount of healing absorbed by debuffs on the unit" },
 		['health:percent-nostatus'] = { category = 'Health', description = "Displays the unit's current health as a percentage, without status" },
 		['health:percent'] = { category = 'Health', description = "Displays the current health of the unit as a percentage" },
 		['maxhp'] = { category = 'Health', description = "Displays max HP without decimals" },
