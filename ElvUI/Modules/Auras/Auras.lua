@@ -771,6 +771,7 @@ end
 
 local function InitConsolidated(offset)
 	local cr, cg, cb = unpack(E.media.bordercolor)
+	local br, bg, bb = unpack(E.media.backdropcolor)
 
 	A:CreateIcon(ElvuiConsolidatedBuffs)
 	ElvuiConsolidatedBuffs.statusBar:Hide()
@@ -788,8 +789,8 @@ local function InitConsolidated(offset)
 		insets = {left = -E.mult, right = -E.mult, top = -E.mult, bottom = -E.mult}
 	})
 	ElvuiConsolidatedBuffsTooltip:SetScale(E.global.general.UIScale)
-	ElvuiConsolidatedBuffsTooltip:SetBackdropBorderColor(unpack(E.media.bordercolor))
-	ElvuiConsolidatedBuffsTooltip:SetBackdropColor(unpack(E.media.backdropcolor))
+	ElvuiConsolidatedBuffsTooltip:SetBackdropBorderColor(cr, cg, cb)
+	ElvuiConsolidatedBuffsTooltip:SetBackdropColor(br, bg, bb)
 
 
 	A:CreateIcon(ElvuiVanityBuffs)
@@ -806,8 +807,8 @@ local function InitConsolidated(offset)
 		insets = {left = -E.mult, right = -E.mult, top = -E.mult, bottom = -E.mult}
 	})
 	ElvuiVanityBuffsTooltip:SetScale(E.global.general.UIScale)
-	ElvuiVanityBuffsTooltip:SetBackdropBorderColor(unpack(E.media.bordercolor))
-	ElvuiVanityBuffsTooltip:SetBackdropColor(unpack(E.media.backdropcolor))
+	ElvuiVanityBuffsTooltip:SetBackdropBorderColor(cr, cg, cb)
+	ElvuiVanityBuffsTooltip:SetBackdropColor(br, bg, bb)
 end
 
 function A:Initialize()
