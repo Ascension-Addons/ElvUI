@@ -39,6 +39,7 @@ V.nameplates = {
 V.auras = {
 	enable = true,
 	disableBlizzard = true,
+	mergeVanity = true,
 
 	lbf = {
 		enable = false,

@@ -1,3 +1,83 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Script file="Auras.lua"/>
+
+    <Button name="ElvuiConsolidatedBuffs" parent="UIParent" inherits="AuraButtonTemplate" hidden="true">
+    </Button>
+    <Frame name="ElvuiConsolidatedBuffsTooltip" frameStrata="FULLSCREEN_DIALOG" clampedToScreen="true" hidden="true">
+        <Anchors>
+            <Anchor point="TOPLEFT" />
+        </Anchors>
+        <Size>
+            <AbsDimension x="60" y="60"/>
+        </Size>
+        <Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+            <EdgeSize>
+                <AbsValue val="16"/>
+            </EdgeSize>
+            <TileSize>
+                <AbsValue val="16"/>
+            </TileSize>
+            <BackgroundInsets>
+                <AbsInset left="4" right="4" top="4" bottom="4"/>
+            </BackgroundInsets>
+        </Backdrop>
+        <Scripts>
+            <OnLoad>
+                self:SetBackdropBorderColor(TOOLTIP_DEFAULT_COLOR.r, TOOLTIP_DEFAULT_COLOR.g, TOOLTIP_DEFAULT_COLOR.b);
+                self:SetBackdropColor(TOOLTIP_DEFAULT_BACKGROUND_COLOR.r, TOOLTIP_DEFAULT_BACKGROUND_COLOR.g, TOOLTIP_DEFAULT_BACKGROUND_COLOR.b);
+            </OnLoad>
+            <OnEnter>
+                self.mousedOver = true;
+            </OnEnter>
+            <OnUpdate>
+                if ( self.mousedOver and not ElvuiConsolidatedBuffs.mousedOver and not self:IsMouseOver() ) then
+                    self.mousedOver = nil;
+                    self:Hide();
+                end
+            </OnUpdate>
+            <OnHide>
+                self.mousedOver = nil;
+            </OnHide>
+        </Scripts>
+    </Frame>
+
+    <Button name="ElvuiVanityBuffs" parent="UIParent" inherits="AuraButtonTemplate" hidden="true">
+    </Button>
+    <Frame name="ElvuiVanityBuffsTooltip" frameStrata="FULLSCREEN_DIALOG" clampedToScreen="true" hidden="true">
+        <Anchors>
+            <Anchor point="TOPLEFT" />
+        </Anchors>
+        <Size>
+            <AbsDimension x="60" y="60"/>
+        </Size>
+        <Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+            <EdgeSize>
+                <AbsValue val="16"/>
+            </EdgeSize>
+            <TileSize>
+                <AbsValue val="16"/>
+            </TileSize>
+            <BackgroundInsets>
+                <AbsInset left="4" right="4" top="4" bottom="4"/>
+            </BackgroundInsets>
+        </Backdrop>
+        <Scripts>
+            <OnLoad>
+                self:SetBackdropBorderColor(TOOLTIP_DEFAULT_COLOR.r, TOOLTIP_DEFAULT_COLOR.g, TOOLTIP_DEFAULT_COLOR.b);
+                self:SetBackdropColor(TOOLTIP_DEFAULT_BACKGROUND_COLOR.r, TOOLTIP_DEFAULT_BACKGROUND_COLOR.g, TOOLTIP_DEFAULT_BACKGROUND_COLOR.b);
+            </OnLoad>
+            <OnEnter>
+                self.mousedOver = true;
+            </OnEnter>
+            <OnUpdate>
+                if ( self.mousedOver and not ElvuiVanityBuffs.mousedOver and not self:IsMouseOver() ) then
+                    self.mousedOver = nil;
+                    self:Hide();
+                end
+            </OnUpdate>
+            <OnHide>
+                self.mousedOver = nil;
+            </OnHide>
+        </Scripts>
+    </Frame>
 </Ui>
