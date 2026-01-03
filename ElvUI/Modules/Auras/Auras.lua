@@ -1,4 +1,4 @@
-local E, L, V, P, G = unpack(select(2, ...)); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G = unpack(select(2, ...)) --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local A = E:GetModule("Auras")
 local NP = E:GetModule("NamePlates")
 local LSM = E.Libs.LSM
@@ -69,7 +69,7 @@ local enchantableSlots = {
 }
 
 local weaponEnchantTime = {}
-A.EnchanData = weaponEnchantTime
+-- A.EnchanData = weaponEnchantTime -- unused and misspelled?
 
 function A:UpdateTime(elapsed)
 	self.timeLeft = self.timeLeft - elapsed
@@ -265,11 +265,29 @@ function A:Update_CooldownOptions(button)
 end
 
 local buttons = {}
+local vanityButton = {}
+local consolidatedButton = {}
+local expiringVanityOrConsolidated = 0
+
+function A:triggerUpdateOnNext()
+	expiringVanityOrConsolidated = 1
+end
+
+local function checkExpiringVanityAndConsolidated()
+	if expiringVanityOrConsolidated > 0 and expiringVanityOrConsolidated <= GetTime() then 
+		expiringVanityOrConsolidated = 0
+		return true 
+	end
+end
+
 function A:ConfigureAuras(header, auraTable, weaponPosition)
 	local headerName = header:GetName()
 	local db = self.db.debuffs
 	if header.filter == "HELPFUL" then
 		db = self.db.buffs
+		expiringVanityOrConsolidated = 0
+		wipe(vanityButton)
+		wipe(consolidatedButton)
 	end
 
 	local xOffset, yOffset, wrapXOffset, wrapYOffset, minWidth, minHeight
@@ -335,19 +353,73 @@ function A:ConfigureAuras(header, auraTable, weaponPosition)
 			button.text:Hide()
 		end
 
+		button.texture:SetTexture(buffInfo.icon)
+
+		button:SetParent(header)
 		if buffInfo.filter == "HARMFUL" then
 			local color = DebuffTypeColor[buffInfo.dispelType or ""]
 			button:SetBackdropBorderColor(color.r, color.g, color.b)
 			button.statusBar.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
+			button:SetParent(header)
+			buttons[i] = button
 		else
 			local cr, cg, cb = unpack(E.media.bordercolor)
 			button:SetBackdropBorderColor(cr, cg, cb)
 			button.statusBar.backdrop:SetBackdropBorderColor(cr, cg, cb)
+
+			local exitTime, expiring = 0, false
+			if buffInfo.expires > 0 and buffInfo.duration > 30 then
+				exitTime = buffInfo.expires - max(10, buffInfo.duration / 10)
+				expiring = exitTime < GetTime()
+			end
+
+			if E.private.auras.mergeVanity and not expiring and C_VanityCollection.IsConsolidatedVanityBuff(buffInfo.spellID) then
+				button:SetParent(ElvuiVanityBuffsTooltip)
+				button:Show()
+				vanityButton[#vanityButton+1] = button
+				if exitTime > 0 then 
+					if expiringVanityOrConsolidated > 0 then
+						expiringVanityOrConsolidated = min(expiringVanityOrConsolidated, exitTime)
+					else
+						expiringVanityOrConsolidated = exitTime
+					end
+				end
+			elseif E.private.auras.mergeConsolidated and not expiring and buffInfo.shouldConsolidate then
+				button:SetParent(ElvuiConsolidatedBuffsTooltip)
+				button:Show()
+				consolidatedButton[#consolidatedButton+1] = button
+				if exitTime > 0 then 
+					if expiringVanityOrConsolidated > 0 then
+						expiringVanityOrConsolidated = min(expiringVanityOrConsolidated, exitTime)
+					else
+						expiringVanityOrConsolidated = exitTime
+					end
+				end
+			else
+				buttons[#buttons+1] = button
+			end
 		end
 
-		button.texture:SetTexture(buffInfo.icon)
+	end
 
-		buttons[i] = button
+	if header.filter == "HELPFUL" then
+		if #vanityButton > 0 then
+			ElvuiVanityBuffs:Show()
+			ElvuiVanityBuffs.count:SetText(#vanityButton)
+			tinsert(buttons, 1, ElvuiVanityBuffs)
+		else
+			ElvuiVanityBuffs:Hide()
+			ElvuiVanityBuffs.count:SetText("")
+		end
+
+		if #consolidatedButton > 0 then
+			ElvuiConsolidatedBuffs:Show()
+			ElvuiConsolidatedBuffs.count:SetText(#consolidatedButton)
+			tinsert(buttons, 1, ElvuiConsolidatedBuffs)
+		else
+			ElvuiConsolidatedBuffs:Hide()
+			ElvuiConsolidatedBuffs.count:SetText("")
+		end
 	end
 
 	if weaponPosition then
@@ -476,6 +548,8 @@ function A:ConfigureAuras(header, auraTable, weaponPosition)
 		header:SetWidth(minWidth)
 		header:SetHeight(minHeight)
 	end
+	A:ElvuiConsolidatedBuffs_UpdateAllAnchors()
+	A:ElvuiVanityBuffs_UpdateAllAnchors()
 end
 
 local freshTable
@@ -505,7 +579,7 @@ local function sortFactory(key, separateOwn, reverse)
 				else
 					return a.filter < b.filter
 				end
-			end;
+			end
 		else
 			return function(a, b)
 				if a.filter == b.filter then
@@ -517,7 +591,7 @@ local function sortFactory(key, separateOwn, reverse)
 				else
 					return a.filter < b.filter
 				end
-			end;
+			end
 		end
 	else
 		if reverse then
@@ -527,7 +601,7 @@ local function sortFactory(key, separateOwn, reverse)
 				else
 					return a.filter < b.filter
 				end
-			end;
+			end
 		else
 			return function(a, b)
 				if a.filter == b.filter then
@@ -535,7 +609,7 @@ local function sortFactory(key, separateOwn, reverse)
 				else
 					return a.filter < b.filter
 				end
-			end;
+			end
 		end
 	end
 end
@@ -569,7 +643,7 @@ function A:UpdateHeader(header)
 	local i = 1
 	repeat
 		local aura, _ = freshTable()
-		aura.name, _, aura.icon, aura.count, aura.dispelType, aura.duration, aura.expires, aura.caster = UnitAura("player", i, filter)
+		aura.name, _, aura.icon, aura.count, aura.dispelType, aura.duration, aura.expires, aura.caster, _, aura.shouldConsolidate, aura.spellID = UnitAura("player", i, filter)
 		if aura.name then
 			aura.filter = filter
 			aura.index = i
@@ -628,6 +702,114 @@ function A:CreateAuraHeader(filter)
 	return header
 end
 
+function A:ActuallyUpdateAllAnchors(buttons, tooltip)
+	local index = 0
+	db = self.db.buffs
+	local xOffset, wrapYOffset
+	local size = db.size
+	local wrapAfter = 4
+	local offset = floor(size / 2)
+
+	xOffset = db.horizontalSpacing + size
+	wrapYOffset = (db.verticalSpacing + size) * -1
+
+	for _, buff in pairs(buttons) do
+		index = index + 1
+		local tick, cycle = floor((index - 1) % wrapAfter), floor((index - 1) / wrapAfter)
+		buff:ClearAllPoints()
+		buff:SetPoint("TOPLEFT", tooltip, offset + tick * xOffset, cycle * wrapYOffset - offset)
+		buff:SetSize(size, size)
+	end
+	local wm, hm = min(index, wrapAfter), floor((index + wrapAfter - 1) / wrapAfter)
+	tooltip:SetWidth( size + wm * size + (wm - 1) * db.horizontalSpacing)
+	tooltip:SetHeight( offset + hm * size + hm * db.verticalSpacing)
+end
+
+function A:ElvuiConsolidatedBuffs_UpdateAllAnchors()
+	self:ActuallyUpdateAllAnchors(consolidatedButton, ElvuiConsolidatedBuffsTooltip)
+end
+
+function A:ElvuiVanityBuffs_UpdateAllAnchors()
+	self:ActuallyUpdateAllAnchors(vanityButton, ElvuiVanityBuffsTooltip)
+end
+
+local function ElvuiConsolidatedBuffs_OnUpdate(self)
+	-- tooltip stuff
+	-- need 1-pixel outer padding because otherwise at certain resolutions OnEnter will trigger with IsMouseOver returning false
+	if ( self.mousedOver and not self:IsMouseOver(1, -1, -1, 1) ) then
+		self.mousedOver = nil
+		if ( not ElvuiConsolidatedBuffsTooltip:IsMouseOver() ) then
+			ElvuiConsolidatedBuffsTooltip:Hide()
+		end
+	end
+end
+
+local function ElvuiConsolidatedBuffs_OnEnter(self)
+	ElvuiConsolidatedBuffsTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, 0)
+	A:ElvuiConsolidatedBuffs_UpdateAllAnchors()
+	ElvuiConsolidatedBuffsTooltip:Show()
+	ElvuiConsolidatedBuffs.mousedOver = true
+end
+
+local function ElvuiVanityBuffs_OnUpdate(self)
+	-- tooltip stuff
+	-- need 1-pixel outer padding because otherwise at certain resolutions OnEnter will trigger with IsMouseOver returning false
+	if ( self.mousedOver and not self:IsMouseOver(1, -1, -1, 1) ) then
+		self.mousedOver = nil
+		if ( not ElvuiVanityBuffsTooltip:IsMouseOver() ) then
+			ElvuiVanityBuffsTooltip:Hide()
+		end
+	end
+end
+
+local function ElvuiVanityBuffs_OnEnter(self)
+	ElvuiVanityBuffsTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, 0)
+	A:ElvuiVanityBuffs_UpdateAllAnchors()
+	ElvuiVanityBuffsTooltip:Show()
+	ElvuiVanityBuffs.mousedOver = true
+end
+
+local function InitConsolidated(offset)
+	local cr, cg, cb = unpack(E.media.bordercolor)
+
+	A:CreateIcon(ElvuiConsolidatedBuffs)
+	ElvuiConsolidatedBuffs.statusBar:Hide()
+	ElvuiConsolidatedBuffs.texture:SetTexture("Interface\\Buttons\\BuffConsolidation")
+	ElvuiConsolidatedBuffs.texture:SetTexCoord(0.1, 0.4, 0.2, 0.8)
+	ElvuiConsolidatedBuffs.texture:SetInside()
+	ElvuiConsolidatedBuffs:SetBackdropBorderColor(cr, cg, cb)
+	ElvuiConsolidatedBuffs.statusBar.backdrop:SetBackdropBorderColor(cr, cg, cb)
+	ElvuiConsolidatedBuffs:SetScript("OnUpdate", ElvuiConsolidatedBuffs_OnUpdate)
+	ElvuiConsolidatedBuffs:SetScript("OnEnter", ElvuiConsolidatedBuffs_OnEnter)
+	ElvuiConsolidatedBuffsTooltip:SetBackdrop({
+		bgFile = E.media.glossTex or E.media.blankTex,
+		edgeFile = E.media.blankTex,
+		edgeSize = E.mult,
+		insets = {left = -E.mult, right = -E.mult, top = -E.mult, bottom = -E.mult}
+	})
+	ElvuiConsolidatedBuffsTooltip:SetScale(E.global.general.UIScale)
+	ElvuiConsolidatedBuffsTooltip:SetBackdropBorderColor(unpack(E.media.bordercolor))
+	ElvuiConsolidatedBuffsTooltip:SetBackdropColor(unpack(E.media.backdropcolor))
+
+
+	A:CreateIcon(ElvuiVanityBuffs)
+	ElvuiVanityBuffs.statusBar:Hide()
+	ElvuiVanityBuffs.texture:SetTexture("Interface\\Icons\\INV_Chest_Awakening")
+	ElvuiVanityBuffs:SetBackdropBorderColor(cr, cg, cb)
+	ElvuiVanityBuffs.statusBar.backdrop:SetBackdropBorderColor(cr, cg, cb)
+	ElvuiVanityBuffs:SetScript("OnUpdate", ElvuiVanityBuffs_OnUpdate)
+	ElvuiVanityBuffs:SetScript("OnEnter", ElvuiVanityBuffs_OnEnter)
+	ElvuiVanityBuffsTooltip:SetBackdrop({
+		bgFile = E.media.glossTex or E.media.blankTex,
+		edgeFile = E.media.blankTex,
+		edgeSize = E.mult,
+		insets = {left = -E.mult, right = -E.mult, top = -E.mult, bottom = -E.mult}
+	})
+	ElvuiVanityBuffsTooltip:SetScale(E.global.general.UIScale)
+	ElvuiVanityBuffsTooltip:SetBackdropBorderColor(unpack(E.media.bordercolor))
+	ElvuiVanityBuffsTooltip:SetBackdropColor(unpack(E.media.backdropcolor))
+end
+
 function A:Initialize()
 	if E.private.auras.disableBlizzard then
 		BuffFrame:Kill()
@@ -647,6 +829,8 @@ function A:Initialize()
 		self.LBFGroup = LBF and LBF:Group("ElvUI", "Auras")
 	end
 
+	InitConsolidated(floor(self.db.buffs.size / 2))
+
 	self.BuffFrame = self:CreateAuraHeader("HELPFUL")
 	self.BuffFrame:Point("TOPRIGHT", MMHolder, "TOPLEFT", -(6 + E.Border), -E.Border - E.Spacing)
 	E:CreateMover(self.BuffFrame, "BuffsMover", L["Player Buffs"], nil, nil, nil, nil, nil, "auras,buffs")
@@ -665,7 +849,7 @@ function A:Initialize()
 		if GetRangedWeaponEnchantInfo then
 			hasRangedEnchant, rangedExpiration = GetRangedWeaponEnchantInfo()
 		end
-		if A:HasEnchant(1, hasMainHandEnchant, mainHandExpiration) or A:HasEnchant(2, hasOffHandEnchant, offHandExpiration) or A:HasEnchant(3, hasRangedEnchant, rangedExpiration) then
+		if A:HasEnchant(1, hasMainHandEnchant, mainHandExpiration) or A:HasEnchant(2, hasOffHandEnchant, offHandExpiration) or A:HasEnchant(3, hasRangedEnchant, rangedExpiration) or checkExpiringVanityAndConsolidated() then
 			A:UpdateHeader(bf)
 		end
 	end)

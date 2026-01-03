@@ -149,6 +149,26 @@ E.Options.args.auras = {
 				E:StaticPopup_Show("PRIVATE_RL")
 			end
 		},
+		mergeVanity = {
+			order = 3.1,
+			type = "toggle",
+			name = L["Merge Vanity"],
+			get = function(info) return E.private.auras[info[#info]] end,
+			set = function(info, value)
+				E.private.auras[info[#info]] = value
+				A:triggerUpdateOnNext()
+			end
+		},
+		mergeConsolidated = {
+			order = 3.2,
+			type = "toggle",
+			name = L["Merge Consolidated"],
+			get = function(info) return E.private.auras[info[#info]] end,
+			set = function(info, value)
+				E.private.auras[info[#info]] = value
+				A:triggerUpdateOnNext()
+			end
+		},
 		general = {
 			order = 4,
 			type = "group",
