@@ -373,7 +373,7 @@ function A:ConfigureAuras(header, auraTable, weaponPosition)
 				expiring = exitTime < GetTime()
 			end
 
-			if E.private.auras.mergeVanity and not expiring and C_VanityCollection.IsConsolidatedVanityBuff(buffInfo.spellID) then
+			if E.db.auras.mergeVanity and not expiring and C_VanityCollection.IsConsolidatedVanityBuff(buffInfo.spellID) then
 				button:SetParent(ElvuiVanityBuffsTooltip)
 				button:Show()
 				vanityButton[#vanityButton+1] = button
@@ -384,7 +384,7 @@ function A:ConfigureAuras(header, auraTable, weaponPosition)
 						expiringVanityOrConsolidated = exitTime
 					end
 				end
-			elseif E.private.auras.mergeConsolidated and not expiring and buffInfo.shouldConsolidate then
+			elseif E.db.auras.mergeConsolidated and not expiring and buffInfo.shouldConsolidate then
 				button:SetParent(ElvuiConsolidatedBuffsTooltip)
 				button:Show()
 				consolidatedButton[#consolidatedButton+1] = button

@@ -153,9 +153,9 @@ E.Options.args.auras = {
 			order = 3.1,
 			type = "toggle",
 			name = L["Merge Vanity"],
-			get = function(info) return E.private.auras[info[#info]] end,
+			get = function(info) return E.db.auras[info[#info]] end,
 			set = function(info, value)
-				E.private.auras[info[#info]] = value
+				E.db.auras[info[#info]] = value
 				A:triggerUpdateOnNext()
 			end
 		},
@@ -163,9 +163,9 @@ E.Options.args.auras = {
 			order = 3.2,
 			type = "toggle",
 			name = L["Merge Consolidated"],
-			get = function(info) return E.private.auras[info[#info]] end,
+			get = function(info) return E.db.auras[info[#info]] end,
 			set = function(info, value)
-				E.private.auras[info[#info]] = value
+				E.db.auras[info[#info]] = value
 				A:triggerUpdateOnNext()
 			end
 		},
