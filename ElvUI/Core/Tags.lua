@@ -835,7 +835,7 @@ do
 	}
 
 	E:AddTag('factioncolor', 'UNIT_NAME_UPDATE UNIT_FACTION', function(unit)
-		local englishFaction = E:GetUnitBattlefieldFaction(unit)
+		local englishFaction = (GetUnitBattlefieldFaction and GetUnitBattlefieldFaction(unit)) or UnitFactionGroup(unit)
 		return factionColors[englishFaction or '']
 	end)
 end
