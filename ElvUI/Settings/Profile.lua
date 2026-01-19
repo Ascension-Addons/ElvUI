@@ -818,7 +818,8 @@ P.auras = {
 		mmssColor = {r = 0.56, g = 0.56, b = 0.56},
 		hhmmThreshold = -1,
 		mmssThreshold = -1
-	}
+	},
+	mergeVanity = true,
 }
 
 --Chat
