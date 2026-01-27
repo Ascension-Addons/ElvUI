@@ -125,17 +125,19 @@ S:AddCallbackForAddon("Blizzard_GuildBankUI", "Skin_Blizzard_GuildBankUI", funct
 			end
 
 			if link and button then
-				-- Prepare scan tooltip for bind type detection (if enabled)
-				if B.db.showBindType then
-					E.ScanTooltip:SetOwner(UIParent, "ANCHOR_NONE")
-					E.ScanTooltip:SetGuildBankItem(tab, i)
-					E.ScanTooltip:Show()
+				if B.db then
+					-- Prepare scan tooltip for bind type detection (if enabled)
+					if B.db.showBindType then
+						E.ScanTooltip:SetOwner(UIParent, "ANCHOR_NONE")
+						E.ScanTooltip:SetGuildBankItem(tab, i)
+						E.ScanTooltip:Show()
+					end
+
+					-- Reuse Bags appearance logic on guild bank button
+					B:UpdateSlotAppearance(button, link)
+
+					E.ScanTooltip:Hide()
 				end
-
-				-- Reuse Bags appearance logic on guild bank button
-				B:UpdateSlotAppearance(button, link)
-
-				E.ScanTooltip:Hide()
 			else
 				-- Ensure it's cleared and show default border
 				if button then
