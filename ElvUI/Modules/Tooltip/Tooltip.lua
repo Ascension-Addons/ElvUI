@@ -393,6 +393,10 @@ function TT:GameTooltip_OnTooltipSetUnit(tt)
 				targetColor = UnitIsUnit("player", unitTarget) and E.media.herocolor or RAID_CLASS_COLORS[class]
 			end
 
+			if not targetColor then
+				targetColor = RAID_CLASS_COLORS.PRIEST
+			end
+
 			tt:AddDoubleLine(format("%s:", TARGET), format("|cff%02x%02x%02x%s|r", targetColor.r * 255, targetColor.g * 255, targetColor.b * 255, UnitName(unitTarget)))
 		end
 
