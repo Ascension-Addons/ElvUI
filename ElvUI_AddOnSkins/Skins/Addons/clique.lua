@@ -17,11 +17,13 @@ local FauxScrollFrame_GetOffset = FauxScrollFrame_GetOffset
 S:AddCallbackForAddon("Clique", "Clique", function()
     if not E.private.addOnSkins.Clique then return end
 
-    CliquePulloutTab:StyleButton(nil, true)
-    CliquePulloutTab:SetTemplate("Default", true)
-    CliquePulloutTab:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-    CliquePulloutTab:GetNormalTexture():SetInside()
-    CliquePulloutTab:GetRegions():Hide()
+    if CliquePulloutTab then
+        CliquePulloutTab:StyleButton(nil, true)
+        CliquePulloutTab:SetTemplate("Default", true)
+        CliquePulloutTab:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
+        CliquePulloutTab:GetNormalTexture():SetInside()
+        CliquePulloutTab:GetRegions():Hide()
+    end
 
     local function SkinFrame(frame)
         frame:StripTextures()
